@@ -1,0 +1,49 @@
+{
+	"schemaVersion": 1,
+	"id": "dulkirmod-fabric",
+	"version": "${version}",
+	"name": "DulkirMod-Fabric",
+	"description": "Utility Mod for Hypixel Skyblock",
+	"authors": [
+		"inglettronald"
+	],
+	"contact": {
+		"homepage": "https://github.com/inglettronald",
+		"sources": "https://github.com/FabricMC/fabric-example-mod",
+		"issues": "https://discord.gg/juwhqyBCgA"
+	},
+	"license": "MPL-2.0",
+	"icon": "assets/dulkirmod-fabric/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			{
+				"value": "com.dulkirfabric.DulkirModFabric",
+				"adapter": "kotlin"
+			}
+		]
+	},
+	"mixins": [
+		"dulkirmod-fabric.mixins.json"
+	],
+	"depends": {
+		"fabricloader": ">=0.14.21",
+		"minecraft": "~1.19.4",
+		"java": ">=17",
+		"fabric-api": "*",
+		"fabric-language-kotlin": ">=1.8.21"
+	},
+	"suggests": {
+		"Farsight": "https://www.curseforge.com/minecraft/mc-mods/farsight-fabric/files",
+		"Borderless Mining": "https://www.curseforge.com/minecraft/mc-mods/borderless-mining",
+		"Iris": "https://github.com/IrisShaders/Iris",
+		"MemoryLeakFix": "https://github.com/fxmorin/memoryleakfix",
+		"Model Gap Fix": "https://www.curseforge.com/minecraft/mc-mods/model-gap-fix",
+		"Capes": "https://www.curseforge.com/minecraft/mc-mods/capes",
+		"Continuity": "https://www.curseforge.com/minecraft/mc-mods/continuity",
+		"Lithium, Sodium": "https://jellysquid.me/projects/",
+		"Mod Menu": "https://modrinth.com/mod/modmenu",
+		"Puzzle": "https://www.midnightdust.eu/",
+		"Starlight": "https://www.curseforge.com/minecraft/mc-mods/starlight"
+	}
+}
