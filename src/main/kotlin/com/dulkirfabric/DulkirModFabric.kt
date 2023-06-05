@@ -17,7 +17,9 @@ import com.dulkirfabric.events.WidgetInitEvent
 import meteordevelopment.orbit.EventBus
 import meteordevelopment.orbit.EventHandler
 import net.fabricmc.api.ModInitializer
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
 import net.minecraft.client.MinecraftClient
+import net.minecraft.client.gui.screen.Screen
 import org.slf4j.LoggerFactory
 import java.lang.invoke.MethodHandles
 
@@ -28,8 +30,8 @@ object DulkirModFabric : ModInitializer {
 	val EVENT_BUS = EventBus()
 	@JvmField
 	val mc: MinecraftClient = MinecraftClient.getInstance()
-
 	var widgetLoadTime = 0L
+	var delayedScreen: Screen? = null
 
 	override fun onInitialize() {
 		logger.info("Initializing DulkirMod...")
@@ -38,7 +40,16 @@ object DulkirModFabric : ModInitializer {
 			lookupInMethod.invoke(null, klass, MethodHandles.lookup()) as MethodHandles.Lookup
 		}
 
-		EVENT_BUS.subscribe(this)
+		// Register a tick event listener to delay the screen opening
+		ClientTickEvents.END_CLIENT_TICK.register(ClientTickEvents.EndTick { client: MinecraftClient? ->
+			if (delayedScreen != null) {
+				MinecraftClient.getInstance().setScreen(delayedScreen)
+				delayedScreen = null
+			}
+		})
+
+		Registrations.registerEventListeners()
+		Registrations.registerCommands()
 	}
 
 	@EventHandler
@@ -51,5 +62,10 @@ object DulkirModFabric : ModInitializer {
 	fun onPostInit(event: WidgetInitEvent) {
 		val time = System.nanoTime() - widgetLoadTime
 		if (event.initialized) println("widgets initialized!!!!!, took: $time ns")
+	}
+
+	// Call this method when you want to open the new screen
+	fun openScreenDelayed(screen: Screen) {
+		delayedScreen = screen
 	}
 }

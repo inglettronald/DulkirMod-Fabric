@@ -13,6 +13,7 @@
 
 package com.dulkirfabric.config
 
+import com.dulkirfabric.DulkirModFabric.mc
 import me.shedaniel.clothconfig2.api.ConfigBuilder
 import me.shedaniel.clothconfig2.api.Modifier
 import me.shedaniel.clothconfig2.api.ModifierKeyCode
@@ -25,24 +26,18 @@ import net.minecraft.text.Text
 import net.minecraft.util.Formatting
 import net.minecraft.util.Identifier
 
-object DulkirConfig {
+class DulkirConfig {
 
     private val buttonText: Text =
         MutableText.of(LiteralTextContent("Dulkir")).formatted(Formatting.BOLD, Formatting.YELLOW)
     var screen: Screen
 
     init {
-        /*val builder = ConfigBuilder.create()
-            .setParentScreen(mc.currentScreen)
-            .setTitle(buttonText)
-        val entryBuilder = builder.entryBuilder()
-
-        val general = builder.getOrCreateCategory(Text.of("General"))
-        val someSetting = general.addEntry(entryBuilder.)*/
         val builder = ConfigBuilder.create().setTitle(buttonText)
         builder.setDefaultBackgroundTexture(Identifier("minecraft:textures/block/oak_planks.png"))
         builder.setGlobalized(true)
         builder.setGlobalizedExpanded(true)
+        builder.setParentScreen(mc.currentScreen)
         val entryBuilder = builder.entryBuilder()
         val testing = builder.getOrCreateCategory(Text.translatable("category.cloth-config.testing"))
         testing.addEntry(

@@ -45,7 +45,7 @@ public abstract class GameMenuScreenMixin extends ScreenMixin {
 	 */
 	@Inject(method = "initWidgets", at = @At(value = "FIELD", target = "Lnet/minecraft/client/gui/screen/GameMenuScreen;OPTIONS_TEXT:Lnet/minecraft/text/Text;"), locals = LocalCapture.CAPTURE_FAILEXCEPTION)
 	private void initWidget(CallbackInfo ci, GridWidget gridWidget, GridWidget.Adder adder) {
-		adder.add(this.createButton(buttonText, DulkirConfig.INSTANCE::getScreen));
+		adder.add(this.createButton(buttonText, new DulkirConfig()::getScreen));
 	}
 
 	@Inject(method = "initWidgets", at = @At(value = "HEAD"))
