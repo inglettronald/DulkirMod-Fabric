@@ -14,7 +14,10 @@
 package com.dulkirfabric.config
 
 import com.dulkirfabric.DulkirModFabric.mc
+import com.dulkirfabric.config.ListHelper.mkIntField
+import com.dulkirfabric.config.ListHelper.mkStringField
 import com.google.gson.Gson
+import kotlinx.serialization.Serializable
 import me.shedaniel.cloth.clothconfig.shadowed.blue.endless.jankson.annotation.SerializedName
 import me.shedaniel.clothconfig2.api.ConfigBuilder
 import net.minecraft.client.gui.screen.Screen
@@ -25,8 +28,6 @@ import net.minecraft.util.Formatting
 import net.minecraft.util.Identifier
 import java.io.File
 import java.util.*
-import java.util.function.Consumer
-import java.util.function.Supplier
 
 class DulkirConfig {
 
@@ -55,33 +56,25 @@ class DulkirConfig {
                 .setSaveConsumer { newValue -> inventoryScale = newValue }
                 .build()
         )
-        val shortcuts = builder.getOrCreateCategory(Text.literal("Key Shortcuts"))
-        /** public NestedListListEntry(Text fieldName,
-         * List<T> value,
-         * boolean defaultExpanded,
-         * Supplier<Optional<Text[]>> tooltipSupplier,
-         * Consumer<List<T>> saveConsumer,
-         * Supplier<List<T>> defaultValue,
-         * Text resetButtonKey,
-         * boolean deleteButtonEnabled,
-         * boolean insertInFront,
-         * BiFunction<T, NestedListListEntry<T, INNER>, INNER> createNewCell) {
-        */
-        val fieldName = Text.literal("Chat Macros")
-        val defaultExpanded = false
-        val tooltipSupplier: Optional<MutableText> = Optional.empty<MutableText>()
-        val saveConsumer: Consumer<List<Pair<Int,Int>>> = Consumer { list -> value = list }
-        val defaultValue: Supplier<List<Pair<Int, Int>>> = Supplier { listOf(Pair(1, 2), Pair(3, 4)) }
-        val resetButtonKey = Text.literal("Reset Macros")
-        val deleteButtonEnabled = true
-        val insertInFront = true
-        //val createNewCell: BiFunction<Pair<Int,Int>, NestedListListEntry<Pair<Int,Int>, INNER>, INNER>>
-        //TODO
+        val shortcuts = builder.getOrCreateCategory(Text.literal("Shortcuts"))
+        shortcuts.addEntry(
+            ListHelper.mkConfigList(
+                Text.literal("Macros"),
+                ListHelper.Holder::macros,
+                { Macro(-2, "") },
+                Text.literal("Macro"),
+                { value ->
+                    listOf(
+                        entryBuilder.mkStringField(Text.literal("Command"), value::command),
+                        entryBuilder.mkIntField(Text.literal("KeyBinding"), value::keyBinding)
+                    )
+                }
+            )
+        )
 
         builder.transparentBackground()
         screen = builder.build()
     }
-
 
     data class ConfigOptions(
         @SerializedName("testOption")
@@ -89,6 +82,12 @@ class DulkirConfig {
 
         @SerializedName("inventoryScale")
         val inventoryScale: Float
+    )
+
+    @Serializable
+    data class Macro(
+        var keyBinding: Int,
+        var command: String,
     )
 
     /**
