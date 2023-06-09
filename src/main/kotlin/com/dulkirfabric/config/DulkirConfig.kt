@@ -76,7 +76,7 @@ class DulkirConfig {
         val deleteButtonEnabled = true
         val insertInFront = true
         //val createNewCell: BiFunction<Pair<Int,Int>, NestedListListEntry<Pair<Int,Int>, INNER>, INNER>>
-
+        //TODO
 
         builder.transparentBackground()
         screen = builder.build()
