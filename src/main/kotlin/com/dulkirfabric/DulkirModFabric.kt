@@ -59,4 +59,6 @@ object DulkirModFabric : ModInitializer {
 		if (event.initialized) println("widgets initialized!!!!!, took: $time ns")
 	}
 
+	//!this.client.options.getPerspective().isFirstPerson(), this.client.options.getPerspective().isFrontView()
+
 }
