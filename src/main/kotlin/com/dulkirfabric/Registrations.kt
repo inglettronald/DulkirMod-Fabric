@@ -4,12 +4,8 @@ import com.dulkirfabric.DulkirModFabric.EVENT_BUS
 import com.dulkirfabric.commands.ConfigCommand
 import com.dulkirfabric.commands.JoinDungeonCommands
 import com.dulkirfabric.events.ClientTickEvent
-import com.dulkirfabric.events.ServerTickEvent
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents
-import net.minecraft.server.MinecraftServer
-import net.minecraft.util.profiling.jfr.event.WorldLoadFinishedEvent
 
 
 /**
@@ -42,13 +38,10 @@ object Registrations {
     }
 
     fun registerEvents() {
-        // Register Custom Tick events so we can use them like 1.8.9 forge
-        ServerTickEvents.START_SERVER_TICK.register(
-            ServerTickEvents.StartTick { _ -> EVENT_BUS.post(ServerTickEvent.get()) }
-        )
+        // Register Custom Tick event, so we can use it like 1.8.9 forge
         ClientTickEvents.START_CLIENT_TICK.register(
             ClientTickEvents.StartTick { _ -> EVENT_BUS.post(ClientTickEvent.get()) }
         )
-        // WorldLoadFinishedEvent
+        // WorldLoadFinishedEvent TODO
     }
 }

@@ -14,13 +14,14 @@
 package com.dulkirfabric.config
 
 import com.dulkirfabric.DulkirModFabric.mc
-import com.dulkirfabric.config.ListHelper.mkIntField
+import com.dulkirfabric.config.ListHelper.mkKeyField
 import com.dulkirfabric.config.ListHelper.mkStringField
 import com.google.gson.Gson
 import kotlinx.serialization.Serializable
 import me.shedaniel.cloth.clothconfig.shadowed.blue.endless.jankson.annotation.SerializedName
 import me.shedaniel.clothconfig2.api.ConfigBuilder
 import net.minecraft.client.gui.screen.Screen
+import net.minecraft.client.util.InputUtil
 import net.minecraft.text.LiteralTextContent
 import net.minecraft.text.MutableText
 import net.minecraft.text.Text
@@ -51,22 +52,23 @@ class DulkirConfig {
                 .build()
         )
         general.addEntry(
-            entryBuilder.startFloatField(Text.literal("Inventory Scale"), inventoryScale)
+            entryBuilder.startIntSlider(Text.literal("Inventory Scale"), inventoryScale, 1, 5)
                 .setTooltip(Text.literal("Size of GUI whenever you're in an inventory screen"))
                 .setSaveConsumer { newValue -> inventoryScale = newValue }
                 .build()
         )
+
         val shortcuts = builder.getOrCreateCategory(Text.literal("Shortcuts"))
         shortcuts.addEntry(
             ListHelper.mkConfigList(
                 Text.literal("Macros"),
                 ListHelper.Holder::macros,
-                { Macro(-2, "") },
+                { Macro(InputUtil.UNKNOWN_KEY, "") },
                 Text.literal("Macro"),
                 { value ->
                     listOf(
                         entryBuilder.mkStringField(Text.literal("Command"), value::command),
-                        entryBuilder.mkIntField(Text.literal("KeyBinding"), value::keyBinding)
+                        entryBuilder.mkKeyField(Text.literal("KeyBinding"), value::keyBinding)
                     )
                 }
             )
@@ -81,12 +83,12 @@ class DulkirConfig {
         val invScaleBool: Boolean,
 
         @SerializedName("inventoryScale")
-        val inventoryScale: Float
+        val inventoryScale: Int
     )
 
     @Serializable
     data class Macro(
-        var keyBinding: Int,
+        var keyBinding: InputUtil.Key,
         var command: String,
     )
 
@@ -95,7 +97,7 @@ class DulkirConfig {
      */
     companion object ConfigVars {
         var invScaleBool: Boolean = true
-        var inventoryScale: Float = 1f
+        var inventoryScale: Int = 1
         var value: List<Pair<Int, Int>> = listOf(Pair(1, 2), Pair(3, 4))
 
 

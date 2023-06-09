@@ -1,8 +1,8 @@
 package com.dulkirfabric.events
 
-object ServerTickEvent {
+object WorldLoadEvent {
     @JvmStatic
-    fun get(): ServerTickEvent {
+    fun get(): WorldLoadEvent {
         return this
     }
 }
