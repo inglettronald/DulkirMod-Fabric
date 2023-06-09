@@ -7,7 +7,7 @@
   },
   "client": [
     "render.GameMenuScreenMixin",
-    "render.InventoryScreenMixin",
+    "render.GameRendererMixin",
     "render.ScreenMixin"
   ]
 }
