@@ -28,6 +28,23 @@ repositories {
 	}
 	maven { url "https://maven.shedaniel.me/" }
 	maven { url "https://maven.terraformersmc.com/releases/" }
+
+	ivy {
+			url "https://github.com/HotswapProjects/HotswapAgent/releases/download%22"
+			patternLayout {
+				artifact("[revision]/[artifact]-[revision].[ext]")
+			}
+			content {
+				includeGroup("virtual.github.hotswapagent")
+			}
+			metadataSources {
+				artifact()
+			}
+		}
+}
+
+configurations {
+	hotswap
 }
 
 dependencies {
@@ -40,6 +57,20 @@ dependencies {
 	modRuntimeOnly("me.djtheredstoner:DevAuth-fabric:1.1.2")
 	implementation "meteordevelopment:orbit:0.2.3"
 	modApi "me.shedaniel.cloth:cloth-config-fabric:11.0.99"
+}
+
+loom {
+	runs {
+		removeIf { it.name != "client" }
+		named("client") {
+			property("devauth.enabled", "true")
+			property("fabric.log.level", "info")
+			vmArg("-ea")
+			vmArg("-XX:+AllowEnhancedClassRedefinition")
+			vmArg("-XX:HotswapAgent=external")
+			vmArg("-javaagent:${configurations.hotswap.resolve().single().absolutePath}")
+		}
+	}
 }
 
 processResources {

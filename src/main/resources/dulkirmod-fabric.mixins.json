@@ -6,9 +6,10 @@
     "defaultRequire": 1
   },
   "client": [
+    "io.HandledScreenMixin",
     "render.GameMenuScreenMixin",
     "render.GameRendererMixin",
-    "io.HandledScreenMixin",
+    "render.KeyboardMixin",
     "render.ScreenMixin"
   ]
 }

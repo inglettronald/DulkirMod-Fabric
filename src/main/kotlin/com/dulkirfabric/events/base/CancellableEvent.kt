@@ -4,7 +4,7 @@ import com.dulkirfabric.DulkirModFabric
 import meteordevelopment.orbit.ICancellable
 
 abstract class CancellableEvent: ICancellable {
-
+    @JvmField
     var cancelled: Boolean = false
 
     override fun isCancelled(): Boolean {

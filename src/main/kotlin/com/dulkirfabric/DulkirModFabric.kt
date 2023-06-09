@@ -15,7 +15,6 @@ package com.dulkirfabric
 
 import com.dulkirfabric.config.DulkirConfig
 import meteordevelopment.orbit.EventBus
-import meteordevelopment.orbit.EventHandler
 import net.fabricmc.api.ModInitializer
 import net.minecraft.client.MinecraftClient
 import org.slf4j.LoggerFactory
@@ -28,7 +27,6 @@ object DulkirModFabric : ModInitializer {
 	val EVENT_BUS = EventBus()
 	@JvmField
 	val mc: MinecraftClient = MinecraftClient.getInstance()
-	var widgetLoadTime = 0L
 
 	override fun onInitialize() {
 		logger.info("Initializing DulkirMod...")
@@ -44,19 +42,6 @@ object DulkirModFabric : ModInitializer {
 		Registrations.registerEvents()
 
 		DulkirConfig.loadConfig()
-	}
-
-
-	@EventHandler
-	fun onPreInit(event: WidgetInitEvent) {
-		if (!event.initialized) println("have not initialized widgets yet!!!!")
-		widgetLoadTime = System.nanoTime()
-	}
-
-	@EventHandler
-	fun onPostInit(event: WidgetInitEvent) {
-		val time = System.nanoTime() - widgetLoadTime
-		if (event.initialized) println("widgets initialized!!!!!, took: $time ns")
 	}
 
 	//!this.client.options.getPerspective().isFirstPerson(), this.client.options.getPerspective().isFrontView()

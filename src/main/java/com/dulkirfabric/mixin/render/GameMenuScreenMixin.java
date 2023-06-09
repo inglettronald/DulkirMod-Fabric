@@ -14,7 +14,6 @@
 package com.dulkirfabric.mixin.render;
 
 import com.dulkirfabric.config.DulkirConfig;
-import com.dulkirfabric.events.WidgetInitEvent;
 import net.minecraft.client.gui.screen.GameMenuScreen;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
@@ -30,8 +29,6 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import java.util.function.Supplier;
 
-import static com.dulkirfabric.DulkirModFabric.EVENT_BUS;
-
 @Mixin(GameMenuScreen.class)
 public abstract class GameMenuScreenMixin extends ScreenMixin {
 
@@ -46,16 +43,6 @@ public abstract class GameMenuScreenMixin extends ScreenMixin {
 	@Inject(method = "initWidgets", at = @At(value = "FIELD", target = "Lnet/minecraft/client/gui/screen/GameMenuScreen;OPTIONS_TEXT:Lnet/minecraft/text/Text;"), locals = LocalCapture.CAPTURE_FAILEXCEPTION)
 	private void initWidget(CallbackInfo ci, GridWidget gridWidget, GridWidget.Adder adder) {
 		adder.add(this.createButton(buttonText, new DulkirConfig()::getScreen));
-	}
-
-	@Inject(method = "initWidgets", at = @At(value = "HEAD"))
-	private void initWidgetPre(CallbackInfo ci) {
-		EVENT_BUS.post(WidgetInitEvent.get(false));
-	}
-
-	@Inject(method = "initWidgets", at = @At(value = "TAIL"))
-	private void initWidgetPost(CallbackInfo ci) {
-		EVENT_BUS.post(WidgetInitEvent.get(true));
 	}
 
 }
