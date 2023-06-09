@@ -42,6 +42,7 @@ object DulkirModFabric : ModInitializer {
 
 		Registrations.registerEventListeners()
 		Registrations.registerCommands()
+		Registrations.registerEvents()
 
 		DulkirConfig.loadConfig()
 	}
