@@ -10,25 +10,27 @@
  *
  * You may add additional accurate notices of copyright ownership.
  */
-
+@file:UseSerializers(com.dulkirfabric.config.serializations.KeySerializer::class)
 package com.dulkirfabric.config
 
 import com.dulkirfabric.DulkirModFabric.mc
 import com.dulkirfabric.config.ListHelper.mkKeyField
 import com.dulkirfabric.config.ListHelper.mkStringField
-import com.google.gson.Gson
 import kotlinx.serialization.Serializable
-import me.shedaniel.cloth.clothconfig.shadowed.blue.endless.jankson.annotation.SerializedName
+import kotlinx.serialization.UseSerializers
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import me.shedaniel.clothconfig2.api.ConfigBuilder
 import net.minecraft.client.gui.screen.Screen
 import net.minecraft.client.util.InputUtil
+import net.minecraft.client.util.InputUtil.UNKNOWN_KEY
 import net.minecraft.text.LiteralTextContent
 import net.minecraft.text.MutableText
 import net.minecraft.text.Text
 import net.minecraft.util.Formatting
 import net.minecraft.util.Identifier
 import java.io.File
-import java.util.*
 
 class DulkirConfig {
 
@@ -46,15 +48,15 @@ class DulkirConfig {
         val entryBuilder = builder.entryBuilder()
         val general = builder.getOrCreateCategory(Text.literal("General"))
         general.addEntry(
-            entryBuilder.startBooleanToggle(Text.literal("Custom Inventory Scale Toggle"), invScaleBool)
+            entryBuilder.startBooleanToggle(Text.literal("Custom Inventory Scale Toggle"), configOptions.invScaleBool)
                 .setTooltip(Text.literal("WAHOO!"))
-                .setSaveConsumer { newValue -> invScaleBool = newValue }
+                .setSaveConsumer { newValue -> configOptions.invScaleBool = newValue }
                 .build()
         )
         general.addEntry(
-            entryBuilder.startIntSlider(Text.literal("Inventory Scale"), inventoryScale, 1, 5)
+            entryBuilder.startIntSlider(Text.literal("Inventory Scale"), configOptions.inventoryScale, 1, 5)
                 .setTooltip(Text.literal("Size of GUI whenever you're in an inventory screen"))
-                .setSaveConsumer { newValue -> inventoryScale = newValue }
+                .setSaveConsumer { newValue -> configOptions.inventoryScale = newValue }
                 .build()
         )
 
@@ -62,8 +64,8 @@ class DulkirConfig {
         shortcuts.addEntry(
             ListHelper.mkConfigList(
                 Text.literal("Macros"),
-                ListHelper.Holder::macros,
-                { Macro(InputUtil.UNKNOWN_KEY, "") },
+                configOptions::macrosList,
+                { Macro(UNKNOWN_KEY, "") },
                 Text.literal("Macro"),
                 { value ->
                     listOf(
@@ -79,11 +81,9 @@ class DulkirConfig {
     }
 
     data class ConfigOptions(
-        @SerializedName("testOption")
-        val invScaleBool: Boolean,
-
-        @SerializedName("inventoryScale")
-        val inventoryScale: Int
+        var invScaleBool: Boolean = true,
+        var inventoryScale: Int = 1,
+        var macrosList: List<Macro> = listOf(Macro(UNKNOWN_KEY, ""))
     )
 
     @Serializable
@@ -96,38 +96,36 @@ class DulkirConfig {
      * Object for storing all the actual config values that will be used in doing useful stuff with the config
      */
     companion object ConfigVars {
-        var invScaleBool: Boolean = true
-        var inventoryScale: Int = 1
-        var value: List<Pair<Int, Int>> = listOf(Pair(1, 2), Pair(3, 4))
 
-
+        var configOptions = ConfigOptions()
         private fun saveConfig() {
-            val gson = Gson()
-            val configOptions = ConfigOptions(
-                invScaleBool,
-                inventoryScale)
-            val json = gson.toJson(configOptions)
+            val json = Json {
+                prettyPrint = true
+                ignoreUnknownKeys = true
+                encodeDefaults = true
+            }
 
             val configDirectory = File(mc.runDirectory, "config")
             if (!configDirectory.exists()) {
                 configDirectory.mkdir()
             }
             val configFile = File(configDirectory, "dulkirConfig.json")
-            configFile.writeText(json)
+            configFile.writeText(json.encodeToString(configOptions))
         }
 
         fun loadConfig() {
-            val gson = Gson()
             val configDir = File(mc.runDirectory, "config")
             if (!configDir.exists()) return
             val configFile = File(configDir, "dulkirConfig.json")
             if (configFile.exists()) {
-                val json = configFile.readText()
-                val configOptions = gson.fromJson(json, ConfigOptions::class.java)
-
-                invScaleBool = configOptions.invScaleBool
-                inventoryScale = configOptions.inventoryScale
+                val json = Json {
+                    prettyPrint = true
+                    ignoreUnknownKeys = true
+                    encodeDefaults = true
+                }
+                configOptions = json.decodeFromString<ConfigOptions>(configFile.readText())
             }
+
         }
     }
 

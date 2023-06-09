@@ -14,7 +14,6 @@
 package com.dulkirfabric
 
 import com.dulkirfabric.config.DulkirConfig
-import com.dulkirfabric.events.WidgetInitEvent
 import meteordevelopment.orbit.EventBus
 import meteordevelopment.orbit.EventHandler
 import net.fabricmc.api.ModInitializer

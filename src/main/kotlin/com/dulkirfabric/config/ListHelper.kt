@@ -35,10 +35,6 @@ object ListHelper {
         )
     }
 
-    object Holder {
-        var macros = listOf(DulkirConfig.Macro(InputUtil.UNKNOWN_KEY, "Hello World"))
-    }
-
     fun ConfigEntryBuilder.mkStringField(text: Text, prop: KMutableProperty0<String>) = startStrField(text, prop.get())
         .setSaveConsumer { prop.set(it) }
         .setDefaultValue("")

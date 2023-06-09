@@ -4,6 +4,8 @@ plugins {
 	id 'fabric-loom' version '1.2-SNAPSHOT'
 	id 'maven-publish'
   	id "org.jetbrains.kotlin.jvm" version "1.8.21"
+	id "io.github.juuxel.loom-quiltflower" version "1.10.0"
+	id "org.jetbrains.kotlin.plugin.serialization" version "1.8.10"
 }
 
 version = project.mod_version
@@ -37,7 +39,7 @@ dependencies {
 	modImplementation "net.fabricmc:fabric-language-kotlin:${project.fabric_kotlin_version}"
 	modRuntimeOnly("me.djtheredstoner:DevAuth-fabric:1.1.2")
 	implementation "meteordevelopment:orbit:0.2.3"
-	modApi "me.shedaniel.cloth:cloth-config-fabric:10.0.96"
+	modApi "me.shedaniel.cloth:cloth-config-fabric:11.0.99"
 }
 
 processResources {

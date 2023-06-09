@@ -40,8 +40,7 @@ object Registrations {
     fun registerEvents() {
         // Register Custom Tick event, so we can use it like 1.8.9 forge
         ClientTickEvents.START_CLIENT_TICK.register(
-            ClientTickEvents.StartTick { _ -> EVENT_BUS.post(ClientTickEvent.get()) }
+            ClientTickEvents.StartTick { _ -> ClientTickEvent.post() }
         )
-        // WorldLoadFinishedEvent TODO
     }
 }

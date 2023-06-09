@@ -8,6 +8,7 @@
   "client": [
     "render.GameMenuScreenMixin",
     "render.GameRendererMixin",
+    "io.HandledScreenMixin",
     "render.ScreenMixin"
   ]
 }
