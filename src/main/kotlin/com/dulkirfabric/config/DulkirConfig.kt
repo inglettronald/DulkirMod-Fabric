@@ -14,17 +14,20 @@
 package com.dulkirfabric.config
 
 import com.dulkirfabric.DulkirModFabric.mc
+import com.google.gson.Gson
+import me.shedaniel.cloth.clothconfig.shadowed.blue.endless.jankson.annotation.SerializedName
 import me.shedaniel.clothconfig2.api.ConfigBuilder
-import me.shedaniel.clothconfig2.api.Modifier
-import me.shedaniel.clothconfig2.api.ModifierKeyCode
-import me.shedaniel.clothconfig2.impl.builders.LongListBuilder
+import me.shedaniel.math.Color
 import net.minecraft.client.gui.screen.Screen
-import net.minecraft.client.util.InputUtil
 import net.minecraft.text.LiteralTextContent
 import net.minecraft.text.MutableText
 import net.minecraft.text.Text
 import net.minecraft.util.Formatting
 import net.minecraft.util.Identifier
+import java.io.File
+import java.util.*
+import java.util.function.Consumer
+import java.util.function.Supplier
 
 class DulkirConfig {
 
@@ -38,53 +41,98 @@ class DulkirConfig {
         builder.setGlobalized(true)
         builder.setGlobalizedExpanded(true)
         builder.setParentScreen(mc.currentScreen)
+        builder.setSavingRunnable(::saveConfig)
         val entryBuilder = builder.entryBuilder()
-        val testing = builder.getOrCreateCategory(Text.translatable("category.cloth-config.testing"))
-        testing.addEntry(
-            entryBuilder.startKeyCodeField(Text.literal("Cool Key"), InputUtil.UNKNOWN_KEY)
-                .setDefaultValue(InputUtil.UNKNOWN_KEY).build()
+        val general = builder.getOrCreateCategory(Text.literal("General"))
+        general.addEntry(
+            entryBuilder.startBooleanToggle(Text.literal("Custom Inventory Scale Toggle"), invScaleBool)
+                .setTooltip(Text.literal("WAHOO!"))
+                .setSaveConsumer { newValue -> invScaleBool = newValue }
+                .build()
         )
-        testing.addEntry(
-            entryBuilder.startModifierKeyCodeField(
-                Text.literal("Cool Modifier Key"),
-                ModifierKeyCode.of(InputUtil.Type.KEYSYM.createFromCode(79), Modifier.of(false, true, false))
-            ).setDefaultValue(
-                ModifierKeyCode.of(
-                    InputUtil.Type.KEYSYM.createFromCode(79),
-                    Modifier.of(false, true, false)
-                )
-            ).build()
+        general.addEntry(
+            entryBuilder.startFloatField(Text.literal("Inventory Scale"), inventoryScale)
+                .setTooltip(Text.literal("Size of GUI whenever you're in an inventory screen"))
+                .setSaveConsumer { newValue -> inventoryScale = newValue }
+                .build()
         )
-        testing.addEntry(
-            entryBuilder.startDoubleList(Text.literal("A list of Doubles"), mutableListOf(1.0, 2.0, 3.0))
-                .setDefaultValue(
-                    mutableListOf(1.0, 2.0, 3.0)
-                ).build()
-        )
-        testing.addEntry(
-            (entryBuilder.startLongList(Text.literal("A list of Longs"), mutableListOf(1L, 2L, 3L)).setDefaultValue(
-                mutableListOf(1L, 2L, 3L)
-            ).setInsertButtonEnabled(false) as LongListBuilder).build()
-        )
-        testing.addEntry(
-            entryBuilder.startStrList(Text.literal("A list of Strings"), mutableListOf("abc", "xyz")).setTooltip(
-                *arrayOf<Text>(
-                    Text.literal("Yes this is some beautiful tooltip\nOh and this is the second line!")
-                )
-            ).setDefaultValue(mutableListOf("abc", "xyz")).build()
-        )
-        val colors = entryBuilder.startSubCategory(Text.literal("Colors")).setExpanded(true)
-        colors.add(entryBuilder.startColorField(Text.literal("A color field"), 65535).setDefaultValue(65535).build())
-        colors.add(
-            entryBuilder.startColorField(Text.literal("An alpha color field"), -16711681).setDefaultValue(-16711681)
-                .setAlphaMode(true).build()
-        )
-        colors.add(
-            entryBuilder.startColorField(Text.literal("An alpha color field"), -1).setDefaultValue(-65536)
-                .setAlphaMode(true).build()
-        )
+        val shortcuts = builder.getOrCreateCategory(Text.literal("Key Shortcuts"))
+        /** public NestedListListEntry(Text fieldName,
+         * List<T> value,
+         * boolean defaultExpanded,
+         * Supplier<Optional<Text[]>> tooltipSupplier,
+         * Consumer<List<T>> saveConsumer,
+         * Supplier<List<T>> defaultValue,
+         * Text resetButtonKey,
+         * boolean deleteButtonEnabled,
+         * boolean insertInFront,
+         * BiFunction<T, NestedListListEntry<T, INNER>, INNER> createNewCell) {
+        */
+        val fieldName = Text.literal("Chat Macros")
+        val defaultExpanded = false
+        val tooltipSupplier: Optional<MutableText> = Optional.empty<MutableText>()
+        val saveConsumer: Consumer<List<Pair<Int,Int>>> = Consumer { list -> value = list }
+        val defaultValue: Supplier<List<Pair<Int, Int>>> = Supplier { listOf(Pair(1, 2), Pair(3, 4)) }
+        val resetButtonKey = Text.literal("Reset Macros")
+        val deleteButtonEnabled = true
+        val insertInFront = true
+        //val createNewCell: BiFunction<Pair<Int,Int>, NestedListListEntry<Pair<Int,Int>, INNER>, INNER>>
+
+
         builder.transparentBackground()
         screen = builder.build()
+    }
+
+
+    data class ConfigOptions(
+        @SerializedName("testOption")
+        val invScaleBool: Boolean,
+
+        @SerializedName("inventoryScale")
+        val inventoryScale: Float
+    )
+
+    /**
+     * Object for storing all the actual config values that will be used in doing useful stuff with the config
+     */
+    companion object ConfigVars {
+        var invScaleBool: Boolean = true
+        var inventoryScale: Float = 1f
+        var value: List<Pair<Int, Int>> = listOf(Pair(1, 2), Pair(3, 4))
+
+
+        private fun saveConfig() {
+            val gson = Gson()
+            val configOptions = ConfigOptions(
+                invScaleBool,
+                inventoryScale)
+            val json = gson.toJson(configOptions)
+
+            val configDirectory = File(mc.runDirectory, "config")
+            if (!configDirectory.exists()) {
+                configDirectory.mkdir()
+            }
+            val configFile = File(configDirectory, "dulkirConfig.json")
+            configFile.writeText(json)
+        }
+
+        fun loadConfig() {
+            val gson = Gson()
+            val configDir = File(mc.runDirectory, "config")
+            if (!configDir.exists()) return
+            val configFile = File(configDir, "dulkirConfig.json")
+            if (configFile.exists()) {
+                val json = configFile.readText()
+                val configOptions = gson.fromJson(json, ConfigOptions::class.java)
+
+                invScaleBool = configOptions.invScaleBool
+                inventoryScale = configOptions.inventoryScale
+            }
+        }
+
+        fun intToColor(color: Int): Color {
+            return Color.ofOpaque(color)
+        }
     }
 
 }
