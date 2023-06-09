@@ -17,7 +17,6 @@ import com.dulkirfabric.DulkirModFabric.mc
 import com.google.gson.Gson
 import me.shedaniel.cloth.clothconfig.shadowed.blue.endless.jankson.annotation.SerializedName
 import me.shedaniel.clothconfig2.api.ConfigBuilder
-import me.shedaniel.math.Color
 import net.minecraft.client.gui.screen.Screen
 import net.minecraft.text.LiteralTextContent
 import net.minecraft.text.MutableText
@@ -128,10 +127,6 @@ class DulkirConfig {
                 invScaleBool = configOptions.invScaleBool
                 inventoryScale = configOptions.inventoryScale
             }
-        }
-
-        fun intToColor(color: Int): Color {
-            return Color.ofOpaque(color)
         }
     }
 
