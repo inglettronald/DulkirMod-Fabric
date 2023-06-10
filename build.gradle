@@ -28,23 +28,6 @@ repositories {
 	}
 	maven { url "https://maven.shedaniel.me/" }
 	maven { url "https://maven.terraformersmc.com/releases/" }
-
-	ivy {
-			url "https://github.com/HotswapProjects/HotswapAgent/releases/download%22"
-			patternLayout {
-				artifact("[revision]/[artifact]-[revision].[ext]")
-			}
-			content {
-				includeGroup("virtual.github.hotswapagent")
-			}
-			metadataSources {
-				artifact()
-			}
-		}
-}
-
-configurations {
-	hotswap
 }
 
 dependencies {
@@ -66,9 +49,6 @@ loom {
 			property("devauth.enabled", "true")
 			property("fabric.log.level", "info")
 			vmArg("-ea")
-			vmArg("-XX:+AllowEnhancedClassRedefinition")
-			vmArg("-XX:HotswapAgent=external")
-			vmArg("-javaagent:${configurations.hotswap.resolve().single().absolutePath}")
 		}
 	}
 }
