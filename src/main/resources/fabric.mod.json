@@ -5,7 +5,9 @@
 	"name": "DulkirMod-Fabric",
 	"description": "Utility Mod for Hypixel Skyblock",
 	"authors": [
-		"inglettronald"
+		"inglettronald",
+		"nea89",
+		"Ilmars"
 	],
 	"contact": {
 		"homepage": "https://github.com/inglettronald",

@@ -3,9 +3,13 @@ package com.dulkirfabric
 import com.dulkirfabric.DulkirModFabric.EVENT_BUS
 import com.dulkirfabric.commands.ConfigCommand
 import com.dulkirfabric.commands.JoinDungeonCommands
+import com.dulkirfabric.events.ChatReceivedEvent
 import com.dulkirfabric.events.ClientTickEvent
+import com.dulkirfabric.events.OverlayReceivedEvent
+import com.dulkirfabric.features.KeyShortCutImpl
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
+import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents
 
 
 /**
@@ -35,12 +39,19 @@ object Registrations {
 
     fun registerEventListeners() {
         EVENT_BUS.subscribe(DulkirModFabric)
+        EVENT_BUS.subscribe(KeyShortCutImpl)
     }
 
     fun registerEvents() {
         // Register Custom Tick event, so we can use it like 1.8.9 forge
         ClientTickEvents.START_CLIENT_TICK.register(
             ClientTickEvents.StartTick { _ -> ClientTickEvent.post() }
+        )
+        ClientReceiveMessageEvents.ALLOW_GAME.register(
+            ClientReceiveMessageEvents.AllowGame { message, overlay ->
+                if (overlay) !OverlayReceivedEvent(message.toString()).post()
+                else !ChatReceivedEvent(message.toString()).post()
+            }
         )
     }
 }

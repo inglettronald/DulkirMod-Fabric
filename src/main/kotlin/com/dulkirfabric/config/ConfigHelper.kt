@@ -9,7 +9,7 @@ import net.minecraft.text.Text
 import java.util.*
 import kotlin.reflect.KMutableProperty0
 
-object ListHelper {
+object ConfigHelper {
     fun <T> mkConfigList(
         name: Text,
         property: KMutableProperty0<List<T>>,
@@ -47,5 +47,12 @@ object ListHelper {
     fun ConfigEntryBuilder.mkKeyField(text: Text, prop: KMutableProperty0<InputUtil.Key>) = startKeyCodeField(text, prop.get())
         .setKeySaveConsumer { prop.set(it) }
         .setDefaultValue(InputUtil.UNKNOWN_KEY)
+        .build()
+
+    fun ConfigEntryBuilder.mkToggle(text: Text, prop: KMutableProperty0<Boolean>, tooltip: Text = Text.literal(""))
+    = startBooleanToggle(text, prop.get())
+        .setSaveConsumer { prop.set(it) }
+        .setDefaultValue(false)
+        .setTooltip(tooltip)
         .build()
 }

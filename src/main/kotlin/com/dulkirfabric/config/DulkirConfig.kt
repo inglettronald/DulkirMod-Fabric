@@ -14,8 +14,9 @@
 package com.dulkirfabric.config
 
 import com.dulkirfabric.DulkirModFabric.mc
-import com.dulkirfabric.config.ListHelper.mkKeyField
-import com.dulkirfabric.config.ListHelper.mkStringField
+import com.dulkirfabric.config.ConfigHelper.mkKeyField
+import com.dulkirfabric.config.ConfigHelper.mkStringField
+import com.dulkirfabric.config.ConfigHelper.mkToggle
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.UseSerializers
 import kotlinx.serialization.decodeFromString
@@ -48,10 +49,9 @@ class DulkirConfig {
         val entryBuilder = builder.entryBuilder()
         val general = builder.getOrCreateCategory(Text.literal("General"))
         general.addEntry(
-            entryBuilder.startBooleanToggle(Text.literal("Custom Inventory Scale Toggle"), configOptions.invScaleBool)
-                .setTooltip(Text.literal("WAHOO!"))
-                .setSaveConsumer { newValue -> configOptions.invScaleBool = newValue }
-                .build()
+            entryBuilder.mkToggle(Text.literal("Inventory Scale Toggle"),
+                configOptions::invScaleBool,
+                Text.literal("This is a tooltip"))
         )
         general.addEntry(
             entryBuilder.startIntSlider(Text.literal("Inventory Scale"), configOptions.inventoryScale, 1, 5)
@@ -59,10 +59,13 @@ class DulkirConfig {
                 .setSaveConsumer { newValue -> configOptions.inventoryScale = newValue }
                 .build()
         )
+        general.addEntry(
+            entryBuilder.mkToggle(Text.literal("Ignore Reverse Third Person"), configOptions::ignoreReverseThirdPerson)
+        )
 
         val shortcuts = builder.getOrCreateCategory(Text.literal("Shortcuts"))
         shortcuts.addEntry(
-            ListHelper.mkConfigList(
+            ConfigHelper.mkConfigList(
                 Text.literal("Macros"),
                 configOptions::macrosList,
                 { Macro(UNKNOWN_KEY, "") },
@@ -80,10 +83,12 @@ class DulkirConfig {
         screen = builder.build()
     }
 
+    @Serializable
     data class ConfigOptions(
-        var invScaleBool: Boolean = true,
-        var inventoryScale: Int = 1,
-        var macrosList: List<Macro> = listOf(Macro(UNKNOWN_KEY, ""))
+        var invScaleBool: Boolean = false,
+        var inventoryScale: Int = 3,
+        var macrosList: List<Macro> = listOf(Macro(UNKNOWN_KEY, "")),
+        var ignoreReverseThirdPerson: Boolean = false
     )
 
     @Serializable
@@ -125,7 +130,6 @@ class DulkirConfig {
                 }
                 configOptions = json.decodeFromString<ConfigOptions>(configFile.readText())
             }
-
         }
     }
 
