@@ -7,10 +7,13 @@ import com.dulkirfabric.commands.JoinDungeonCommands
 import com.dulkirfabric.events.ChatReceivedEvent
 import com.dulkirfabric.events.ClientTickEvent
 import com.dulkirfabric.events.OverlayReceivedEvent
+import com.dulkirfabric.events.WorldRenderLastEvent
 import com.dulkirfabric.features.KeyShortCutImpl
+import com.dulkirfabric.features.RenderBoxTest
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents
+import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents
 
 
 /**
@@ -42,6 +45,7 @@ object Registrations {
     fun registerEventListeners() {
         EVENT_BUS.subscribe(DulkirModFabric)
         EVENT_BUS.subscribe(KeyShortCutImpl)
+        EVENT_BUS.subscribe(RenderBoxTest)
     }
 
     fun registerEvents() {
@@ -54,6 +58,9 @@ object Registrations {
                 if (overlay) !OverlayReceivedEvent(message.toString()).post()
                 else !ChatReceivedEvent(message.toString()).post()
             }
+        )
+        WorldRenderEvents.END.register(
+            WorldRenderEvents.End { context -> WorldRenderLastEvent(context).post()}
         )
     }
 }
