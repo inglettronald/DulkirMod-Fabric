@@ -1,0 +1,22 @@
+1.0 TODO:
+
+ - Patcher Inventory scaling
+ - Tooltip Scaling
+ - Old animation/custom animation ?
+ - Reparty Command
+ - HUD ELEMENTS CODE
+
+LIST OF EASY STUFF:
+ - Block outlines?
+ - Secret Chime with a custom sound
+ - Broken Hyp
+ - Abiphone DND
+ - double hook noot noot
+
+- <details>
+	<summary>
+		<h1>
+
+ - JBR and hotswap plugin
+ - Slot Binding (emulate keypress) --- APPROACH LAST
+ - Custom Enchant Colors --- APPROACH LAST

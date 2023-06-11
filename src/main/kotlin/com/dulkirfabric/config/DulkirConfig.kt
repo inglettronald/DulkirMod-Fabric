@@ -65,6 +65,9 @@ class DulkirConfig {
 
         val shortcuts = builder.getOrCreateCategory(Text.literal("Shortcuts"))
         shortcuts.addEntry(
+            entryBuilder.mkKeyField(Text.literal("Dynamic Key"), configOptions::dynamicKey)
+        )
+        shortcuts.addEntry(
             ConfigHelper.mkConfigList(
                 Text.literal("Macros"),
                 configOptions::macrosList,
@@ -88,7 +91,8 @@ class DulkirConfig {
         var invScaleBool: Boolean = false,
         var inventoryScale: Int = 3,
         var macrosList: List<Macro> = listOf(Macro(UNKNOWN_KEY, "")),
-        var ignoreReverseThirdPerson: Boolean = false
+        var ignoreReverseThirdPerson: Boolean = false,
+        var dynamicKey: InputUtil.Key = UNKNOWN_KEY
     )
 
     @Serializable

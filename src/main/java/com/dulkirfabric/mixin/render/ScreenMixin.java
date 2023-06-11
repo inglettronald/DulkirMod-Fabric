@@ -33,6 +33,6 @@ public abstract class ScreenMixin {
 
     @Inject(method = "resize", at = @At("HEAD"))
     private void beforeResizeScreen(MinecraftClient client, int width, int height, CallbackInfo ci) {
-
+        //todo: impl
     }
 }

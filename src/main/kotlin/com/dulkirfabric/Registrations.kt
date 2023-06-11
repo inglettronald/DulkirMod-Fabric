@@ -2,6 +2,7 @@ package com.dulkirfabric
 
 import com.dulkirfabric.DulkirModFabric.EVENT_BUS
 import com.dulkirfabric.commands.ConfigCommand
+import com.dulkirfabric.commands.DynamicKeyCommand
 import com.dulkirfabric.commands.JoinDungeonCommands
 import com.dulkirfabric.events.ChatReceivedEvent
 import com.dulkirfabric.events.ClientTickEvent
@@ -35,6 +36,7 @@ object Registrations {
         cre.register(JoinDungeonCommands.M5Command::register)
         cre.register(JoinDungeonCommands.M6Command::register)
         cre.register(JoinDungeonCommands.M7Command::register)
+        cre.register(DynamicKeyCommand::register)
     }
 
     fun registerEventListeners() {

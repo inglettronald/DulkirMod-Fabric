@@ -10,6 +10,7 @@
     "render.GameMenuScreenMixin",
     "render.GameRendererMixin",
     "render.KeyboardMixin",
+    "render.PerspectiveMixin",
     "render.ScreenMixin"
   ]
 }
