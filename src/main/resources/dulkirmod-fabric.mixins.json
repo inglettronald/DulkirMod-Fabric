@@ -13,5 +13,8 @@
     "render.KeyboardMixin",
     "render.PerspectiveMixin",
     "render.ScreenMixin"
+  ],
+  "mixins": [
+    "ItemStackMixin"
   ]
 }
