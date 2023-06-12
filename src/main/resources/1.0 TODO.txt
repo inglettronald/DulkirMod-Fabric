@@ -11,7 +11,7 @@ LIST OF EASY STUFF:
  - Secret Chime with a custom sound
  - Broken Hyp
  - Abiphone DND
- - double hook noot noot
+ - double hook noot noota
 
  - JBR and hotswap plugin
  - Slot Binding (emulate keypress) --- APPROACH LAST

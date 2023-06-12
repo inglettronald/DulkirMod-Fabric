@@ -7,6 +7,7 @@
   },
   "client": [
     "io.HandledScreenMixin",
+    "render.DrawContextMixin",
     "render.GameMenuScreenMixin",
     "render.GameRendererMixin",
     "render.KeyboardMixin",

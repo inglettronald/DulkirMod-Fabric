@@ -14,6 +14,7 @@
 package com.dulkirfabric
 
 import com.dulkirfabric.config.DulkirConfig
+import com.llamalad7.mixinextras.MixinExtrasBootstrap
 import meteordevelopment.orbit.EventBus
 import net.fabricmc.api.ModInitializer
 import net.minecraft.client.MinecraftClient
@@ -36,6 +37,9 @@ object DulkirModFabric : ModInitializer {
 		EVENT_BUS.registerLambdaFactory("com.dulkirfabric") { lookupInMethod, klass ->
 			lookupInMethod.invoke(null, klass, MethodHandles.lookup()) as MethodHandles.Lookup
 		}
+
+		// Mixin Extras
+		MixinExtrasBootstrap.init()
 
 		Registrations.registerEventListeners()
 		Registrations.registerCommands()

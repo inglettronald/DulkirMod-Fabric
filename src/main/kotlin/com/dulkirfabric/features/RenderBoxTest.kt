@@ -12,7 +12,7 @@ object RenderBoxTest {
     fun onRender(event: WorldRenderLastEvent) {
         WorldRenderUtils.drawBox(
             event.context, Box(0.0, 0.0, 0.0, 1.0, 1.0, 1.0),
-            Color(255, 255, 255, 255), 3f, true
+            Color(255, 255, 255, 255), 10f, true
         )
     }
 }

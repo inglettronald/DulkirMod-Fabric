@@ -1,17 +1,14 @@
 package com.dulkirfabric.util
 
 import com.mojang.blaze3d.platform.GlConst
-import com.mojang.blaze3d.platform.GlStateManager
 import com.mojang.blaze3d.systems.RenderSystem
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext
 import net.minecraft.client.render.BufferBuilder
 import net.minecraft.client.render.GameRenderer
-import net.minecraft.client.render.Tessellator
 import net.minecraft.client.render.VertexFormat
 import net.minecraft.client.render.VertexFormats
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.util.math.Box
-import net.minecraft.util.math.Direction.Axis
 import org.joml.Vector3f
 import java.awt.Color
 
@@ -48,10 +45,11 @@ object WorldRenderUtils {
     ) {
         val matrices = context.matrixStack()
         matrices.push()
+        val prevShader = RenderSystem.getShader()
         RenderSystem.setShader(GameRenderer::getRenderTypeLinesProgram)
         RenderSystem.disableBlend()
         RenderSystem.disableCull()
-        RenderSystem.defaultBlendFunc()
+        // RenderSystem.defaultBlendFunc()
         RenderSystem.lineWidth(thickness)
         RenderSystem.setShaderColor(color.red / 255f, color.green / 255f, color.blue / 255f, color.alpha / 255f)
         if (!depthTest) {
@@ -92,10 +90,12 @@ object WorldRenderUtils {
 
 
         RenderSystem.enableDepthTest()
-        RenderSystem.disableBlend()
+        RenderSystem.enableBlend()
         RenderSystem.setShaderColor(
             1f, 1f, 1f, 1f
         )
+        RenderSystem.setShader { prevShader }
+        RenderSystem.enableCull()
         matrices.pop()
     }
 }

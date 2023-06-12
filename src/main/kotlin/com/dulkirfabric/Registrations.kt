@@ -4,16 +4,16 @@ import com.dulkirfabric.DulkirModFabric.EVENT_BUS
 import com.dulkirfabric.commands.ConfigCommand
 import com.dulkirfabric.commands.DynamicKeyCommand
 import com.dulkirfabric.commands.JoinDungeonCommands
-import com.dulkirfabric.events.ChatReceivedEvent
-import com.dulkirfabric.events.ClientTickEvent
-import com.dulkirfabric.events.OverlayReceivedEvent
-import com.dulkirfabric.events.WorldRenderLastEvent
+import com.dulkirfabric.events.*
 import com.dulkirfabric.features.KeyShortCutImpl
 import com.dulkirfabric.features.RenderBoxTest
+import com.dulkirfabric.features.TooltipImpl
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents
+import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents
+import net.fabricmc.fabric.api.client.screen.v1.ScreenMouseEvents
 
 
 /**
@@ -46,6 +46,7 @@ object Registrations {
         EVENT_BUS.subscribe(DulkirModFabric)
         EVENT_BUS.subscribe(KeyShortCutImpl)
         EVENT_BUS.subscribe(RenderBoxTest)
+        EVENT_BUS.subscribe(TooltipImpl)
     }
 
     fun registerEvents() {
@@ -61,6 +62,14 @@ object Registrations {
         )
         WorldRenderEvents.END.register(
             WorldRenderEvents.End { context -> WorldRenderLastEvent(context).post()}
+        )
+        ScreenEvents.BEFORE_INIT.register(
+            ScreenEvents.BeforeInit { client, screen, scaledWidth, scaledHeight ->
+                ScreenMouseEvents.beforeMouseScroll(screen).register(ScreenMouseEvents.BeforeMouseScroll {
+                    coolScreen, mouseX, mouseY, horizontalAmount, verticalAmount ->
+                    MouseScrollEvent(coolScreen, mouseX, mouseY, horizontalAmount, verticalAmount).post()
+                })
+            }
         )
     }
 }
