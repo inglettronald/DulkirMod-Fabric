@@ -1,16 +1,18 @@
 package com.dulkirfabric.util
 
-import com.mojang.blaze3d.platform.GlConst
 import com.mojang.blaze3d.systems.RenderSystem
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext
+import net.minecraft.client.MinecraftClient
 import net.minecraft.client.render.BufferBuilder
 import net.minecraft.client.render.GameRenderer
 import net.minecraft.client.render.VertexFormat
 import net.minecraft.client.render.VertexFormats
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.util.math.Box
+import net.minecraft.util.math.Vec3d
 import org.joml.Vector3f
 import java.awt.Color
+import kotlin.math.pow
 
 
 object WorldRenderUtils {
@@ -18,7 +20,12 @@ object WorldRenderUtils {
         matrix: MatrixStack.Entry, buffer: BufferBuilder,
         x1: Number, y1: Number, z1: Number,
         x2: Number, y2: Number, z2: Number,
+        lineWidth: Float
     ) {
+        val camera = MinecraftClient.getInstance().cameraEntity ?: return
+        RenderSystem.lineWidth(lineWidth / camera.pos.squaredDistanceTo(
+            Vec3d(x1.toDouble(), y1.toDouble(), z1.toDouble())
+        ).pow(0.25).toFloat())
         line(
             matrix,
             buffer,
@@ -50,14 +57,12 @@ object WorldRenderUtils {
         RenderSystem.disableBlend()
         RenderSystem.disableCull()
         // RenderSystem.defaultBlendFunc()
-        RenderSystem.lineWidth(thickness)
         RenderSystem.setShaderColor(color.red / 255f, color.green / 255f, color.blue / 255f, color.alpha / 255f)
         if (!depthTest) {
             RenderSystem.disableDepthTest()
+            RenderSystem.depthMask(false)
         } else {
             RenderSystem.enableDepthTest()
-            RenderSystem.depthFunc(GlConst.GL_LEQUAL)
-            RenderSystem.depthMask(false)
         }
         matrices.translate(-context.camera().pos.x, -context.camera().pos.y, -context.camera().pos.z)
         val tess = RenderSystem.renderThreadTesselator()
@@ -68,27 +73,27 @@ object WorldRenderUtils {
         buf.fixedColor(255, 255, 255, 255)
 
         // X Axis aligned lines
-        line(me, buf, box.minX, box.minY, box.minZ, box.maxX, box.minY, box.minZ)
-        line(me, buf, box.minX, box.maxY, box.minZ, box.maxX, box.maxY, box.minZ)
-        line(me, buf, box.minX, box.minY, box.maxZ, box.maxX, box.minY, box.maxZ)
-        line(me, buf, box.minX, box.maxY, box.maxZ, box.maxX, box.maxY, box.maxZ)
+        line(me, buf, box.minX, box.minY, box.minZ, box.maxX, box.minY, box.minZ, thickness)
+        line(me, buf, box.minX, box.maxY, box.minZ, box.maxX, box.maxY, box.minZ, thickness)
+        line(me, buf, box.minX, box.minY, box.maxZ, box.maxX, box.minY, box.maxZ, thickness)
+        line(me, buf, box.minX, box.maxY, box.maxZ, box.maxX, box.maxY, box.maxZ, thickness)
 
         // Y Axis aligned lines
-        line(me, buf, box.minX, box.minY, box.minZ, box.minX, box.maxY, box.minZ)
-        line(me, buf, box.maxX, box.minY, box.minZ, box.maxX, box.maxY, box.minZ)
-        line(me, buf, box.minX, box.minY, box.maxZ, box.minX, box.maxY, box.maxZ)
-        line(me, buf, box.maxX, box.minY, box.maxZ, box.maxX, box.maxY, box.maxZ)
+        line(me, buf, box.minX, box.minY, box.minZ, box.minX, box.maxY, box.minZ, thickness)
+        line(me, buf, box.maxX, box.minY, box.minZ, box.maxX, box.maxY, box.minZ, thickness)
+        line(me, buf, box.minX, box.minY, box.maxZ, box.minX, box.maxY, box.maxZ, thickness)
+        line(me, buf, box.maxX, box.minY, box.maxZ, box.maxX, box.maxY, box.maxZ, thickness)
 
         // Z Axis aligned lines
-        line(me, buf, box.minX, box.minY, box.minZ, box.minX, box.minY, box.maxZ)
-        line(me, buf, box.maxX, box.minY, box.minZ, box.maxX, box.minY, box.maxZ)
-        line(me, buf, box.minX, box.maxY, box.minZ, box.minX, box.maxY, box.maxZ)
-        line(me, buf, box.maxX, box.maxY, box.minZ, box.maxX, box.maxY, box.maxZ)
+        line(me, buf, box.minX, box.minY, box.minZ, box.minX, box.minY, box.maxZ, thickness)
+        line(me, buf, box.maxX, box.minY, box.minZ, box.maxX, box.minY, box.maxZ, thickness)
+        line(me, buf, box.minX, box.maxY, box.minZ, box.minX, box.maxY, box.maxZ, thickness)
+        line(me, buf, box.maxX, box.maxY, box.minZ, box.maxX, box.maxY, box.maxZ, thickness)
 
         buf.unfixColor()
         tess.draw()
 
-
+        RenderSystem.depthMask(true)
         RenderSystem.enableDepthTest()
         RenderSystem.enableBlend()
         RenderSystem.setShaderColor(
