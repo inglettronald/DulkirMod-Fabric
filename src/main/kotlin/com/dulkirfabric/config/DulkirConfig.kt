@@ -29,6 +29,7 @@ import net.minecraft.client.util.InputUtil.UNKNOWN_KEY
 import net.minecraft.text.LiteralTextContent
 import net.minecraft.text.MutableText
 import net.minecraft.text.Text
+import net.minecraft.text.TextColor
 import net.minecraft.util.Formatting
 import net.minecraft.util.Identifier
 import java.io.File
@@ -62,6 +63,19 @@ class DulkirConfig {
         general.addEntry(
             entryBuilder.mkToggle(Text.literal("Ignore Reverse Third Person"), configOptions::ignoreReverseThirdPerson)
         )
+        general.addEntry(
+            entryBuilder.mkToggle(Text.literal("Custom Block outlines"), configOptions::customBlockOutlines)
+        )
+        general.addEntry(
+            entryBuilder.startIntSlider(Text.literal("Line Thickness"), configOptions.blockOutlineThickness, 1, 5)
+                .setSaveConsumer { newValue -> configOptions.blockOutlineThickness = newValue }
+                .build()
+        )
+        general.addEntry(
+            entryBuilder.startColorField(Text.literal("Outline Color"), TextColor.fromRgb(configOptions.blockOutlineColor))
+                .setSaveConsumer { newValue -> configOptions.blockOutlineColor = newValue }
+                .build()
+        )
 
         val shortcuts = builder.getOrCreateCategory(Text.literal("Shortcuts"))
         shortcuts.addEntry(
@@ -92,7 +106,10 @@ class DulkirConfig {
         var inventoryScale: Int = 3,
         var macrosList: List<Macro> = listOf(Macro(UNKNOWN_KEY, "")),
         var ignoreReverseThirdPerson: Boolean = false,
-        var dynamicKey: InputUtil.Key = UNKNOWN_KEY
+        var dynamicKey: InputUtil.Key = UNKNOWN_KEY,
+        var customBlockOutlines: Boolean = false,
+        var blockOutlineThickness: Int = 3,
+        var blockOutlineColor: Int = 0xFFFFFF
     )
 
     @Serializable

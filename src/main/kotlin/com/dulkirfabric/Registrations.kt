@@ -5,6 +5,7 @@ import com.dulkirfabric.commands.ConfigCommand
 import com.dulkirfabric.commands.DynamicKeyCommand
 import com.dulkirfabric.commands.JoinDungeonCommands
 import com.dulkirfabric.events.*
+import com.dulkirfabric.features.CustomBlockOutline
 import com.dulkirfabric.features.KeyShortCutImpl
 import com.dulkirfabric.features.RenderBoxTest
 import com.dulkirfabric.features.TooltipImpl
@@ -47,6 +48,7 @@ object Registrations {
         EVENT_BUS.subscribe(KeyShortCutImpl)
         EVENT_BUS.subscribe(RenderBoxTest)
         EVENT_BUS.subscribe(TooltipImpl)
+        EVENT_BUS.subscribe(CustomBlockOutline)
     }
 
     fun registerEvents() {
@@ -69,6 +71,11 @@ object Registrations {
                     coolScreen, mouseX, mouseY, horizontalAmount, verticalAmount ->
                     MouseScrollEvent(coolScreen, mouseX, mouseY, horizontalAmount, verticalAmount).post()
                 })
+            }
+        )
+        WorldRenderEvents.BLOCK_OUTLINE.register(
+            WorldRenderEvents.BlockOutline { worldRenderContext, blockOutlineContext ->
+                !BlockOutlineEvent(worldRenderContext, blockOutlineContext).post()
             }
         )
     }
