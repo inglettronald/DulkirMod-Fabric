@@ -13,5 +13,6 @@ DulkirMod 1.8.9 Can be found [here](https://github.com/inglettronald/DulkirMod).
     -Expandable Chat Macros with Keybindings
     -Dynamic Key
     -Config Menu Backend and Front End
+    -Scrollable Toolips with Zoom Option
 
 </details>
