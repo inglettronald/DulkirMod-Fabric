@@ -10,15 +10,10 @@ object RenderBoxTest {
 
     @EventHandler
     fun onRender(event: WorldRenderLastEvent) {
-        WorldRenderUtils.drawBox(
-            event.context, Box(0.0, 0.0, 0.0, 1.0, 1.0, 1.0),
-            Color(255, 255, 255, 255), 10f, true
-        )
 
         WorldRenderUtils.drawBox(
-            event.context, Box(2.0, 0.0, 0.0, 3.0, 1.0, 1.0),
-            Color(1, 255, 1, 255), 10f, false
+            event.context, Box(-183.0, 78.0, -465.0, -182.0, 79.0, -464.0),
+            Color(255, 100, 150, 255), 10f, false
         )
-
     }
 }

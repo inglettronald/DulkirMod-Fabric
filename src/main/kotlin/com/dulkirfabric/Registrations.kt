@@ -9,6 +9,7 @@ import com.dulkirfabric.features.CustomBlockOutline
 import com.dulkirfabric.features.KeyShortCutImpl
 import com.dulkirfabric.features.RenderBoxTest
 import com.dulkirfabric.features.TooltipImpl
+import com.dulkirfabric.features.chat.AbiPhoneDND
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents
@@ -49,6 +50,7 @@ object Registrations {
         EVENT_BUS.subscribe(RenderBoxTest)
         EVENT_BUS.subscribe(TooltipImpl)
         EVENT_BUS.subscribe(CustomBlockOutline)
+        EVENT_BUS.subscribe(AbiPhoneDND)
     }
 
     fun registerEvents() {

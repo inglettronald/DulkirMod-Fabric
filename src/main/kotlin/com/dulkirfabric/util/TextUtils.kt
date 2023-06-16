@@ -28,4 +28,8 @@ object TextUtils {
     fun sendCommand(command: String) {
         mc.player?.networkHandler?.sendChatCommand(command)
     }
+
+    fun stripColorCodes(string: String): String {
+        return string.replace("§.".toRegex(), "")
+    }
 }

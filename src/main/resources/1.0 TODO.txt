@@ -6,15 +6,13 @@
  - HUD ELEMENTS CODE
  - selected block outline customization
 
-LIST OF EASY STUFF:
- - Secret Chime with a custom sound
+LIST OF EASY STUFF:\
  - Broken Hyp
  - Abiphone DND
  - double hook noot noota
 
 
  RENDERING TO-DO:
- - Line
  - Tracer
  - Filled box
  - Outline Circle

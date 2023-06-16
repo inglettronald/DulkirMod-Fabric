@@ -43,6 +43,11 @@ object WorldRenderUtils {
             .next()
     }
 
+    /**
+     * Draws a box in world space, given the coordinates of the box, thickness of the lines, and color.
+     * TODO: write a more custom rendering function so we don't have to do this ugly translation of
+     * Minecraft's screen space rendering logic to a world space rendering function.
+     */
     fun drawBox(
         context: WorldRenderContext,
         box: Box,
@@ -89,6 +94,96 @@ object WorldRenderUtils {
         line(me, buf, box.maxX, box.minY, box.minZ, box.maxX, box.minY, box.maxZ, thickness)
         line(me, buf, box.minX, box.maxY, box.minZ, box.minX, box.maxY, box.maxZ, thickness)
         line(me, buf, box.maxX, box.maxY, box.minZ, box.maxX, box.maxY, box.maxZ, thickness)
+
+        buf.unfixColor()
+        tess.draw()
+
+        RenderSystem.depthMask(true)
+        RenderSystem.enableDepthTest()
+        RenderSystem.enableBlend()
+        RenderSystem.setShaderColor(
+            1f, 1f, 1f, 1f
+        )
+        RenderSystem.setShader { prevShader }
+        RenderSystem.enableCull()
+        matrices.pop()
+    }
+
+    /**
+     * This draw line function is intended to be used for drawing very few lines, as it's not the most efficient.
+     * For drawing many lines in a series, save them to an array and use the drawLineArray function.
+     */
+    fun drawLine(context: WorldRenderContext, startPos: Vec3d, endPos: Vec3d, color: Color, thickness: Float, depthTest: Boolean = true) {
+        val matrices = context.matrixStack()
+        matrices.push()
+        val prevShader = RenderSystem.getShader()
+        RenderSystem.setShader(GameRenderer::getRenderTypeLinesProgram)
+        RenderSystem.disableBlend()
+        RenderSystem.disableCull()
+        // RenderSystem.defaultBlendFunc()
+        RenderSystem.setShaderColor(color.red / 255f, color.green / 255f, color.blue / 255f, color.alpha / 255f)
+        if (!depthTest) {
+            RenderSystem.disableDepthTest()
+            RenderSystem.depthMask(false)
+        } else {
+            RenderSystem.enableDepthTest()
+        }
+        matrices.translate(-context.camera().pos.x, -context.camera().pos.y, -context.camera().pos.z)
+        val tess = RenderSystem.renderThreadTesselator()
+        val buf = tess.buffer
+        val me = matrices.peek()
+
+        buf.begin(VertexFormat.DrawMode.LINES, VertexFormats.LINES)
+        buf.fixedColor(255, 255, 255, 255)
+
+        line(me, buf, startPos.x.toFloat(), startPos.y.toFloat(), startPos.z.toFloat(), endPos.x.toFloat(), endPos.y.toFloat(), endPos.z.toFloat(), thickness)
+
+        buf.unfixColor()
+        tess.draw()
+
+        RenderSystem.depthMask(true)
+        RenderSystem.enableDepthTest()
+        RenderSystem.enableBlend()
+        RenderSystem.setShaderColor(
+            1f, 1f, 1f, 1f
+        )
+        RenderSystem.setShader { prevShader }
+        RenderSystem.enableCull()
+        matrices.pop()
+    }
+
+    /**
+     * This function is intended to be used for drawing many lines in a series, as it's more efficient than the
+     * drawLine function being called many times in series.
+     */
+    fun drawLineArray(context: WorldRenderContext, posArr: List<Vec3d>, color: Color, thickness: Float, depthTest: Boolean = true) {
+        val matrices = context.matrixStack()
+        matrices.push()
+        val prevShader = RenderSystem.getShader()
+        RenderSystem.setShader(GameRenderer::getRenderTypeLinesProgram)
+        RenderSystem.disableBlend()
+        RenderSystem.disableCull()
+        // RenderSystem.defaultBlendFunc()
+        RenderSystem.setShaderColor(color.red / 255f, color.green / 255f, color.blue / 255f, color.alpha / 255f)
+        if (!depthTest) {
+            RenderSystem.disableDepthTest()
+            RenderSystem.depthMask(false)
+        } else {
+            RenderSystem.enableDepthTest()
+        }
+        matrices.translate(-context.camera().pos.x, -context.camera().pos.y, -context.camera().pos.z)
+        val tess = RenderSystem.renderThreadTesselator()
+        val buf = tess.buffer
+        val me = matrices.peek()
+
+        buf.begin(VertexFormat.DrawMode.LINES, VertexFormats.LINES)
+        buf.fixedColor(255, 255, 255, 255)
+
+        for (i in 0 until posArr.size - 1) {
+            val startPos = posArr[i]
+            val endPos = posArr[i + 1]
+            line(me, buf, startPos.x.toFloat(), startPos.y.toFloat(), startPos.z.toFloat(), endPos.x.toFloat(), endPos.y.toFloat(), endPos.z.toFloat(), thickness)
+        }
 
         buf.unfixColor()
         tess.draw()

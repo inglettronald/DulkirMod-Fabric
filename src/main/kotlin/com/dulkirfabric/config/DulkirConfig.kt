@@ -76,6 +76,12 @@ class DulkirConfig {
                 .setSaveConsumer { newValue -> configOptions.blockOutlineColor = newValue }
                 .build()
         )
+        general.addEntry(
+            entryBuilder.mkToggle(Text.literal("AbiPhone DND"), configOptions::abiPhoneDND)
+        )
+        general.addEntry(
+            entryBuilder.mkToggle(Text.literal("AbiPhone Caller ID"), configOptions::abiPhoneCallerID)
+        )
 
         val shortcuts = builder.getOrCreateCategory(Text.literal("Shortcuts"))
         shortcuts.addEntry(
@@ -109,7 +115,9 @@ class DulkirConfig {
         var dynamicKey: InputUtil.Key = UNKNOWN_KEY,
         var customBlockOutlines: Boolean = false,
         var blockOutlineThickness: Int = 3,
-        var blockOutlineColor: Int = 0xFFFFFF
+        var blockOutlineColor: Int = 0xFFFFFF,
+        var abiPhoneDND: Boolean = false,
+        var abiPhoneCallerID: Boolean = false
     )
 
     @Serializable
@@ -153,5 +161,4 @@ class DulkirConfig {
             }
         }
     }
-
 }
