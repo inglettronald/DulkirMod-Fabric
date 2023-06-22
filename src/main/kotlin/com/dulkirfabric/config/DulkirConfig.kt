@@ -44,7 +44,7 @@ class DulkirConfig {
         val builder = ConfigBuilder.create().setTitle(buttonText)
         builder.setDefaultBackgroundTexture(Identifier("minecraft:textures/block/oak_planks.png"))
         builder.setGlobalized(true)
-        builder.setGlobalizedExpanded(true)
+        builder.setGlobalizedExpanded(false)
         builder.setParentScreen(mc.currentScreen)
         builder.setSavingRunnable(::saveConfig)
         val entryBuilder = builder.entryBuilder()

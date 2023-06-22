@@ -4,9 +4,8 @@
  - Old animation/custom animation ?
  - Reparty Command
  - HUD ELEMENTS CODE
- - selected block outline customization
 
-LIST OF EASY STUFF:\
+LIST OF EASY STUFF:
  - Broken Hyp
  - Abiphone DND
  - double hook noot noota

@@ -17,6 +17,9 @@ object TextUtils {
         info("§9Toggled $message §8[$stateText§8]§r")
     }
 
+    val Text.unformattedString
+        get() = string.replace("§.".toRegex(), "")
+
     fun sendPartyChatMessage(message: String) {
         this.sendCommand("/pc $message")
     }

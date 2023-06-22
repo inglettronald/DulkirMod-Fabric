@@ -61,7 +61,7 @@ object Registrations {
         ClientReceiveMessageEvents.ALLOW_GAME.register(
             ClientReceiveMessageEvents.AllowGame { message, overlay ->
                 if (overlay) !OverlayReceivedEvent(message.toString()).post()
-                else !ChatReceivedEvent(message.toString()).post()
+                else !ChatReceivedEvent(message).post()
             }
         )
         WorldRenderEvents.END.register(

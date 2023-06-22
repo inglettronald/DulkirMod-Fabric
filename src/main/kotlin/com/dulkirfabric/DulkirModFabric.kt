@@ -48,6 +48,4 @@ object DulkirModFabric : ModInitializer {
 		DulkirConfig.loadConfig()
 	}
 
-	//!this.client.options.getPerspective().isFirstPerson(), this.client.options.getPerspective().isFrontView()
-
 }
