@@ -21,6 +21,10 @@ object AbiPhoneDND {
         if (!DulkirConfig.configOptions.abiPhoneDND) return
         if (System.currentTimeMillis() - lastRing < 5000) {
             // TODO: Make this not error out madge
+            if (event.sound == null) {
+                event.isCancelled = true
+            }
+
             if (event.sound.id.path == "block.note_block.pling" && event.sound.volume == 0.69f && event.sound.pitch == 1.6666666f) {
                     event.isCancelled = true
             }
