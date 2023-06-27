@@ -13,6 +13,7 @@
 
 package com.dulkirfabric.mixin.render;
 
+import com.dulkirfabric.features.InventoryScale;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.Drawable;
 import net.minecraft.client.gui.Element;
@@ -23,6 +24,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 
@@ -31,8 +33,19 @@ public abstract class ScreenMixin {
     @Shadow
     protected abstract <T extends Element & Drawable & Selectable> T addDrawableChild(T drawableElement);
 
-    @Inject(method = "resize", at = @At("HEAD"))
-    private void beforeResizeScreen(MinecraftClient client, int width, int height, CallbackInfo ci) {
-        //todo: impl
+    @Shadow public int width;
+
+    @Shadow public int height;
+
+    @Inject(method = "init(Lnet/minecraft/client/MinecraftClient;II)V", at = @At(value = "FIELD", target = "Lnet/minecraft/client/gui/screen/Screen;height:I", shift = At.Shift.AFTER))
+    public void onInitAfterViewportSizeSet(MinecraftClient client, int width, int height, CallbackInfo ci) {
+        this.width = (int) (width / InventoryScale.INSTANCE.getScale());
+        this.height = (int)(height /  InventoryScale.INSTANCE.getScale());
+    }
+
+    @Inject(method = "resize", at = @At(value = "FIELD", target = "Lnet/minecraft/client/gui/screen/Screen;height:I", shift = At.Shift.AFTER))
+    public void onResizeAfterViewportSizeSet(MinecraftClient client, int width, int height, CallbackInfo ci) {
+        this.width = (int) (width / InventoryScale.INSTANCE.getScale());
+        this.height = (int)(height /  InventoryScale.INSTANCE.getScale());
     }
 }

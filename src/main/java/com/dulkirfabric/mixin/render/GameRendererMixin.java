@@ -1,38 +1,57 @@
 package com.dulkirfabric.mixin.render;
 
 
-import com.dulkirfabric.config.DulkirConfig;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.screen.ingame.HandledScreen;
+import com.dulkirfabric.features.InventoryScale;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.GameRenderer;
+import net.minecraft.client.util.Window;
+import net.minecraft.client.util.math.MatrixStack;
+import org.joml.Matrix4f;
+import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 @Mixin(GameRenderer.class)
 public class GameRendererMixin {
 
-    private double normalScale = -1;
-
-    @Inject(method = "render", at = @At(value = "HEAD"))
-    public void onRenderStart(float tickDelta, long startTime, boolean tick, CallbackInfo ci) {
-        if (!DulkirConfig.ConfigVars.getConfigOptions().getInvScaleBool()) return;
-        Screen screen = MinecraftClient.getInstance().currentScreen;
-        if (screen instanceof HandledScreen<?>) {
-            normalScale = MinecraftClient.getInstance().getWindow().getScaleFactor();
-            MinecraftClient.getInstance().getWindow().setScaleFactor(DulkirConfig.ConfigVars.getConfigOptions().getInventoryScale());
-        }
+    @ModifyArg(method = "render", at = @At(value = "INVOKE",
+            target = "Lnet/minecraft/client/gui/screen/Screen;renderWithTooltip(Lnet/minecraft/client/gui/DrawContext;IIF)V"),
+            index = 1)
+    public int fixMouseX(int mouseX) {
+        return (int) (mouseX / InventoryScale.INSTANCE.getScale());
     }
 
-    @Inject(method = "render", at = @At(value = "TAIL"))
-    public void onRenderEnd(float tickDelta, long startTime, boolean tick, CallbackInfo ci) {
-        if (!DulkirConfig.ConfigVars.getConfigOptions().getInvScaleBool()) return;
-        Screen screen = MinecraftClient.getInstance().currentScreen;
-        if (screen instanceof HandledScreen<?>) {
-            MinecraftClient.getInstance().getWindow().setScaleFactor(normalScale);
-        }
+    @ModifyArg(method = "render", at = @At(value = "INVOKE",
+            target = "Lnet/minecraft/client/gui/screen/Screen;renderWithTooltip(Lnet/minecraft/client/gui/DrawContext;IIF)V"),
+            index = 2)
+    public int fixMouseY(int mouseY) {
+        return (int) (mouseY / InventoryScale.INSTANCE.getScale());
     }
 
+
+    @Inject(method = "render", at = @At(value = "FIELD",
+            opcode = Opcodes.GETFIELD,
+            target = "Lnet/minecraft/client/MinecraftClient;currentScreen:Lnet/minecraft/client/gui/screen/Screen;",
+            shift = At.Shift.BEFORE,
+            ordinal = 1), locals = LocalCapture.CAPTURE_FAILHARD)
+    public void onScreenRenderPre(float tickDelta, long startTime, boolean tick, CallbackInfo ci, int i, int j,
+                                  Window window, Matrix4f matrix4f, MatrixStack matrixStack, DrawContext drawContext) {
+        drawContext.getMatrices().push();
+        drawContext.getMatrices().scale(InventoryScale.INSTANCE.getScale(), InventoryScale.INSTANCE.getScale(), 1f);
+    }
+
+
+    @Inject(method = "render", at = @At(value = "FIELD",
+            opcode = Opcodes.GETFIELD,
+            target = "Lnet/minecraft/client/MinecraftClient;currentScreen:Lnet/minecraft/client/gui/screen/Screen;",
+            shift = At.Shift.AFTER,
+            ordinal = 3), locals = LocalCapture.CAPTURE_FAILHARD)
+    public void onScreenRenderPost(float tickDelta, long startTime, boolean tick, CallbackInfo ci, int i, int j,
+                                   Window window, Matrix4f matrix4f, MatrixStack matrixStack, DrawContext drawContext) {
+        drawContext.getMatrices().pop();
+    }
 }
