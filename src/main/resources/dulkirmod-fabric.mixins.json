@@ -6,12 +6,15 @@
     "defaultRequire": 1
   },
   "client": [
+    "MouseMixin",
     "SoundSystemMixin",
     "io.HandledScreenMixin",
     "render.DrawContextMixin",
     "render.GameMenuScreenMixin",
     "render.GameRendererMixin",
     "render.KeyboardMixin",
+    "render.LoomScreenMixin",
+    "render.MinecraftClientMixin",
     "render.PerspectiveMixin",
     "render.ScreenMixin"
   ],

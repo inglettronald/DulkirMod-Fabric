@@ -55,7 +55,7 @@ class DulkirConfig {
                 Text.literal("This is a tooltip"))
         )
         general.addEntry(
-            entryBuilder.startIntSlider(Text.literal("Inventory Scale"), configOptions.inventoryScale, 1, 5)
+            entryBuilder.startFloatField(Text.literal("Inventory Scale"), configOptions.inventoryScale)
                 .setTooltip(Text.literal("Size of GUI whenever you're in an inventory screen"))
                 .setSaveConsumer { newValue -> configOptions.inventoryScale = newValue }
                 .build()
@@ -109,7 +109,7 @@ class DulkirConfig {
     @Serializable
     data class ConfigOptions(
         var invScaleBool: Boolean = false,
-        var inventoryScale: Int = 3,
+        var inventoryScale: Float = 1f,
         var macrosList: List<Macro> = listOf(Macro(UNKNOWN_KEY, "")),
         var ignoreReverseThirdPerson: Boolean = false,
         var dynamicKey: InputUtil.Key = UNKNOWN_KEY,
