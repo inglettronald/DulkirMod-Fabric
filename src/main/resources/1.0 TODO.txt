@@ -1,16 +1,5 @@
 1.0 TODO:
 
- - Patcher Inventory scaling - issues
- - Old animation/custom animation ?
- - Reparty Command
- - HUD ELEMENTS CODE
-
-LIST OF EASY STUFF:
- - Broken Hyp
- - Abiphone DND
- - double hook noot noota
-
-
  RENDERING TO-DO:
  - Tracer
  - Filled box
@@ -21,3 +10,6 @@ LIST OF EASY STUFF:
  - Image in World
  - Image in HUD
  - Surface sphere
+
+ UTIL TO-DO:
+ - Scoreboard/Tablist to MutableList<String>
