@@ -15,7 +15,7 @@ import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
-@Mixin(GameRenderer.class)
+@Mixin(value = GameRenderer.class, priority = 1001)
 public class GameRendererMixin {
 
     @ModifyArg(method = "render", at = @At(value = "INVOKE",
@@ -49,7 +49,8 @@ public class GameRendererMixin {
             opcode = Opcodes.GETFIELD,
             target = "Lnet/minecraft/client/MinecraftClient;currentScreen:Lnet/minecraft/client/gui/screen/Screen;",
             shift = At.Shift.AFTER,
-            ordinal = 3), locals = LocalCapture.CAPTURE_FAILHARD)
+            ordinal = 3), locals = LocalCapture.CAPTURE_FAILHARD
+    )
     public void onScreenRenderPost(float tickDelta, long startTime, boolean tick, CallbackInfo ci, int i, int j,
                                    Window window, Matrix4f matrix4f, MatrixStack matrixStack, DrawContext drawContext) {
         drawContext.getMatrices().pop();
