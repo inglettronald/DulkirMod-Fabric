@@ -4,8 +4,7 @@ import com.dulkirfabric.DulkirModFabric
 import meteordevelopment.orbit.ICancellable
 
 abstract class CancellableEvent: ICancellable {
-    @JvmField
-    var cancelled: Boolean = false
+    private var cancelled = false
 
     override fun isCancelled(): Boolean {
         return cancelled
@@ -19,7 +18,6 @@ abstract class CancellableEvent: ICancellable {
      * Posts a given event to the bus and returns whether the user wishes to cancel it
      */
     fun post(): Boolean {
-        DulkirModFabric.EVENT_BUS.post(this)
-        return cancelled
+        return DulkirModFabric.EVENT_BUS.post(this).isCancelled
     }
 }

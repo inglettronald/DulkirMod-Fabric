@@ -18,7 +18,7 @@ object AbiPhoneDND {
         if (!DulkirConfig.configOptions.abiPhoneDND) return
         if (System.currentTimeMillis() - lastRing < 5000) {
             if (event.sound.id.path == "block.note_block.pling" && event.sound.volume == 0.69f && event.sound.pitch == 1.6666666f) {
-                    event.isCancelled = true
+                event.cancel()
             }
         }
     }
@@ -26,11 +26,10 @@ object AbiPhoneDND {
     @EventHandler
     fun handle(event: ChatReceivedEvent) {
         if (!DulkirConfig.configOptions.abiPhoneDND) return
-        val unformatted: String = event.message.unformattedString
-        println(unformatted)
+        val unformatted = event.message.unformattedString
         if (unformatted matches abiPhoneFormat && !unformatted.contains("Elle") && !unformatted.contains("Dean")) {
             val matchResult = abiPhoneFormat.find(unformatted)
-            event.isCancelled = true
+            event.cancel()
             lastRing = System.currentTimeMillis()
             if (DulkirConfig.configOptions.abiPhoneCallerID) {
                 val blocked = if (Math.random() < .001) "Breefing"
@@ -39,8 +38,9 @@ object AbiPhoneDND {
             }
         }
         if (unformatted.startsWith("✆ Ring...") && unformatted.endsWith("[PICK UP]")
-            && System.currentTimeMillis() - lastRing < 5000) {
-            event.isCancelled = true
+            && System.currentTimeMillis() - lastRing < 5000
+        ) {
+            event.cancel()
         }
     }
 }
