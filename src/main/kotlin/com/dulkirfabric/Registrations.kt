@@ -4,12 +4,19 @@ import com.dulkirfabric.DulkirModFabric.EVENT_BUS
 import com.dulkirfabric.commands.ConfigCommand
 import com.dulkirfabric.commands.DynamicKeyCommand
 import com.dulkirfabric.commands.JoinDungeonCommands
-import com.dulkirfabric.events.*
+import com.dulkirfabric.events.BlockOutlineEvent
+import com.dulkirfabric.events.ClientTickEvent
+import com.dulkirfabric.events.MouseScrollEvent
+import com.dulkirfabric.events.WorldRenderLastEvent
+import com.dulkirfabric.events.chat.ChatReceivedEvent
+import com.dulkirfabric.events.chat.ModifyCommandEvent
+import com.dulkirfabric.events.chat.OverlayReceivedEvent
 import com.dulkirfabric.features.*
 import com.dulkirfabric.features.chat.AbiPhoneDND
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents
+import net.fabricmc.fabric.api.client.message.v1.ClientSendMessageEvents
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents
 import net.fabricmc.fabric.api.client.screen.v1.ScreenMouseEvents
@@ -49,6 +56,7 @@ object Registrations {
         EVENT_BUS.subscribe(CustomBlockOutline)
         EVENT_BUS.subscribe(AbiPhoneDND)
         EVENT_BUS.subscribe(InventoryScale)
+        EVENT_BUS.subscribe(AliasImpl)
     }
 
     fun registerEvents() {
@@ -60,6 +68,11 @@ object Registrations {
             ClientReceiveMessageEvents.AllowGame { message, overlay ->
                 if (overlay) !OverlayReceivedEvent(message.toString()).post()
                 else !ChatReceivedEvent(message).post()
+            }
+        )
+        ClientSendMessageEvents.MODIFY_COMMAND.register(
+            ClientSendMessageEvents.ModifyCommand { command ->
+                ModifyCommandEvent(command).also { it.post() }.command
             }
         )
         WorldRenderEvents.END.register(
