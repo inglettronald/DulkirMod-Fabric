@@ -17,6 +17,7 @@ import com.dulkirfabric.DulkirModFabric.mc
 import com.dulkirfabric.config.ConfigHelper.mkKeyField
 import com.dulkirfabric.config.ConfigHelper.mkStringField
 import com.dulkirfabric.config.ConfigHelper.mkToggle
+import com.dulkirfabric.features.InventoryScale
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.UseSerializers
 import kotlinx.serialization.decodeFromString
@@ -57,7 +58,19 @@ class DulkirConfig {
         general.addEntry(
             entryBuilder.startFloatField(Text.literal("Inventory Scale"), configOptions.inventoryScale)
                 .setTooltip(Text.literal("Size of GUI whenever you're in an inventory screen"))
-                .setSaveConsumer { newValue -> configOptions.inventoryScale = newValue }
+                .setSaveConsumer { newValue ->
+                    configOptions.inventoryScale = newValue
+                    InventoryScale.scaleBuffer = newValue
+                    InventoryScale.prevTickScale = newValue
+                    InventoryScale.tickScale = newValue
+                    InventoryScale.frameScale = newValue
+                }
+                .build()
+        )
+        general.addEntry(
+            entryBuilder.startFloatField(Text.literal("Tooltip Scale"), configOptions.tooltipScale)
+                .setTooltip(Text.literal("Default Value for Scaling a particular tooltip without scroll input"))
+                .setSaveConsumer { newValue -> configOptions.tooltipScale = newValue }
                 .build()
         )
         general.addEntry(
@@ -102,6 +115,22 @@ class DulkirConfig {
             )
         )
 
+        val aliases = builder.getOrCreateCategory(Text.literal("Shortcuts"))
+        aliases.addEntry(
+            ConfigHelper.mkConfigList(
+                Text.literal("Aliases (do not include '/')"),
+                configOptions::aliasList,
+                { Alias("", "") },
+                Text.literal("Alias"),
+                { value ->
+                    listOf(
+                        entryBuilder.mkStringField(Text.literal("Command"), value::command),
+                        entryBuilder.mkStringField(Text.literal("Alias"), value::alias)
+                    )
+                }
+            )
+        )
+
         builder.transparentBackground()
         screen = builder.build()
     }
@@ -111,19 +140,27 @@ class DulkirConfig {
         var invScaleBool: Boolean = false,
         var inventoryScale: Float = 1f,
         var macrosList: List<Macro> = listOf(Macro(UNKNOWN_KEY, "")),
+        var aliasList: List<Alias> = listOf(Alias("", "")),
         var ignoreReverseThirdPerson: Boolean = false,
         var dynamicKey: InputUtil.Key = UNKNOWN_KEY,
         var customBlockOutlines: Boolean = false,
         var blockOutlineThickness: Int = 3,
         var blockOutlineColor: Int = 0xFFFFFF,
         var abiPhoneDND: Boolean = false,
-        var abiPhoneCallerID: Boolean = false
+        var abiPhoneCallerID: Boolean = false,
+        var tooltipScale: Float = 1f
     )
 
     @Serializable
     data class Macro(
         var keyBinding: InputUtil.Key,
         var command: String,
+    )
+
+    @Serializable
+    data class Alias(
+        var alias: String,
+        var command: String
     )
 
     /**
