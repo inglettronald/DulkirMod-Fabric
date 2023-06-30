@@ -1,7 +1,7 @@
 package com.dulkirfabric.features.chat
 
 import com.dulkirfabric.config.DulkirConfig
-import com.dulkirfabric.events.ChatReceivedEvent
+import com.dulkirfabric.events.chat.ChatReceivedEvent
 import com.dulkirfabric.events.PlaySoundEvent
 import com.dulkirfabric.util.TextUtils
 import com.dulkirfabric.util.TextUtils.unformattedString

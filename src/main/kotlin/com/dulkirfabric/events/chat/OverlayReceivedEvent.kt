@@ -1,4 +1,4 @@
-package com.dulkirfabric.events
+package com.dulkirfabric.events.chat
 
 import com.dulkirfabric.events.base.CancellableEvent
 
