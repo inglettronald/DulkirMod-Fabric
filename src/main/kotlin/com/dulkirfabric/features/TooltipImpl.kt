@@ -1,6 +1,7 @@
 package com.dulkirfabric.features
 
 import com.dulkirfabric.DulkirModFabric.mc
+import com.dulkirfabric.config.DulkirConfig
 import com.dulkirfabric.events.ClientTickEvent
 import com.dulkirfabric.events.MouseScrollEvent
 import com.dulkirfabric.events.TooltipRenderChangeEvent
@@ -11,10 +12,11 @@ import net.minecraft.client.util.math.MatrixStack
 import org.joml.Vector2i
 import org.joml.Vector2ic
 import org.lwjgl.glfw.GLFW
+import kotlin.math.max
 
 object TooltipImpl {
 
-    private var scaleBuffer = 1f
+    private var scaleBuffer = DulkirConfig.configOptions.tooltipScale
     private var horizontalBuffer = 0.0
     private var verticalBuffer = 0.0
     private var tickScale = 0f
@@ -22,26 +24,31 @@ object TooltipImpl {
     private var tickVertical = 0
     private var prevTickX = 0
     private var prevTickY = 0
-    private var prevScale = 1f
-    private var frameScale = 1f
+    private var prevScale = DulkirConfig.configOptions.tooltipScale
+    private var frameScale = DulkirConfig.configOptions.tooltipScale
     private var frameX = 0
     private var frameY = 0
 
-    fun calculatePos(v: Vector2ic): Vector2ic {
+    fun calculatePos(v: Vector2ic, tw: Int, th: Int, sw: Int, sh: Int): Vector2ic {
         // calculate the position of the tooltip based on the scroll amount
         val partialTicks = MinecraftClient.getInstance().tickDelta
-        frameX = v.x() + prevTickX + ((tickHorizontal - prevTickX) * partialTicks).toInt()
-        frameY = v.y() + prevTickY + ((tickVertical - prevTickY) * partialTicks).toInt()
-        val newVec = v.add(-v.x() + frameX, -v.y() + frameY, Vector2i())
-        return newVec
+        var newVec = v
+        frameX = newVec.x() + prevTickX + ((tickHorizontal - prevTickX) * partialTicks).toInt()
+        frameY = newVec.y() + prevTickY + ((tickVertical - prevTickY) * partialTicks).toInt()
+        frameScale = prevScale + (tickScale - prevScale) * partialTicks
+        // Check for tooltips that go off both sides of screen
+        if (tw > sw) {
+           frameX = frameX - v.x() + 4
+        }
+        if (th > sh) {
+            frameY = frameY - v.y() + 4
+        }
+        return Vector2i(0,0)
     }
 
     fun applyScale(matrices: MatrixStack) {
-        frameScale = prevScale + (tickScale - prevScale) * MinecraftClient.getInstance().tickDelta
+        matrices.translate(frameX.toFloat(), frameY.toFloat(), 0f)
         matrices.scale(frameScale, frameScale, 1f)
-        val newX = frameX / frameScale
-        val newY = frameY / frameScale
-        matrices.translate(newX - frameX, newY - frameY, 0f)
     }
 
     @EventHandler
@@ -63,7 +70,7 @@ object TooltipImpl {
         if (InputUtil.isKeyPressed(handle, GLFW.GLFW_KEY_LEFT_SHIFT)) {
             horizontalBuffer += (mc.window.width / 192) * event.verticalScrollAmount
         } else if (InputUtil.isKeyPressed(handle, GLFW.GLFW_KEY_LEFT_CONTROL)) {
-            scaleBuffer += .1f * event.verticalScrollAmount.toFloat()
+            scaleBuffer = max(.01f, scaleBuffer + .1f * event.verticalScrollAmount.toFloat())
         } else {
             verticalBuffer += (mc.window.height / 108) * event.verticalScrollAmount
         }
@@ -71,14 +78,14 @@ object TooltipImpl {
 
     @EventHandler
     fun onChange(event: TooltipRenderChangeEvent) {
-        scaleBuffer = 1f
+        scaleBuffer = DulkirConfig.configOptions.tooltipScale
         horizontalBuffer = 0.0
         verticalBuffer = 0.0
-        tickScale = 1f
+        tickScale = DulkirConfig.configOptions.tooltipScale
         tickHorizontal = 0
         tickVertical = 0
         prevTickX = 0
         prevTickY = 0
-        prevScale = 1f
+        prevScale = DulkirConfig.configOptions.tooltipScale
     }
 }
