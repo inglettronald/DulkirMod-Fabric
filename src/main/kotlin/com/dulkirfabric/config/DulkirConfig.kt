@@ -77,6 +77,9 @@ class DulkirConfig {
             entryBuilder.mkToggle(Text.literal("Ignore Reverse Third Person"), configOptions::ignoreReverseThirdPerson)
         )
         general.addEntry(
+            entryBuilder.mkToggle(Text.literal("Disable Status Effect Rendering"), configOptions::statusEffectHidden)
+        )
+        general.addEntry(
             entryBuilder.mkToggle(Text.literal("Custom Block outlines"), configOptions::customBlockOutlines)
         )
         general.addEntry(
@@ -148,7 +151,8 @@ class DulkirConfig {
         var blockOutlineColor: Int = 0xFFFFFF,
         var abiPhoneDND: Boolean = false,
         var abiPhoneCallerID: Boolean = false,
-        var tooltipScale: Float = 1f
+        var tooltipScale: Float = 1f,
+        var statusEffectHidden: Boolean = false
     )
 
     @Serializable
