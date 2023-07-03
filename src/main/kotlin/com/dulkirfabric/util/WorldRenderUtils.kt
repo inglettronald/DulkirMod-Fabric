@@ -3,19 +3,22 @@ package com.dulkirfabric.util
 import com.mojang.blaze3d.systems.RenderSystem
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext
 import net.minecraft.client.MinecraftClient
-import net.minecraft.client.render.BufferBuilder
-import net.minecraft.client.render.GameRenderer
-import net.minecraft.client.render.VertexFormat
-import net.minecraft.client.render.VertexFormats
+import net.minecraft.client.font.TextRenderer
+import net.minecraft.client.render.*
 import net.minecraft.client.util.math.MatrixStack
+import net.minecraft.text.Style
+import net.minecraft.text.Text
+import net.minecraft.util.Formatting
 import net.minecraft.util.math.Box
 import net.minecraft.util.math.Vec3d
 import org.joml.Vector3f
 import java.awt.Color
+import kotlin.math.max
 import kotlin.math.pow
 
 
 object WorldRenderUtils {
+
     private fun line(
         matrix: MatrixStack.Entry, buffer: BufferBuilder,
         x1: Number, y1: Number, z1: Number,
@@ -198,4 +201,76 @@ object WorldRenderUtils {
         RenderSystem.enableCull()
         matrices.pop()
     }
+
+    fun renderText(string: Text,
+                   context: WorldRenderContext,
+                   vertexConsumer: VertexConsumerProvider,
+                   pos: Vec3d,
+                   shadow: Boolean = true,
+                   depthTest: Boolean = true,
+    )
+    {
+        val d: Double = pos.distanceTo(MinecraftClient.getInstance().player?.pos)
+        val matrices = context.matrixStack()
+        matrices.push()
+        matrices.translate(pos.x - context.camera().pos.x,
+            pos.y - context.camera().pos.y,
+            pos.z - context.camera().pos.z)
+        matrices.multiply(context.camera().rotation)
+        val scale = max(d.toFloat() / 7f, 1f)
+        matrices.scale(-.025f * scale, -.025f * scale, .025f * scale)
+        val matrix4f = matrices.peek().positionMatrix
+        val textRenderer = MinecraftClient.getInstance().textRenderer
+        val j: Int = (.25 * 255.0f).toInt() shl 24
+        textRenderer.draw(
+            string, -textRenderer.getWidth(string).toFloat() / 2f, 0f, 0xFFFFFF, shadow, matrix4f, vertexConsumer,
+            if (depthTest) TextRenderer.TextLayerType.NORMAL else TextRenderer.TextLayerType.SEE_THROUGH,
+            j, LightmapTextureManager.MAX_LIGHT_COORDINATE
+        )
+        matrices.pop()
+    }
+
+    fun renderTextWithDistance(string: Text,
+                   context: WorldRenderContext,
+                   vertexConsumer: VertexConsumerProvider,
+                   pos: Vec3d,
+                   shadow: Boolean = true,
+                   depthTest: Boolean = true,
+    )
+    {
+        val d: Double = pos.distanceTo(MinecraftClient.getInstance().player?.pos)
+        val matrices = context.matrixStack()
+        matrices.push()
+        matrices.translate(pos.x - context.camera().pos.x,
+            pos.y - context.camera().pos.y,
+            pos.z - context.camera().pos.z)
+        matrices.multiply(context.camera().rotation)
+        val scale = max(d.toFloat() / 7f, 1f)
+        matrices.scale(-.025f * scale, -.025f * scale, 1.0f)
+        val matrix4f = matrices.peek().positionMatrix
+        val textRenderer = MinecraftClient.getInstance().textRenderer
+        val j: Int = (.25 * 255.0f).toInt() shl 24
+        if (!depthTest) {
+            RenderSystem.disableDepthTest()
+            RenderSystem.depthMask(false)
+        } else {
+            RenderSystem.enableDepthTest()
+        }
+        textRenderer.draw(
+            string, -textRenderer.getWidth(string).toFloat() / 2, 0f, 0xFFFFFF, shadow, matrix4f, vertexConsumer,
+            if (depthTest) TextRenderer.TextLayerType.NORMAL else TextRenderer.TextLayerType.SEE_THROUGH,
+            j, LightmapTextureManager.MAX_LIGHT_COORDINATE
+        )
+        val distStr = d.toInt().toString()
+        val distText = Text.literal(distStr + "m").setStyle(Style.EMPTY.withColor(Formatting.YELLOW))
+        textRenderer.draw(
+            distText, -textRenderer.getWidth(distText).toFloat() / 2, 10f, 0xFFFFFF, shadow, matrix4f, vertexConsumer,
+            if (depthTest) TextRenderer.TextLayerType.NORMAL else TextRenderer.TextLayerType.SEE_THROUGH,
+            j, LightmapTextureManager.MAX_LIGHT_COORDINATE
+        )
+        RenderSystem.depthMask(true)
+        RenderSystem.enableDepthTest()
+        matrices.pop()
+    }
+
 }
