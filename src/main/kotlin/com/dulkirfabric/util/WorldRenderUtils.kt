@@ -15,9 +15,27 @@ import org.joml.Vector3f
 import java.awt.Color
 import kotlin.math.max
 import kotlin.math.pow
+import kotlin.math.sqrt
 
 
 object WorldRenderUtils {
+
+    var NO_DEPTH_LAYER: RenderLayer = RenderLayer.of(
+        "clientcommands_no_depth",
+        VertexFormats.LINES,
+        VertexFormat.DrawMode.LINES,
+        256,
+        true,
+        true,
+        RenderLayer.MultiPhaseParameters.builder()
+            .program(RenderLayer.LINES_PROGRAM)
+            .writeMaskState(RenderLayer.COLOR_MASK)
+            .cull(RenderLayer.DISABLE_CULLING)
+            .depthTest(RenderLayer.ALWAYS_DEPTH_TEST)
+            .layering(RenderLayer.VIEW_OFFSET_Z_LAYERING)
+            .lineWidth(LineWidth(OptionalDouble.of(2.0)))
+            .build(true)
+    )
 
     private fun line(
         matrix: MatrixStack.Entry, buffer: BufferBuilder,
@@ -202,12 +220,13 @@ object WorldRenderUtils {
         matrices.pop()
     }
 
-    fun renderText(string: Text,
-                   context: WorldRenderContext,
-                   vertexConsumer: VertexConsumerProvider,
-                   pos: Vec3d,
-                   shadow: Boolean = true,
-                   depthTest: Boolean = true,
+    fun renderText(
+        string: Text,
+        context: WorldRenderContext,
+        vertexConsumer: VertexConsumerProvider,
+        pos: Vec3d,
+        shadow: Boolean = true,
+        depthTest: Boolean = true,
     )
     {
         val d: Double = pos.distanceTo(MinecraftClient.getInstance().player?.pos)
@@ -230,32 +249,44 @@ object WorldRenderUtils {
         matrices.pop()
     }
 
-    fun renderTextWithDistance(string: Text,
-                   context: WorldRenderContext,
-                   vertexConsumer: VertexConsumerProvider,
-                   pos: Vec3d,
-                   shadow: Boolean = true,
-                   depthTest: Boolean = true,
+    fun renderWaypoint(
+        string: Text,
+        context: WorldRenderContext,
+        vertexConsumer: VertexConsumerProvider,
+        pos: Vec3d,
+        shadow: Boolean = true,
+        depthTest: Boolean = true,
     )
     {
         val d: Double = pos.distanceTo(MinecraftClient.getInstance().player?.pos)
         val matrices = context.matrixStack()
         matrices.push()
-        matrices.translate(pos.x - context.camera().pos.x,
-            pos.y - context.camera().pos.y,
-            pos.z - context.camera().pos.z)
+        val magnitude = sqrt((pos.x - context.camera().pos.x).pow(2) +
+            (pos.y - context.camera().pos.y).pow(2) +
+                (pos.z - context.camera().pos.z).pow(2))
+        if (magnitude < 20) {
+            matrices.translate(
+                pos.x - context.camera().pos.x,
+                pos.y - context.camera().pos.y,
+                pos.z - context.camera().pos.z
+            )
+        } else {
+            matrices.translate(
+                (pos.x - context.camera().pos.x) / magnitude * 20,
+                (pos.y - context.camera().pos.y) / magnitude * 20,
+                (pos.z - context.camera().pos.z) / magnitude * 20
+            )
+        }
         matrices.multiply(context.camera().rotation)
         val scale = max(d.toFloat() / 7f, 1f)
-        matrices.scale(-.025f * scale, -.025f * scale, 1.0f)
+        if (magnitude < 20) {
+            matrices.scale(-.025f * scale, -.025f * scale, 1.0f)
+        } else {
+            matrices.scale(-.025f * 20 / 7f, -.025f * 20 / 7f, 1.0f)
+        }
         val matrix4f = matrices.peek().positionMatrix
         val textRenderer = MinecraftClient.getInstance().textRenderer
         val j: Int = (.25 * 255.0f).toInt() shl 24
-        if (!depthTest) {
-            RenderSystem.disableDepthTest()
-            RenderSystem.depthMask(false)
-        } else {
-            RenderSystem.enableDepthTest()
-        }
         textRenderer.draw(
             string, -textRenderer.getWidth(string).toFloat() / 2, 0f, 0xFFFFFF, shadow, matrix4f, vertexConsumer,
             if (depthTest) TextRenderer.TextLayerType.NORMAL else TextRenderer.TextLayerType.SEE_THROUGH,
@@ -268,9 +299,6 @@ object WorldRenderUtils {
             if (depthTest) TextRenderer.TextLayerType.NORMAL else TextRenderer.TextLayerType.SEE_THROUGH,
             j, LightmapTextureManager.MAX_LIGHT_COORDINATE
         )
-        RenderSystem.depthMask(true)
-        RenderSystem.enableDepthTest()
         matrices.pop()
     }
-
 }

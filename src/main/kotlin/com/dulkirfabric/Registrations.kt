@@ -51,7 +51,7 @@ object Registrations {
     fun registerEventListeners() {
         EVENT_BUS.subscribe(DulkirModFabric)
         EVENT_BUS.subscribe(KeyShortCutImpl)
-        EVENT_BUS.subscribe(RenderBoxTest)
+        EVENT_BUS.subscribe(RenderTest)
         EVENT_BUS.subscribe(TooltipImpl)
         EVENT_BUS.subscribe(CustomBlockOutline)
         EVENT_BUS.subscribe(AbiPhoneDND)

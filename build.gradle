@@ -53,6 +53,7 @@ loom {
 			vmArg("-ea")
 		}
 	}
+	accessWidenerPath = file("src/main/resources/dulkirmod.accesswidener")
 }
 
 processResources {
