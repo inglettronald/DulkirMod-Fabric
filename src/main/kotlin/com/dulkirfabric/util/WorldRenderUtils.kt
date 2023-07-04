@@ -19,24 +19,6 @@ import kotlin.math.sqrt
 
 
 object WorldRenderUtils {
-
-    var NO_DEPTH_LAYER: RenderLayer = RenderLayer.of(
-        "clientcommands_no_depth",
-        VertexFormats.LINES,
-        VertexFormat.DrawMode.LINES,
-        256,
-        true,
-        true,
-        RenderLayer.MultiPhaseParameters.builder()
-            .program(RenderLayer.LINES_PROGRAM)
-            .writeMaskState(RenderLayer.COLOR_MASK)
-            .cull(RenderLayer.DISABLE_CULLING)
-            .depthTest(RenderLayer.ALWAYS_DEPTH_TEST)
-            .layering(RenderLayer.VIEW_OFFSET_Z_LAYERING)
-            .lineWidth(LineWidth(OptionalDouble.of(2.0)))
-            .build(true)
-    )
-
     private fun line(
         matrix: MatrixStack.Entry, buffer: BufferBuilder,
         x1: Number, y1: Number, z1: Number,
@@ -220,46 +202,21 @@ object WorldRenderUtils {
         matrices.pop()
     }
 
-    fun renderText(
-        string: Text,
-        context: WorldRenderContext,
-        vertexConsumer: VertexConsumerProvider,
-        pos: Vec3d,
-        shadow: Boolean = true,
-        depthTest: Boolean = true,
-    )
-    {
-        val d: Double = pos.distanceTo(MinecraftClient.getInstance().player?.pos)
-        val matrices = context.matrixStack()
-        matrices.push()
-        matrices.translate(pos.x - context.camera().pos.x,
-            pos.y - context.camera().pos.y,
-            pos.z - context.camera().pos.z)
-        matrices.multiply(context.camera().rotation)
-        val scale = max(d.toFloat() / 7f, 1f)
-        matrices.scale(-.025f * scale, -.025f * scale, .025f * scale)
-        val matrix4f = matrices.peek().positionMatrix
-        val textRenderer = MinecraftClient.getInstance().textRenderer
-        val j: Int = (.25 * 255.0f).toInt() shl 24
-        textRenderer.draw(
-            string, -textRenderer.getWidth(string).toFloat() / 2f, 0f, 0xFFFFFF, shadow, matrix4f, vertexConsumer,
-            if (depthTest) TextRenderer.TextLayerType.NORMAL else TextRenderer.TextLayerType.SEE_THROUGH,
-            j, LightmapTextureManager.MAX_LIGHT_COORDINATE
-        )
-        matrices.pop()
-    }
-
     fun renderWaypoint(
-        string: Text,
+        text: Text,
         context: WorldRenderContext,
-        vertexConsumer: VertexConsumerProvider,
         pos: Vec3d,
-        shadow: Boolean = true,
-        depthTest: Boolean = true,
+        depthTest: Boolean = false,
     )
     {
+        RenderSystem.disableDepthTest()
+        RenderSystem.enableBlend()
+        RenderSystem.defaultBlendFunc()
+        RenderSystem.disableCull()
         val d: Double = pos.distanceTo(MinecraftClient.getInstance().player?.pos)
+        val distText = Text.literal(d.toInt().toString() + "m").setStyle(Style.EMPTY.withColor(Formatting.YELLOW))
         val matrices = context.matrixStack()
+        val vertexConsumer = context.worldRenderer().bufferBuilders.entityVertexConsumers
         matrices.push()
         val magnitude = sqrt((pos.x - context.camera().pos.x).pow(2) +
             (pos.y - context.camera().pos.y).pow(2) +
@@ -280,25 +237,49 @@ object WorldRenderUtils {
         matrices.multiply(context.camera().rotation)
         val scale = max(d.toFloat() / 7f, 1f)
         if (magnitude < 20) {
-            matrices.scale(-.025f * scale, -.025f * scale, 1.0f)
+            matrices.scale(-.025f * scale, -.025f * scale, -1F)
         } else {
-            matrices.scale(-.025f * 20 / 7f, -.025f * 20 / 7f, 1.0f)
+            matrices.scale(-.025f * 20 / 7f, -.025f * 20 / 7f, -.1F)
         }
         val matrix4f = matrices.peek().positionMatrix
         val textRenderer = MinecraftClient.getInstance().textRenderer
         val j: Int = (.25 * 255.0f).toInt() shl 24
+        val buf = vertexConsumer.getBuffer(RenderLayer.getTextBackgroundSeeThrough())
+        buf.vertex(matrix4f, -1.0f - textRenderer.getWidth(text) / 2, -1.0f, 0.0f)
+            .color(j)
+            .light(LightmapTextureManager.MAX_BLOCK_LIGHT_COORDINATE)
+            .next()
+        buf.vertex(matrix4f, -1.0f - textRenderer.getWidth(text) / 2, textRenderer.fontHeight.toFloat(), 0.0f)
+            .color(j)
+            .light(LightmapTextureManager.MAX_BLOCK_LIGHT_COORDINATE)
+            .next()
+        buf.vertex(matrix4f, textRenderer.getWidth(text).toFloat() / 2, textRenderer.fontHeight.toFloat(), 0.0f)
+            .color(j)
+            .light(LightmapTextureManager.MAX_BLOCK_LIGHT_COORDINATE)
+            .next()
+        buf.vertex(matrix4f, textRenderer.getWidth(text).toFloat() / 2, -1.0f, 0.0f)
+            .color(j)
+            .light(LightmapTextureManager.MAX_BLOCK_LIGHT_COORDINATE)
+            .next()
+
+        matrices.translate(0F, 0F, 0.05F)
+
         textRenderer.draw(
-            string, -textRenderer.getWidth(string).toFloat() / 2, 0f, 0xFFFFFF, shadow, matrix4f, vertexConsumer,
+            text, -textRenderer.getWidth(text).toFloat() / 2, 0f, 0xFFFFFF, false, matrix4f, vertexConsumer,
             if (depthTest) TextRenderer.TextLayerType.NORMAL else TextRenderer.TextLayerType.SEE_THROUGH,
-            j, LightmapTextureManager.MAX_LIGHT_COORDINATE
+            0, LightmapTextureManager.MAX_LIGHT_COORDINATE
         )
-        val distStr = d.toInt().toString()
-        val distText = Text.literal(distStr + "m").setStyle(Style.EMPTY.withColor(Formatting.YELLOW))
+
         textRenderer.draw(
-            distText, -textRenderer.getWidth(distText).toFloat() / 2, 10f, 0xFFFFFF, shadow, matrix4f, vertexConsumer,
+            distText, -textRenderer.getWidth(distText).toFloat() / 2, 10f, 0xFFFFFF, false, matrix4f, vertexConsumer,
             if (depthTest) TextRenderer.TextLayerType.NORMAL else TextRenderer.TextLayerType.SEE_THROUGH,
-            j, LightmapTextureManager.MAX_LIGHT_COORDINATE
+            0, LightmapTextureManager.MAX_LIGHT_COORDINATE
         )
+        vertexConsumer.drawCurrentLayer()
         matrices.pop()
+        RenderSystem.setShaderColor(1F, 1F, 1F, 1F)
+        RenderSystem.enableDepthTest()
+        RenderSystem.enableCull()
+        RenderSystem.disableBlend()
     }
 }

@@ -14,9 +14,8 @@ object RenderTest {
     fun onRender(event: WorldRenderLastEvent) {
 
         WorldRenderUtils.renderWaypoint(
-            Text.literal("Home Base").setStyle(Style.EMPTY.withColor(Color(255, 100, 150, 255).rgb)), event.context, event.context.consumers()!!,
-            Vec3d(-183.5, 79.0, -465.5), false,
-            depthTest = false
+            Text.literal("Home Base").setStyle(Style.EMPTY.withColor(Color(255, 100, 150, 255).rgb)), event.context,
+            Vec3d(-183.5, 79.0, -465.5), false
         )
     }
 }
