@@ -12,10 +12,9 @@ object RenderTest {
 
     @EventHandler
     fun onRender(event: WorldRenderLastEvent) {
-
         WorldRenderUtils.renderWaypoint(
             Text.literal("Home Base").setStyle(Style.EMPTY.withColor(Color(255, 100, 150, 255).rgb)), event.context,
-            Vec3d(-183.5, 79.0, -465.5), false
+            Vec3d(-183.5, 79.0, -465.5)
         )
     }
 }

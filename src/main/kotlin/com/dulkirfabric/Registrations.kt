@@ -4,15 +4,13 @@ import com.dulkirfabric.DulkirModFabric.EVENT_BUS
 import com.dulkirfabric.commands.ConfigCommand
 import com.dulkirfabric.commands.DynamicKeyCommand
 import com.dulkirfabric.commands.JoinDungeonCommands
-import com.dulkirfabric.events.BlockOutlineEvent
-import com.dulkirfabric.events.ClientTickEvent
-import com.dulkirfabric.events.MouseScrollEvent
-import com.dulkirfabric.events.WorldRenderLastEvent
+import com.dulkirfabric.events.*
 import com.dulkirfabric.events.chat.ChatReceivedEvent
 import com.dulkirfabric.events.chat.ModifyCommandEvent
 import com.dulkirfabric.events.chat.OverlayReceivedEvent
 import com.dulkirfabric.features.*
 import com.dulkirfabric.features.chat.AbiPhoneDND
+import com.dulkirfabric.util.TablistUtils
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents
@@ -27,6 +25,7 @@ import net.fabricmc.fabric.api.client.screen.v1.ScreenMouseEvents
  * purposes, as the list of features is planned to be quite large.
  */
 object Registrations {
+    private var tickCount: Int = 0
 
     fun registerCommands() {
         val cre = ClientCommandRegistrationCallback.EVENT
@@ -57,12 +56,18 @@ object Registrations {
         EVENT_BUS.subscribe(AbiPhoneDND)
         EVENT_BUS.subscribe(InventoryScale)
         EVENT_BUS.subscribe(AliasImpl)
+        EVENT_BUS.subscribe(EffigyDisplay)
+        EVENT_BUS.subscribe(TablistUtils)
     }
 
     fun registerEvents() {
         // Register Custom Tick event, so we can use it like 1.8.9 forge
         ClientTickEvents.START_CLIENT_TICK.register(
-            ClientTickEvents.StartTick { _ -> ClientTickEvent.post() }
+            ClientTickEvents.StartTick { _ ->
+                ClientTickEvent.post()
+                if (tickCount % 20 == 0) LongUpdateEvent.post()
+                tickCount++
+            }
         )
         ClientReceiveMessageEvents.ALLOW_GAME.register(
             ClientReceiveMessageEvents.AllowGame { message, overlay ->
