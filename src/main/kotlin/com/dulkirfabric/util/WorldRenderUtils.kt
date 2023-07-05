@@ -206,7 +206,6 @@ object WorldRenderUtils {
         text: Text,
         context: WorldRenderContext,
         pos: Vec3d,
-        depthTest: Boolean = false,
     )
     {
         RenderSystem.disableDepthTest()
@@ -266,13 +265,13 @@ object WorldRenderUtils {
 
         textRenderer.draw(
             text, -textRenderer.getWidth(text).toFloat() / 2, 0f, 0xFFFFFF, false, matrix4f, vertexConsumer,
-            if (depthTest) TextRenderer.TextLayerType.NORMAL else TextRenderer.TextLayerType.SEE_THROUGH,
+            TextRenderer.TextLayerType.SEE_THROUGH,
             0, LightmapTextureManager.MAX_LIGHT_COORDINATE
         )
 
         textRenderer.draw(
             distText, -textRenderer.getWidth(distText).toFloat() / 2, 10f, 0xFFFFFF, false, matrix4f, vertexConsumer,
-            if (depthTest) TextRenderer.TextLayerType.NORMAL else TextRenderer.TextLayerType.SEE_THROUGH,
+            TextRenderer.TextLayerType.SEE_THROUGH,
             0, LightmapTextureManager.MAX_LIGHT_COORDINATE
         )
         vertexConsumer.drawCurrentLayer()
