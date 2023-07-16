@@ -261,7 +261,7 @@ object WorldRenderUtils {
             .light(LightmapTextureManager.MAX_BLOCK_LIGHT_COORDINATE)
             .next()
 
-        matrices.translate(0F, 0F, 0.05F)
+        matrices.translate(0F, 0F, 0.01F)
 
         textRenderer.draw(
             text, -textRenderer.getWidth(text).toFloat() / 2, 0f, 0xFFFFFF, false, matrix4f, vertexConsumer,
