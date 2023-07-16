@@ -1,15 +1,28 @@
 1.0 TODO:
 
+Hype Broken
+Arachne Timer
+Keeper Waypoints
+Item Ability Cooldown displays
+Hide Explosion Particles
+Starred Mob glow
+Trim Useless Messages
+Tablist Utility
+Hide Scoreboard Numbers
+
+Later:
+Speed Display
+Health/Mana Display
+
+LATER LATER:
+ Deployable Timers
+
  RENDERING TO-DO:
  - Tracer
  - Filled box
  - Outline Circle
  - Entity Outline
- - Text in World
  - Text in HUD
  - Image in World
  - Image in HUD
  - Surface sphere
-
- UTIL TO-DO:
- - Scoreboard/Tablist to MutableList<String>

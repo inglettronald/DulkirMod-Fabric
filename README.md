@@ -22,6 +22,7 @@ DulkirMod 1.8.9 Can be found [here](https://github.com/inglettronald/DulkirMod).
   <li>WireFrame and World Text Rendering (needs a recoding)</li>
   <li>Abiphone DND</li>
   <li>Custom Selected Block outline</li>
+  <li>Inactive Effigy Waypoints (rift)</li>
 </ul>
 </details>
 
