@@ -58,6 +58,7 @@ object Registrations {
         EVENT_BUS.subscribe(AliasImpl)
         EVENT_BUS.subscribe(EffigyDisplay)
         EVENT_BUS.subscribe(TablistUtils)
+        EVENT_BUS.subscribe(CullExplosionParticles)
     }
 
     fun registerEvents() {

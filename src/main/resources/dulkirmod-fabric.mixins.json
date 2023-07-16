@@ -17,6 +17,7 @@
     "render.KeyboardMixin",
     "render.LoomScreenMixin",
     "render.MinecraftClientMixin",
+    "render.ParticleManagerMixin",
     "render.PerspectiveMixin",
     "render.ScreenMixin"
   ],

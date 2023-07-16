@@ -101,6 +101,9 @@ class DulkirConfig {
         general.addEntry(
             entryBuilder.mkToggle(Text.literal("Inactive Effigy Waypoints"), configOptions::inactiveEffigyDisplay)
         )
+        general.addEntry(
+            entryBuilder.mkToggle(Text.literal("Disable Explosion Particles"), configOptions::disableExplosionParticles)
+        )
 
         val shortcuts = builder.getOrCreateCategory(Text.literal("Shortcuts"))
         shortcuts.addEntry(
@@ -156,7 +159,8 @@ class DulkirConfig {
         var abiPhoneCallerID: Boolean = false,
         var tooltipScale: Float = 1f,
         var statusEffectHidden: Boolean = false,
-        var inactiveEffigyDisplay: Boolean = false
+        var inactiveEffigyDisplay: Boolean = false,
+        var disableExplosionParticles: Boolean = false
     )
 
     @Serializable

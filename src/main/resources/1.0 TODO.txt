@@ -4,7 +4,6 @@ Hype Broken
 Arachne Timer
 Keeper Waypoints
 Item Ability Cooldown displays
-Hide Explosion Particles
 Starred Mob glow
 Trim Useless Messages
 Tablist Utility
