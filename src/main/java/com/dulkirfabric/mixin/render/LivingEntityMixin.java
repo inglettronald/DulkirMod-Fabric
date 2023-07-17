@@ -6,6 +6,9 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.awt.*;
 
@@ -40,5 +43,10 @@ public class LivingEntityMixin implements GlowingEntityInterface {
     @Override
     public boolean shouldDulkirEntityESP() {
         return shouldESP_DulkirMod;
+    }
+
+    @Inject(method = "getHandSwingDuration()I", at = @At("HEAD"), cancellable = true)
+    public void getHandSwingDuration(CallbackInfoReturnable<Integer> cir) {
+        cir.setReturnValue(50);
     }
 }

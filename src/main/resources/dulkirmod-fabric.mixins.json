@@ -13,6 +13,7 @@
     "render.DrawContextMixin",
     "render.GameMenuScreenMixin",
     "render.GameRendererMixin",
+    "render.HeldItemRendererMixin",
     "render.InGameHudMixin",
     "render.KeyboardMixin",
     "render.LoomScreenMixin",

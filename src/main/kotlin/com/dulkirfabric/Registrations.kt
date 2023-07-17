@@ -95,10 +95,10 @@ object Registrations {
             !BlockOutlineEvent(worldRenderContext, blockOutlineContext).post()
         }
         ClientEntityEvents.ENTITY_LOAD.register { entity, world ->
-            EntityLoadEvent(entity, world)
+            EntityLoadEvent(entity, world).post()
         }
         ServerWorldEvents.LOAD.register { server, world ->
-            WorldLoadEvent(server, world)
+            WorldLoadEvent(server, world).post()
         }
     }
 }

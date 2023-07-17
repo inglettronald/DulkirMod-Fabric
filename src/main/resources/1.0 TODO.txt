@@ -3,9 +3,10 @@
 Hype Broken
 Arachne Timer
 Keeper Waypoints
-Item Ability Cooldown displays
 Trim Useless Messages
 Tablist Utility
+
+DECIDE HOW TO CANCEL RENDERING OF HUNGER TEXTURE ICON
 
 Later:
 Speed Display

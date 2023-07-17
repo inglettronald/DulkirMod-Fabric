@@ -21,7 +21,14 @@ object KeyShortCutImpl {
                 lastCommandHandle = System.currentTimeMillis()
                 prevCode = event.key
 
-                TextUtils.sendCommand(it.command.trimStart('/'))
+                // This conditional allows for these shortcuts to work for commands or normal messages
+                // You have to do it this way because the messages are handled differently on the client
+                // side in modern versions of Minecraft.
+                if (it.command.startsWith("/")) {
+                    TextUtils.sendCommand(it.command.trimStart('/'))
+                } else {
+                    TextUtils.sendMessage(it.command)
+                }
             }
         }
 

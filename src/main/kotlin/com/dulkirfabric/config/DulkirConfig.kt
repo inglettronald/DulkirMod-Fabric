@@ -17,7 +17,6 @@ import com.dulkirfabric.DulkirModFabric.mc
 import com.dulkirfabric.config.ConfigHelper.mkKeyField
 import com.dulkirfabric.config.ConfigHelper.mkStringField
 import com.dulkirfabric.config.ConfigHelper.mkToggle
-import com.dulkirfabric.features.InventoryScale
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.UseSerializers
 import kotlinx.serialization.decodeFromString
@@ -60,10 +59,6 @@ class DulkirConfig {
                 .setTooltip(Text.literal("Size of GUI whenever you're in an inventory screen"))
                 .setSaveConsumer { newValue ->
                     configOptions.inventoryScale = newValue
-                    InventoryScale.scaleBuffer = newValue
-                    InventoryScale.prevTickScale = newValue
-                    InventoryScale.tickScale = newValue
-                    InventoryScale.frameScale = newValue
                 }
                 .build()
         )
@@ -93,10 +88,10 @@ class DulkirConfig {
                 .build()
         )
         general.addEntry(
-            entryBuilder.mkToggle(Text.literal("AbiPhone DND"), configOptions::abiPhoneDND)
+            entryBuilder.mkToggle(Text.literal("Abiphone DND"), configOptions::abiPhoneDND)
         )
         general.addEntry(
-            entryBuilder.mkToggle(Text.literal("AbiPhone Caller ID"), configOptions::abiPhoneCallerID)
+            entryBuilder.mkToggle(Text.literal("Abiphone Caller ID"), configOptions::abiPhoneCallerID)
         )
         general.addEntry(
             entryBuilder.mkToggle(Text.literal("Inactive Effigy Waypoints"), configOptions::inactiveEffigyDisplay)
@@ -106,6 +101,9 @@ class DulkirConfig {
         )
         general.addEntry(
             entryBuilder.mkToggle(Text.literal("Durability-Based Cooldown Display"), configOptions::duraCooldown)
+        )
+        general.addEntry(
+            entryBuilder.mkToggle(Text.literal("Hide Armor Overlay in Skyblock"), configOptions::hideArmorOverlay)
         )
 
         val shortcuts = builder.getOrCreateCategory(Text.literal("Shortcuts"))
@@ -142,6 +140,48 @@ class DulkirConfig {
                 }
             )
         )
+        val animations = builder.getOrCreateCategory(Text.literal("Animations"))
+
+        //TODO: Come up with some custome float slider instead of int slider jank
+        animations.addEntry(
+            entryBuilder.startIntSlider(Text.literal("posX"), configOptions.heldItemPosX, -300, 300)
+                .setSaveConsumer { newValue -> configOptions.heldItemPosX = newValue }
+                .build()
+        )
+        animations.addEntry(
+            entryBuilder.startIntSlider(Text.literal("posY"), configOptions.heldItemPosY, -300, 300)
+                .setSaveConsumer { newValue -> configOptions.heldItemPosY = newValue }
+                .build()
+        )
+        animations.addEntry(
+            entryBuilder.startIntSlider(Text.literal("posZ"), configOptions.heldItemPosZ, -300, 300)
+                .setSaveConsumer { newValue -> configOptions.heldItemPosZ = newValue }
+                .build()
+        )
+        animations.addEntry(
+            entryBuilder.startIntSlider(Text.literal("rotationX"), configOptions.heldItemRotX, -180, 180)
+                .setSaveConsumer { newValue -> configOptions.heldItemRotX = newValue }
+                .build()
+        )
+        animations.addEntry(
+            entryBuilder.startIntSlider(Text.literal("rotationY"), configOptions.heldItemRotY, -180, 180)
+                .setSaveConsumer { newValue -> configOptions.heldItemRotY = newValue }
+                .build()
+        )
+        animations.addEntry(
+            entryBuilder.startIntSlider(Text.literal("rotationZ"), configOptions.heldItemRotZ, -180, 180)
+                .setSaveConsumer { newValue -> configOptions.heldItemRotZ = newValue }
+                .build()
+        )
+        animations.addEntry(
+            entryBuilder.startFloatField(Text.literal("scale"), configOptions.heldItemScale)
+                .setTooltip(Text.literal("Recommended range of .1 - 2"))
+                .setSaveConsumer { newValue ->
+                    configOptions.heldItemScale = newValue
+                }
+                .build()
+        )
+
 
         builder.transparentBackground()
         screen = builder.build()
@@ -164,8 +204,16 @@ class DulkirConfig {
         var statusEffectHidden: Boolean = false,
         var inactiveEffigyDisplay: Boolean = false,
         var disableExplosionParticles: Boolean = false,
-        var duraCooldown: Boolean = false
-    )
+        var duraCooldown: Boolean = false,
+        var hideArmorOverlay: Boolean = false,
+        var heldItemPosX: Int = 0,
+        var heldItemPosY: Int = 0,
+        var heldItemPosZ: Int = 0,
+        var heldItemRotX: Int = 0,
+        var heldItemRotY: Int = 0,
+        var heldItemRotZ: Int = 0,
+        var heldItemScale: Float = 0f
+        )
 
     @Serializable
     data class Macro(
