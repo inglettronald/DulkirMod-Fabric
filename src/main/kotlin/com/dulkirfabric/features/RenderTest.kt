@@ -17,4 +17,10 @@ object RenderTest {
             Vec3d(-183.5, 79.0, -465.5)
         )
     }
+
+//    @EventHandler
+//    fun onLoadEnt(event: EntityLoadEvent) {
+//        if (event.entity !is GlowingEntityInterface) return
+//        event.entity.setDulkirEntityGlow(true, Color(255, 255, 255, 255), true)
+//    }
 }

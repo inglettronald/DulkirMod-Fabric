@@ -19,9 +19,12 @@
     "render.MinecraftClientMixin",
     "render.ParticleManagerMixin",
     "render.PerspectiveMixin",
-    "render.ScreenMixin"
+    "render.ScreenMixin",
+    "render.WorldRendererMixin"
   ],
   "mixins": [
-    "ItemStackMixin"
+    "ItemMixin",
+    "ItemStackMixin",
+    "render.LivingEntityMixin"
   ]
 }

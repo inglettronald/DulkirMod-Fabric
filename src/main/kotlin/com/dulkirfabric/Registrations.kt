@@ -12,12 +12,14 @@ import com.dulkirfabric.features.*
 import com.dulkirfabric.features.chat.AbiPhoneDND
 import com.dulkirfabric.util.TablistUtils
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityEvents
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents
 import net.fabricmc.fabric.api.client.message.v1.ClientSendMessageEvents
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents
 import net.fabricmc.fabric.api.client.screen.v1.ScreenMouseEvents
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents
 
 
 /**
@@ -59,43 +61,44 @@ object Registrations {
         EVENT_BUS.subscribe(EffigyDisplay)
         EVENT_BUS.subscribe(TablistUtils)
         EVENT_BUS.subscribe(CullExplosionParticles)
+        EVENT_BUS.subscribe(CooldownDisplays)
     }
 
     fun registerEvents() {
         // Register Custom Tick event, so we can use it like 1.8.9 forge
-        ClientTickEvents.START_CLIENT_TICK.register(
-            ClientTickEvents.StartTick { _ ->
-                ClientTickEvent.post()
-                if (tickCount % 20 == 0) LongUpdateEvent.post()
-                tickCount++
-            }
-        )
-        ClientReceiveMessageEvents.ALLOW_GAME.register(
-            ClientReceiveMessageEvents.AllowGame { message, overlay ->
-                if (overlay) !OverlayReceivedEvent(message.toString()).post()
-                else !ChatReceivedEvent(message).post()
-            }
-        )
-        ClientSendMessageEvents.MODIFY_COMMAND.register(
-            ClientSendMessageEvents.ModifyCommand { command ->
-                ModifyCommandEvent(command).also { it.post() }.command
-            }
-        )
-        WorldRenderEvents.END.register(
-            WorldRenderEvents.End { context -> WorldRenderLastEvent(context).post()}
-        )
+        ClientTickEvents.START_CLIENT_TICK.register { _ ->
+            ClientTickEvent.post()
+            if (tickCount % 20 == 0) LongUpdateEvent.post()
+            tickCount++
+        }
+        ClientReceiveMessageEvents.ALLOW_GAME.register { message, overlay ->
+            if (overlay) !OverlayReceivedEvent(message.toString()).post()
+            else !ChatReceivedEvent(message).post()
+        }
+
+        ClientSendMessageEvents.MODIFY_COMMAND.register { command ->
+            ModifyCommandEvent(command).also { it.post() }.command
+        }
+
+        WorldRenderEvents.END.register { context -> WorldRenderLastEvent(context).post() }
+
         ScreenEvents.BEFORE_INIT.register(
             ScreenEvents.BeforeInit { client, screen, scaledWidth, scaledHeight ->
-                ScreenMouseEvents.beforeMouseScroll(screen).register(ScreenMouseEvents.BeforeMouseScroll {
-                    coolScreen, mouseX, mouseY, horizontalAmount, verticalAmount ->
-                    MouseScrollEvent(coolScreen, mouseX, mouseY, horizontalAmount, verticalAmount).post()
-                })
+                ScreenMouseEvents.beforeMouseScroll(screen)
+                    .register(ScreenMouseEvents.BeforeMouseScroll { coolScreen, mouseX, mouseY, horizontalAmount, verticalAmount ->
+                        MouseScrollEvent(coolScreen, mouseX, mouseY, horizontalAmount, verticalAmount).post()
+                    })
             }
         )
-        WorldRenderEvents.BLOCK_OUTLINE.register(
-            WorldRenderEvents.BlockOutline { worldRenderContext, blockOutlineContext ->
-                !BlockOutlineEvent(worldRenderContext, blockOutlineContext).post()
-            }
-        )
+
+        WorldRenderEvents.BLOCK_OUTLINE.register { worldRenderContext, blockOutlineContext ->
+            !BlockOutlineEvent(worldRenderContext, blockOutlineContext).post()
+        }
+        ClientEntityEvents.ENTITY_LOAD.register { entity, world ->
+            EntityLoadEvent(entity, world)
+        }
+        ServerWorldEvents.LOAD.register { server, world ->
+            WorldLoadEvent(server, world)
+        }
     }
 }

@@ -4,10 +4,8 @@ Hype Broken
 Arachne Timer
 Keeper Waypoints
 Item Ability Cooldown displays
-Starred Mob glow
 Trim Useless Messages
 Tablist Utility
-Hide Scoreboard Numbers
 
 Later:
 Speed Display
