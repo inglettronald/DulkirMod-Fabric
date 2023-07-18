@@ -105,6 +105,14 @@ class DulkirConfig {
         general.addEntry(
             entryBuilder.mkToggle(Text.literal("Hide Armor Overlay in Skyblock"), configOptions::hideArmorOverlay)
         )
+        general.addEntry(
+            entryBuilder.startIntSlider(Text.literal("Anti Downtime Alarm"), configOptions.alarmTimeout, 0, 1000)
+                .setSaveConsumer {
+                    configOptions.alarmTimeout = it
+                }
+                .setTooltip(Text.literal("Set to 0 to disable. (Time in seconds)"))
+                .build()
+        )
 
         val shortcuts = builder.getOrCreateCategory(Text.literal("Shortcuts"))
         shortcuts.addEntry(
@@ -204,7 +212,6 @@ class DulkirConfig {
         var statusEffectHidden: Boolean = false,
         var inactiveEffigyDisplay: Boolean = false,
         var disableExplosionParticles: Boolean = false,
-        var duraCooldown: Boolean = false,
         var hideArmorOverlay: Boolean = false,
         var heldItemPosX: Int = 0,
         var heldItemPosY: Int = 0,
@@ -212,8 +219,10 @@ class DulkirConfig {
         var heldItemRotX: Int = 0,
         var heldItemRotY: Int = 0,
         var heldItemRotZ: Int = 0,
-        var heldItemScale: Float = 0f
-        )
+        var heldItemScale: Float = 0f,
+        var duraCooldown: Boolean = false,
+        var alarmTimeout: Int = 300,
+    )
 
     @Serializable
     data class Macro(
