@@ -189,6 +189,11 @@ class DulkirConfig {
                 }
                 .build()
         )
+        animations.addEntry(
+            entryBuilder.startIntSlider(Text.literal("rotationZ"), configOptions.handSwingDuration, 2, 15)
+                .setSaveConsumer { newValue -> configOptions.handSwingDuration = newValue }
+                .build()
+        )
 
 
         builder.transparentBackground()
@@ -222,6 +227,7 @@ class DulkirConfig {
         var heldItemScale: Float = 0f,
         var duraCooldown: Boolean = false,
         var alarmTimeout: Int = 300,
+        var handSwingDuration: Int = 6
     )
 
     @Serializable

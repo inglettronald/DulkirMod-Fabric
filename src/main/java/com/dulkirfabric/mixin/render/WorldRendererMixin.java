@@ -69,6 +69,7 @@ public class WorldRendererMixin {
     @Inject(method = "render(Lnet/minecraft/client/util/math/MatrixStack;FJZLnet/minecraft/client/render/Camera;Lnet/minecraft/client/render/GameRenderer;Lnet/minecraft/client/render/LightmapTextureManager;Lorg/joml/Matrix4f;)V",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/entity/EntityRenderDispatcher;shouldRender(Lnet/minecraft/entity/Entity;Lnet/minecraft/client/render/Frustum;DDD)Z"))
     public void setOutlineESP(MatrixStack matrices, float tickDelta, long limitTime, boolean renderBlockOutline, Camera camera, GameRenderer gameRenderer, LightmapTextureManager lightmapTextureManager, Matrix4f positionMatrix, CallbackInfo ci, @Local Entity entity) {
+        this.bufferBuilders.getEntityVertexConsumers().drawCurrentLayer();
         if (entity instanceof GlowingEntityInterface dEntity && dEntity.shouldDulkirEntityGlow() && !dEntity.shouldDulkirEntityESP()) {
             if (this.entityOutlinesFramebuffer != null)
                 this.entityOutlinesFramebuffer.copyDepthFrom(mc.getFramebuffer());
@@ -77,5 +78,6 @@ public class WorldRendererMixin {
             if (this.entityOutlinesFramebuffer != null)
                 this.entityOutlinesFramebuffer.copyDepthFrom(defaultEntityOutlineBuffer);
         }
+        this.client.getFramebuffer().beginWrite(false);
     }
 }

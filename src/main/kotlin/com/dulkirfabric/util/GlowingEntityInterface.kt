@@ -3,7 +3,7 @@ package com.dulkirfabric.util
 import java.awt.Color
 
 interface GlowingEntityInterface {
-    fun setDulkirEntityGlow(shouldGlow: Boolean, glowColor: Color, shouldESP: Boolean = false)
+    fun setDulkirEntityGlow(shouldGlow: Boolean = false, glowColor: Color, shouldESP: Boolean = false)
 
     fun shouldDulkirEntityGlow() : Boolean
 
