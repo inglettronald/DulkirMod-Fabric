@@ -4,13 +4,13 @@ import com.dulkirfabric.DulkirModFabric.EVENT_BUS
 import com.dulkirfabric.commands.ConfigCommand
 import com.dulkirfabric.commands.DynamicKeyCommand
 import com.dulkirfabric.commands.JoinDungeonCommands
+import com.dulkirfabric.commands.TestCommand
 import com.dulkirfabric.events.*
 import com.dulkirfabric.events.chat.ChatReceivedEvent
 import com.dulkirfabric.events.chat.ModifyCommandEvent
 import com.dulkirfabric.events.chat.OverlayReceivedEvent
 import com.dulkirfabric.features.*
 import com.dulkirfabric.features.chat.AbiPhoneDND
-import com.dulkirfabric.util.SoundUtil
 import com.dulkirfabric.util.TablistUtils
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityEvents
@@ -21,6 +21,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents
 import net.fabricmc.fabric.api.client.screen.v1.ScreenMouseEvents
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents
+import net.fabricmc.loader.api.FabricLoader
 
 
 /**
@@ -48,6 +49,8 @@ object Registrations {
         cre.register(JoinDungeonCommands.M6Command::register)
         cre.register(JoinDungeonCommands.M7Command::register)
         cre.register(DynamicKeyCommand::register)
+        if (FabricLoader.getInstance().isDevelopmentEnvironment)
+            cre.register(TestCommand::register)
     }
 
     fun registerEventListeners() {
