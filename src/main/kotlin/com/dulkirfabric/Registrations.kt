@@ -10,6 +10,7 @@ import com.dulkirfabric.events.chat.ModifyCommandEvent
 import com.dulkirfabric.events.chat.OverlayReceivedEvent
 import com.dulkirfabric.features.*
 import com.dulkirfabric.features.chat.AbiPhoneDND
+import com.dulkirfabric.util.SoundUtil
 import com.dulkirfabric.util.TablistUtils
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityEvents
@@ -57,6 +58,7 @@ object Registrations {
         EVENT_BUS.subscribe(CustomBlockOutline)
         EVENT_BUS.subscribe(AbiPhoneDND)
         EVENT_BUS.subscribe(InventoryScale)
+        EVENT_BUS.subscribe(IPhoneAlarm)
         EVENT_BUS.subscribe(AliasImpl)
         EVENT_BUS.subscribe(EffigyDisplay)
         EVENT_BUS.subscribe(TablistUtils)
