@@ -11,9 +11,9 @@ import net.minecraft.util.math.BlockPos
 import java.time.Duration
 
 object IPhoneAlarm {
-    var lastPosition: BlockPos? = null
-    var lastMoved = TimeMark.farPast()
-    val soundInstances = mutableListOf<SoundInstance>()
+    private var lastPosition: BlockPos? = null
+    private var lastMoved = TimeMark.farPast()
+    private val soundInstances = mutableListOf<SoundInstance>()
 
     @EventHandler
     fun onTick(event: ClientTickEvent) {
