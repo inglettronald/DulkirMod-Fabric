@@ -38,4 +38,11 @@ public class InGameHudMixin {
         }
         return original;
     }
+
+    @ModifyExpressionValue(method = "renderStatusBars(Lnet/minecraft/client/gui/DrawContext;)V",
+    at = @At(value = "INVOKE",
+            target = "Lnet/minecraft/client/gui/hud/InGameHud;getHeartCount(Lnet/minecraft/entity/LivingEntity;)I"))
+    public int onCheckForRiding(int original) {
+        return 0;
+    }
 }

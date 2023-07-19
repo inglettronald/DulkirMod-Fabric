@@ -8,6 +8,7 @@ import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.item.HeldItemRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.Arm;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.RotationAxis;
 import org.spongepowered.asm.mixin.Mixin;
@@ -34,17 +35,17 @@ public abstract class HeldItemRendererMixin {
             float rotY = DulkirConfig.ConfigVars.getConfigOptions().getHeldItemRotY();
             float rotZ = DulkirConfig.ConfigVars.getConfigOptions().getHeldItemRotZ();
 
-            float posX = DulkirConfig.ConfigVars.getConfigOptions().getHeldItemPosX() / 1000f;
-            float posY = DulkirConfig.ConfigVars.getConfigOptions().getHeldItemPosY() / 1000f;
-            float posZ = DulkirConfig.ConfigVars.getConfigOptions().getHeldItemPosZ() / 1000f;
+            float posX = DulkirConfig.ConfigVars.getConfigOptions().getHeldItemPosX() / 100f;
+            float posY = DulkirConfig.ConfigVars.getConfigOptions().getHeldItemPosY() / 100f;
+            float posZ = DulkirConfig.ConfigVars.getConfigOptions().getHeldItemPosZ() / 100f;
 
             float scale = DulkirConfig.ConfigVars.getConfigOptions().getHeldItemScale();
-
-            matrices.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(rotX));
-            matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(rotY));
-            matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(rotZ));
-            matrices.scale(scale, scale, scale);
             matrices.translate(posX, posY, posZ);
+
+            matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(rotX));
+            matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(rotY));
+            matrices.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(rotZ));
+            matrices.scale(scale, scale, scale);
         }
     }
 
@@ -56,5 +57,14 @@ public abstract class HeldItemRendererMixin {
     @ModifyExpressionValue(method = "updateHeldItems", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerEntity;getAttackCooldownProgress(F)F"))
     public float attackCooldown(float original) {
         return 1f;
+    }
+
+    @Inject(method = "applyEquipOffset", at = @At("HEAD"), cancellable = true)
+    public void onApplyEquipOffset(MatrixStack matrices, Arm arm, float equipProgress, CallbackInfo ci) {
+        if (DulkirConfig.ConfigVars.getConfigOptions().getCancelReEquip()) {
+            int i = arm == Arm.RIGHT ? 1 : -1;
+            matrices.translate((float)i * 0.56f, -0.52f, -0.72f);
+            ci.cancel();
+        }
     }
 }

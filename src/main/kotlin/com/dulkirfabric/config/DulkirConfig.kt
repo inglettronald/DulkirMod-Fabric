@@ -152,18 +152,21 @@ class DulkirConfig {
 
         //TODO: Come up with some custome float slider instead of int slider jank
         animations.addEntry(
-            entryBuilder.startIntSlider(Text.literal("posX"), configOptions.heldItemPosX, -300, 300)
+            entryBuilder.startIntSlider(Text.literal("posX"), configOptions.heldItemPosX, -150, 150)
                 .setSaveConsumer { newValue -> configOptions.heldItemPosX = newValue }
+                .setDefaultValue(0)
                 .build()
         )
         animations.addEntry(
-            entryBuilder.startIntSlider(Text.literal("posY"), configOptions.heldItemPosY, -300, 300)
+            entryBuilder.startIntSlider(Text.literal("posY"), configOptions.heldItemPosY, -150, 150)
                 .setSaveConsumer { newValue -> configOptions.heldItemPosY = newValue }
+                .setDefaultValue(0)
                 .build()
         )
         animations.addEntry(
-            entryBuilder.startIntSlider(Text.literal("posZ"), configOptions.heldItemPosZ, -300, 300)
+            entryBuilder.startIntSlider(Text.literal("posZ"), configOptions.heldItemPosZ, -150, 50)
                 .setSaveConsumer { newValue -> configOptions.heldItemPosZ = newValue }
+                .setDefaultValue(0)
                 .build()
         )
         animations.addEntry(
@@ -182,7 +185,7 @@ class DulkirConfig {
                 .build()
         )
         animations.addEntry(
-            entryBuilder.startFloatField(Text.literal("scale"), configOptions.heldItemScale)
+            entryBuilder.startFloatField(Text.literal("Held Item Scale"), configOptions.heldItemScale)
                 .setTooltip(Text.literal("Recommended range of .1 - 2"))
                 .setSaveConsumer { newValue ->
                     configOptions.heldItemScale = newValue
@@ -190,9 +193,12 @@ class DulkirConfig {
                 .build()
         )
         animations.addEntry(
-            entryBuilder.startIntSlider(Text.literal("rotationZ"), configOptions.handSwingDuration, 2, 15)
+            entryBuilder.startIntSlider(Text.literal("Swing Speed"), configOptions.handSwingDuration, 2, 20)
                 .setSaveConsumer { newValue -> configOptions.handSwingDuration = newValue }
                 .build()
+        )
+        animations.addEntry(
+            entryBuilder.mkToggle(Text.literal("Cancel Re-equip Animation"), configOptions::cancelReEquip)
         )
 
 
@@ -224,10 +230,11 @@ class DulkirConfig {
         var heldItemRotX: Int = 0,
         var heldItemRotY: Int = 0,
         var heldItemRotZ: Int = 0,
-        var heldItemScale: Float = 0f,
+        var heldItemScale: Float = 1f,
+        var handSwingDuration: Int = 6,
+        var cancelReEquip: Boolean = false,
         var duraCooldown: Boolean = false,
-        var alarmTimeout: Int = 300,
-        var handSwingDuration: Int = 6
+        var alarmTimeout: Int = 300
     )
 
     @Serializable

@@ -23,6 +23,11 @@ DulkirMod 1.8.9 Can be found [here](https://github.com/inglettronald/DulkirMod).
   <li>Abiphone DND</li>
   <li>Custom Selected Block outline</li>
   <li>Inactive Effigy Waypoints (rift)</li>
+  <li>Custom Held Item Placement/Animations</li>
+  <li>Glow Utility (ESP Toggle currently broken on AMD, HMU if you're a wizard with OpenGL and feel inclined to help)</li>
+  <li>Cooldown Tracking through Durability Display (Working for some sound cooldowns, need to input some data)</li>
+  <li>NO DOWNTIME alarm. Plays Iphone alarm if you stop moving after a certain amount of time.</li>
+  <li>Large Explosion Particle render toggle</li>
 </ul>
 </details>
 
@@ -32,11 +37,11 @@ DulkirMod 1.8.9 Can be found [here](https://github.com/inglettronald/DulkirMod).
     </summary>
     <ul>
       <li>Most features from DulkirMod 1.8.9</li>
-      <li>Starred Mob Outlines in Dungeons</li>
-      <li>A more thorough Rendering library to support the expandability of this mod</li>
-      <li>Waypoints (coming soon!)</li>
-      <li>OldAnimations AND customAnimations</li>
+      <li>Lots more Rendering Utility</li>
+      <li>OldAnimations ??</li>
       <li>Etherwarp display</li>
+      <li>HUD for health, Mana, Speed</li>
+      <li>A lot more I'm forgetting about</li>
     </ul>
 </details>
 
