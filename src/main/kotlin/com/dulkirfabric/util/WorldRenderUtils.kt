@@ -202,6 +202,73 @@ object WorldRenderUtils {
         matrices.pop()
     }
 
+    /**
+     * If you intend to show with distance, use a waypoint I think. If you're looking at this
+     * statement and screaming at me for forgetting some use case, either let me know or compile
+     * a method that accomplishes your goals based off of this example code. Neither of these
+     * things should be incredibly difficult.
+     */
+    fun drawText(
+        text: Text,
+        context: WorldRenderContext,
+        pos: Vec3d,
+        depthTest: Boolean = true,
+        scale: Float = 1f
+    ) {
+        if (depthTest) {
+            RenderSystem.disableDepthTest()
+        }
+        RenderSystem.enableBlend()
+        RenderSystem.defaultBlendFunc()
+        RenderSystem.disableCull()
+
+        val vertexConsumer = context.worldRenderer().bufferBuilders.entityVertexConsumers
+        val matrices = context.matrixStack()
+        matrices.push()
+        matrices.translate(
+            pos.x - context.camera().pos.x,
+            pos.y - context.camera().pos.y,
+            pos.z - context.camera().pos.z
+        )
+        matrices.multiply(context.camera().rotation)
+        matrices.scale(-.025f * scale, -.025f * scale, -1F)
+        val matrix4f = matrices.peek().positionMatrix
+        val textRenderer = MinecraftClient.getInstance().textRenderer
+        val j: Int = (.25 * 255.0f).toInt() shl 24
+        val buf = vertexConsumer.getBuffer(RenderLayer.getTextBackgroundSeeThrough())
+        buf.vertex(matrix4f, -1.0f - textRenderer.getWidth(text) / 2, -1.0f, 0.0f)
+            .color(j)
+            .light(LightmapTextureManager.MAX_BLOCK_LIGHT_COORDINATE)
+            .next()
+        buf.vertex(matrix4f, -1.0f - textRenderer.getWidth(text) / 2, textRenderer.fontHeight.toFloat(), 0.0f)
+            .color(j)
+            .light(LightmapTextureManager.MAX_BLOCK_LIGHT_COORDINATE)
+            .next()
+        buf.vertex(matrix4f, textRenderer.getWidth(text).toFloat() / 2, textRenderer.fontHeight.toFloat(), 0.0f)
+            .color(j)
+            .light(LightmapTextureManager.MAX_BLOCK_LIGHT_COORDINATE)
+            .next()
+        buf.vertex(matrix4f, textRenderer.getWidth(text).toFloat() / 2, -1.0f, 0.0f)
+            .color(j)
+            .light(LightmapTextureManager.MAX_BLOCK_LIGHT_COORDINATE)
+            .next()
+
+        matrices.translate(0F, 0F, 0.01F)
+
+        textRenderer.draw(
+            text, -textRenderer.getWidth(text).toFloat() / 2, 0f, 0xFFFFFF, false, matrix4f, vertexConsumer,
+            TextRenderer.TextLayerType.SEE_THROUGH,
+            0, LightmapTextureManager.MAX_LIGHT_COORDINATE
+        )
+
+        vertexConsumer.drawCurrentLayer()
+        matrices.pop()
+        RenderSystem.setShaderColor(1F, 1F, 1F, 1F)
+        RenderSystem.enableDepthTest()
+        RenderSystem.enableCull()
+        RenderSystem.disableBlend()
+    }
+
     fun renderWaypoint(
         text: Text,
         context: WorldRenderContext,

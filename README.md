@@ -28,6 +28,7 @@ DulkirMod 1.8.9 Can be found [here](https://github.com/inglettronald/DulkirMod).
   <li>Cooldown Tracking through Durability Display (Working for some sound cooldowns, need to input some data)</li>
   <li>NO DOWNTIME alarm. Plays Iphone alarm if you stop moving after a certain amount of time.</li>
   <li>Large Explosion Particle render toggle</li>
+  <li>Hide Scoreboard Numbers</li>
 </ul>
 </details>
 

@@ -67,6 +67,7 @@ object Registrations {
         EVENT_BUS.subscribe(TablistUtils)
         EVENT_BUS.subscribe(CullExplosionParticles)
         EVENT_BUS.subscribe(CooldownDisplays)
+        EVENT_BUS.subscribe(ArachneFeatures)
     }
 
     fun registerEvents() {

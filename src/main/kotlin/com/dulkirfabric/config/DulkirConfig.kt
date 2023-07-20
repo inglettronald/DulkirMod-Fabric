@@ -113,6 +113,12 @@ class DulkirConfig {
                 .setTooltip(Text.literal("Set to 0 to disable. (Time in seconds)"))
                 .build()
         )
+        general.addEntry(
+            entryBuilder.mkToggle(Text.literal("Arachne Keeper Waypoints"), configOptions::arachneKeeperWaypoints)
+        )
+        general.addEntry(
+            entryBuilder.mkToggle(Text.literal("Arachne Boss Spawn Timer"), configOptions::arachneSpawnTimer)
+        )
 
         val shortcuts = builder.getOrCreateCategory(Text.literal("Shortcuts"))
         shortcuts.addEntry(
@@ -234,7 +240,9 @@ class DulkirConfig {
         var handSwingDuration: Int = 6,
         var cancelReEquip: Boolean = false,
         var duraCooldown: Boolean = false,
-        var alarmTimeout: Int = 300
+        var alarmTimeout: Int = 300,
+        var arachneKeeperWaypoints: Boolean = false,
+        var arachneSpawnTimer: Boolean = false
     )
 
     @Serializable
