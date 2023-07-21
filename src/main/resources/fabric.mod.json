@@ -16,7 +16,7 @@
 	},
 	"license": "MPL-2.0",
 	"icon": "assets/dulkirmod-fabric/icon.png",
-	"environment": "*",
+	"environment": "client",
 	"entrypoints": {
 		"main": [
 			{
@@ -47,5 +47,6 @@
 		"Mod Menu": "https://modrinth.com/mod/modmenu",
 		"Puzzle": "https://www.midnightdust.eu/",
 		"Starlight": "https://www.curseforge.com/minecraft/mc-mods/starlight"
-	}
+	},
+	"accessWidener" : "dulkirmod.accesswidener"
 }

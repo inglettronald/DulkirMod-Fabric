@@ -219,6 +219,21 @@ class DulkirConfig {
                 .build()
         )
 
+        val bridge = builder.getOrCreateCategory(Text.literal("Bridge Features"))
+
+        bridge.addEntry(
+            entryBuilder.mkToggle(Text.literal("Format Bridge Messages"), configOptions::bridgeFormatter)
+        )
+        bridge.addEntry(
+            entryBuilder.mkStringField(Text.literal("Bridge Bot IGN"), configOptions::bridgeBotName)
+        )
+        bridge.addEntry(
+            entryBuilder.startColorField(Text.literal("Bridge User Color"), configOptions.bridgeNameColor)
+                .setDefaultValue(Formatting.GOLD.colorValue!!)
+                .setSaveConsumer { newValue -> configOptions.bridgeNameColor = newValue }
+                .build()
+        )
+
         builder.transparentBackground()
         screen = builder.build()
     }
@@ -246,7 +261,10 @@ class DulkirConfig {
         var duraCooldown: Boolean = false,
         var alarmTimeout: Int = 300,
         var arachneKeeperWaypoints: Boolean = false,
-        var arachneSpawnTimer: Boolean = false
+        var arachneSpawnTimer: Boolean = false,
+        var bridgeFormatter: Boolean = false,
+        var bridgeBotName: String = "Dilkur",
+        var bridgeNameColor: Int = Formatting.GOLD.colorValue!!
     )
 
     @Serializable
