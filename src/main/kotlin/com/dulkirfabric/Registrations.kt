@@ -1,10 +1,7 @@
 package com.dulkirfabric
 
 import com.dulkirfabric.DulkirModFabric.EVENT_BUS
-import com.dulkirfabric.commands.ConfigCommand
-import com.dulkirfabric.commands.DynamicKeyCommand
-import com.dulkirfabric.commands.JoinDungeonCommands
-import com.dulkirfabric.commands.TestCommand
+import com.dulkirfabric.commands.*
 import com.dulkirfabric.events.*
 import com.dulkirfabric.events.chat.ChatReceivedEvent
 import com.dulkirfabric.events.chat.ModifyCommandEvent
@@ -49,6 +46,7 @@ object Registrations {
         cre.register(JoinDungeonCommands.M6Command::register)
         cre.register(JoinDungeonCommands.M7Command::register)
         cre.register(DynamicKeyCommand::register)
+        cre.register(AnimationCommand::register)
         if (FabricLoader.getInstance().isDevelopmentEnvironment)
             cre.register(TestCommand::register)
     }

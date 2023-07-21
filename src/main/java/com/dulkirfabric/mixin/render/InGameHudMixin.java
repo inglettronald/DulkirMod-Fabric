@@ -43,6 +43,8 @@ public class InGameHudMixin {
     at = @At(value = "INVOKE",
             target = "Lnet/minecraft/client/gui/hud/InGameHud;getHeartCount(Lnet/minecraft/entity/LivingEntity;)I"))
     public int onCheckForRiding(int original) {
-        return 0;
+        if (DulkirConfig.ConfigVars.getConfigOptions().getHideHungerOverlay() && Utils.INSTANCE.isInSkyblock())
+            return 1;
+        return original;
     }
 }

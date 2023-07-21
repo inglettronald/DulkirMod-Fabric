@@ -29,6 +29,8 @@ DulkirMod 1.8.9 Can be found [here](https://github.com/inglettronald/DulkirMod).
   <li>NO DOWNTIME alarm. Plays Iphone alarm if you stop moving after a certain amount of time.</li>
   <li>Large Explosion Particle render toggle</li>
   <li>Hide Scoreboard Numbers</li>
+  <li>Arachne Spawn Timer and Keeper Waypoints</li>
+  <li>Hide Hunger Display option</li>
 </ul>
 </details>
 

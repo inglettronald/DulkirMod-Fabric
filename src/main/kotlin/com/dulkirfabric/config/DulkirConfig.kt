@@ -17,6 +17,7 @@ import com.dulkirfabric.DulkirModFabric.mc
 import com.dulkirfabric.config.ConfigHelper.mkKeyField
 import com.dulkirfabric.config.ConfigHelper.mkStringField
 import com.dulkirfabric.config.ConfigHelper.mkToggle
+import com.dulkirfabric.util.AnimationPreset
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.UseSerializers
 import kotlinx.serialization.decodeFromString
@@ -106,6 +107,9 @@ class DulkirConfig {
             entryBuilder.mkToggle(Text.literal("Hide Armor Overlay in Skyblock"), configOptions::hideArmorOverlay)
         )
         general.addEntry(
+            entryBuilder.mkToggle(Text.literal("Hide Hunger Overlay in Skyblock"), configOptions::hideHungerOverlay)
+        )
+        general.addEntry(
             entryBuilder.startIntSlider(Text.literal("Anti Downtime Alarm"), configOptions.alarmTimeout, 0, 1000)
                 .setSaveConsumer {
                     configOptions.alarmTimeout = it
@@ -158,55 +162,62 @@ class DulkirConfig {
 
         //TODO: Come up with some custome float slider instead of int slider jank
         animations.addEntry(
-            entryBuilder.startIntSlider(Text.literal("posX"), configOptions.heldItemPosX, -150, 150)
-                .setSaveConsumer { newValue -> configOptions.heldItemPosX = newValue }
+            entryBuilder.startIntSlider(Text.literal("posX"), configOptions.animationPreset.posX, -150, 150)
+                .setSaveConsumer { newValue -> configOptions.animationPreset.posX = newValue }
                 .setDefaultValue(0)
                 .build()
         )
         animations.addEntry(
-            entryBuilder.startIntSlider(Text.literal("posY"), configOptions.heldItemPosY, -150, 150)
-                .setSaveConsumer { newValue -> configOptions.heldItemPosY = newValue }
+            entryBuilder.startIntSlider(Text.literal("posY"), configOptions.animationPreset.posY, -150, 150)
+                .setSaveConsumer { newValue -> configOptions.animationPreset.posZ = newValue }
                 .setDefaultValue(0)
                 .build()
         )
         animations.addEntry(
-            entryBuilder.startIntSlider(Text.literal("posZ"), configOptions.heldItemPosZ, -150, 50)
-                .setSaveConsumer { newValue -> configOptions.heldItemPosZ = newValue }
+            entryBuilder.startIntSlider(Text.literal("posZ"), configOptions.animationPreset.posZ, -150, 50)
+                .setSaveConsumer { newValue -> configOptions.animationPreset.posZ = newValue }
                 .setDefaultValue(0)
                 .build()
         )
         animations.addEntry(
-            entryBuilder.startIntSlider(Text.literal("rotationX"), configOptions.heldItemRotX, -180, 180)
-                .setSaveConsumer { newValue -> configOptions.heldItemRotX = newValue }
+            entryBuilder.startIntSlider(Text.literal("rotationX"), configOptions.animationPreset.rotX, -180, 180)
+                .setSaveConsumer { newValue -> configOptions.animationPreset.rotX = newValue }
+                .setDefaultValue(0)
                 .build()
         )
         animations.addEntry(
-            entryBuilder.startIntSlider(Text.literal("rotationY"), configOptions.heldItemRotY, -180, 180)
-                .setSaveConsumer { newValue -> configOptions.heldItemRotY = newValue }
+            entryBuilder.startIntSlider(Text.literal("rotationY"), configOptions.animationPreset.rotY, -180, 180)
+                .setSaveConsumer { newValue -> configOptions.animationPreset.rotY = newValue }
+                .setDefaultValue(0)
                 .build()
         )
         animations.addEntry(
-            entryBuilder.startIntSlider(Text.literal("rotationZ"), configOptions.heldItemRotZ, -180, 180)
-                .setSaveConsumer { newValue -> configOptions.heldItemRotZ = newValue }
+            entryBuilder.startIntSlider(Text.literal("rotationZ"), configOptions.animationPreset.rotZ, -180, 180)
+                .setSaveConsumer { newValue -> configOptions.animationPreset.rotZ = newValue }
+                .setDefaultValue(0)
                 .build()
         )
         animations.addEntry(
-            entryBuilder.startFloatField(Text.literal("Held Item Scale"), configOptions.heldItemScale)
+            entryBuilder.startFloatField(Text.literal("Held Item Scale"), configOptions.animationPreset.scale)
                 .setTooltip(Text.literal("Recommended range of .1 - 2"))
                 .setSaveConsumer { newValue ->
-                    configOptions.heldItemScale = newValue
+                    configOptions.animationPreset.scale = newValue
                 }
+                .setDefaultValue(1f)
                 .build()
         )
         animations.addEntry(
-            entryBuilder.startIntSlider(Text.literal("Swing Speed"), configOptions.handSwingDuration, 2, 20)
-                .setSaveConsumer { newValue -> configOptions.handSwingDuration = newValue }
+            entryBuilder.startIntSlider(Text.literal("Swing Speed"), configOptions.animationPreset.swingDuration, 2, 20)
+                .setSaveConsumer { newValue -> configOptions.animationPreset.swingDuration = newValue }
+                .setDefaultValue(6)
                 .build()
         )
         animations.addEntry(
-            entryBuilder.mkToggle(Text.literal("Cancel Re-equip Animation"), configOptions::cancelReEquip)
+            entryBuilder.startBooleanToggle(Text.literal("Cancel Re-Equip Animation"), configOptions.animationPreset.cancelReEquip)
+                .setSaveConsumer {newValue -> configOptions.animationPreset.cancelReEquip = newValue }
+                .setDefaultValue(false)
+                .build()
         )
-
 
         builder.transparentBackground()
         screen = builder.build()
@@ -230,15 +241,8 @@ class DulkirConfig {
         var inactiveEffigyDisplay: Boolean = false,
         var disableExplosionParticles: Boolean = false,
         var hideArmorOverlay: Boolean = false,
-        var heldItemPosX: Int = 0,
-        var heldItemPosY: Int = 0,
-        var heldItemPosZ: Int = 0,
-        var heldItemRotX: Int = 0,
-        var heldItemRotY: Int = 0,
-        var heldItemRotZ: Int = 0,
-        var heldItemScale: Float = 1f,
-        var handSwingDuration: Int = 6,
-        var cancelReEquip: Boolean = false,
+        var hideHungerOverlay: Boolean = false,
+        var animationPreset: AnimationPreset = AnimationPreset(),
         var duraCooldown: Boolean = false,
         var alarmTimeout: Int = 300,
         var arachneKeeperWaypoints: Boolean = false,
