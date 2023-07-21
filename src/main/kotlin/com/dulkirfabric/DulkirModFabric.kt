@@ -14,7 +14,6 @@
 package com.dulkirfabric
 
 import com.dulkirfabric.config.DulkirConfig
-import com.dulkirfabric.util.SoundUtil
 import com.llamalad7.mixinextras.MixinExtrasBootstrap
 import meteordevelopment.orbit.EventBus
 import net.fabricmc.api.ModInitializer
