@@ -2,6 +2,7 @@ package com.dulkirfabric.features
 
 import com.dulkirfabric.events.EntityLoadEvent
 import com.dulkirfabric.events.WorldRenderLastEvent
+import com.dulkirfabric.util.GlowingEntityInterface
 import com.dulkirfabric.util.WorldRenderUtils
 import meteordevelopment.orbit.EventHandler
 import net.minecraft.text.Style
@@ -26,7 +27,7 @@ object RenderTest {
 
     @EventHandler
     fun onLoadEnt(event: EntityLoadEvent) {
-//        if (event.entity !is GlowingEntityInterface) return
-//        event.entity.setDulkirEntityGlow(true, Color(255, 255, 255, 255),false)
+        if (event.entity !is GlowingEntityInterface) return
+        event.entity.setDulkirEntityGlow(true, Color(0, 0, 255, 255),false)
     }
 }
