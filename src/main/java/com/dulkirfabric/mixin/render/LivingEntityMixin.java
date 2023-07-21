@@ -59,14 +59,15 @@ public class LivingEntityMixin implements GlowingEntityInterface {
     @Inject(method = "tickMovement", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;tickNewAi()V",
     shift = At.Shift.AFTER))
     public void onWhatever(CallbackInfo ci) {
-        if (DulkirConfig.ConfigVars.getConfigOptions().getHandSwingDuration() == 6) return;
-        if (animationTicks > DulkirConfig.ConfigVars.getConfigOptions().getHandSwingDuration()) {
+        if (DulkirConfig.ConfigVars.getConfigOptions().getAnimationPreset().getSwingDuration() == 6) return;
+        if (animationTicks > DulkirConfig.ConfigVars.getConfigOptions().getAnimationPreset().getSwingDuration()) {
             animationTicks = 0;
         }
         if (animationTicks == 0) {
             handSwingProgress = 1F;
         } else {
-            handSwingProgress = (animationTicks - 1F) / DulkirConfig.ConfigVars.getConfigOptions().getHandSwingDuration();
+            handSwingProgress = (animationTicks - 1F) /
+                    DulkirConfig.ConfigVars.getConfigOptions().getAnimationPreset().getSwingDuration();
             animationTicks++;
         }
     }

@@ -47,6 +47,7 @@ object DulkirModFabric : ModInitializer {
 		Registrations.registerEvents()
 
 		DulkirConfig.loadConfig()
+		System.setProperty("java.awt.headless", "false");
 	}
 
 }
