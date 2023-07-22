@@ -1,4 +1,4 @@
-package com.dulkirfabric.mixin;
+package com.dulkirfabric.mixin.io;
 
 import com.dulkirfabric.features.InventoryScale;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;

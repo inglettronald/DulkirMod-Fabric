@@ -1,4 +1,4 @@
-package com.dulkirfabric.mixin.render;
+package com.dulkirfabric.mixin.io;
 
 import com.dulkirfabric.events.WorldKeyPressEvent;
 import net.minecraft.client.Keyboard;

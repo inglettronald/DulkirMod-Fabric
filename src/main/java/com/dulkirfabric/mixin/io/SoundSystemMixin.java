@@ -1,4 +1,4 @@
-package com.dulkirfabric.mixin;
+package com.dulkirfabric.mixin.io;
 
 import com.dulkirfabric.events.PlaySoundEvent;
 import net.minecraft.client.sound.SoundInstance;

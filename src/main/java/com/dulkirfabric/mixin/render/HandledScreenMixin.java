@@ -1,4 +1,4 @@
-package com.dulkirfabric.mixin.io;
+package com.dulkirfabric.mixin.render;
 
 import com.dulkirfabric.events.InventoryKeyPressEvent;
 import com.dulkirfabric.events.SlotRenderEvent;
