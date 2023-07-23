@@ -1,11 +1,18 @@
 package com.dulkirfabric.util
 
 import com.dulkirfabric.DulkirModFabric.mc
+import com.dulkirfabric.events.HudRenderEvent
+import meteordevelopment.orbit.EventHandler
 import net.minecraft.client.gui.DrawContext
 import net.minecraft.text.Text
+import java.time.Duration
 
 object HudRenderUtil {
-    fun drawTitle(context: DrawContext, content: Text) {
+
+    private var curTitle: Text? = null
+    private var clearTime: Long = -1
+
+    private fun drawTitle(context: DrawContext, content: Text) {
         val matrices = context.matrices
         val tr = mc.textRenderer
         val w = tr.getWidth(content)
@@ -15,5 +22,20 @@ object HudRenderUtil {
         matrices.scale(sf, sf, 1f)
         context.drawText(tr, content, 0, -tr.fontHeight / 2, -1, true)
         matrices.pop()
+    }
+
+    fun drawTitle(content: Text, duration: Duration) {
+        curTitle = content
+        clearTime = System.currentTimeMillis() + duration.toMillis()
+    }
+
+    @EventHandler
+    fun onHudRender(event: HudRenderEvent) {
+        val content = curTitle ?: return
+        if (System.currentTimeMillis() >= clearTime) {
+            curTitle = null
+            return
+        }
+        drawTitle(event.context, content)
     }
 }
