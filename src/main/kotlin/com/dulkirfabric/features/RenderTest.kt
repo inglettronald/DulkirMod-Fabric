@@ -1,10 +1,14 @@
 package com.dulkirfabric.features
 
+import com.dulkirfabric.DulkirModFabric.mc
 import com.dulkirfabric.events.EntityLoadEvent
+import com.dulkirfabric.events.HudRenderEvent
 import com.dulkirfabric.events.WorldRenderLastEvent
 import com.dulkirfabric.util.GlowingEntityInterface
+import com.dulkirfabric.util.HudRenderUtil
 import com.dulkirfabric.util.WorldRenderUtils
 import meteordevelopment.orbit.EventHandler
+import net.minecraft.client.gui.DrawContext
 import net.minecraft.text.Style
 import net.minecraft.text.Text
 import net.minecraft.util.math.Vec3d
@@ -23,11 +27,17 @@ object RenderTest {
 //            if (it is GlowingEntityInterface)
 //                it.setDulkirEntityGlow(true, Color(255, 255, 255, 255), Random(it.id).nextBoolean())
 //        }
+        //HudRenderUtil.drawTitle(event.context, Text.literal("Hello World!"))
     }
 
     @EventHandler
     fun onLoadEnt(event: EntityLoadEvent) {
-        if (event.entity !is GlowingEntityInterface) return
-        event.entity.setDulkirEntityGlow(true, Color(0, 0, 255, 255),false)
+        //if (event.entity !is GlowingEntityInterface) return
+        //event.entity.setDulkirEntityGlow(true, Color(0, 0, 255, 255),false)
+    }
+
+    @EventHandler
+    fun onHudRender(event: HudRenderEvent) {
+    //    HudRenderUtil.drawTitle(event.context, Text.literal("Hello World!"))
     }
 }

@@ -169,7 +169,7 @@ class DulkirConfig {
         )
         animations.addEntry(
             entryBuilder.startIntSlider(Text.literal("posY"), configOptions.animationPreset.posY, -150, 150)
-                .setSaveConsumer { newValue -> configOptions.animationPreset.posZ = newValue }
+                .setSaveConsumer { newValue -> configOptions.animationPreset.posY = newValue }
                 .setDefaultValue(0)
                 .build()
         )
