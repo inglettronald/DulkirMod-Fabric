@@ -40,7 +40,7 @@ object EffigyDisplay {
     fun checkEffigies(event: LongUpdateEvent) {
         if (!DulkirConfig.configOptions.inactiveEffigyDisplay) return
         if (!Utils.isInSkyblock()) return
-        if (TablistUtils.area != "The Rift") {
+        if (TablistUtils.persistentInfo.area != "The Rift") {
             effigyWaypoints.forEach { it.render = false }
             return
         }

@@ -125,6 +125,12 @@ class DulkirConfig {
         general.addEntry(
             entryBuilder.mkToggle(Text.literal("Arachne Boss Spawn Timer"), configOptions::arachneSpawnTimer)
         )
+        general.addEntry(
+            entryBuilder.mkToggle(Text.literal("Convert Action Bar to HUD elements"), configOptions::hudifyActionBar, tooltip = Text.literal("This converts Mana/Health/Def/Stacks as HUD elements"))
+        )
+        general.addEntry(
+            entryBuilder.mkToggle(Text.literal("Include EHP in def HUD element"), configOptions::showEHP, tooltip = Text.literal("Must have Action Bar HUD elements Enabled"))
+        )
 
         val shortcuts = builder.getOrCreateCategory(Text.literal("Shortcuts"))
         shortcuts.addEntry(
@@ -268,6 +274,8 @@ class DulkirConfig {
         var bridgeBotName: String = "Dilkur",
         var bridgeNameColor: Int = Formatting.GOLD.colorValue!!,
         val positions: MutableMap<String, HudElement.Positioning> = mutableMapOf(),
+        var hudifyActionBar: Boolean = true,
+        var showEHP: Boolean = false
     )
 
     @Serializable
@@ -297,9 +305,8 @@ class DulkirConfig {
         ): HudElement {
             val element = HudElement(
                 configOptions.positions.getOrPut(
-                    id,
-                    { HudElement.Positioning(defaultPosition.x(), defaultPosition.y(), 1F) }
-                ),
+                    id
+                ) { HudElement.Positioning(defaultPosition.x(), defaultPosition.y(), 1F) },
                 id,
                 label, width, height,
             )

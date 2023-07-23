@@ -37,7 +37,7 @@ object ArachneFeatures {
     private var bigboy: Boolean = false
     @EventHandler
     fun onRenderWorldLast(event: WorldRenderLastEvent) {
-        if (TablistUtils.area != "Spider's Den") return
+        if (TablistUtils.persistentInfo.area != "Spider's Den") return
         if (!DulkirConfig.configOptions.arachneKeeperWaypoints) return
         keeperWaypoints.forEach {
             WorldRenderUtils.renderWaypoint(it.name, event.context, it.pos)
@@ -47,7 +47,7 @@ object ArachneFeatures {
     @EventHandler
     fun onChat(event: ChatReceivedEvent) {
         if (!DulkirConfig.configOptions.arachneSpawnTimer) return
-        if (TablistUtils.area != "Spider's Den") return
+        if (TablistUtils.persistentInfo.area != "Spider's Den") return
         val str = event.message.unformattedString.trim()
         if (str matches spawnRegex) {
             bigboy = false
@@ -67,7 +67,7 @@ object ArachneFeatures {
     @EventHandler
     fun onWorldRenderLast(event: WorldRenderLastEvent) {
         if (!DulkirConfig.configOptions.arachneSpawnTimer) return
-        if (TablistUtils.area != "Spider's Den") return
+        if (TablistUtils.persistentInfo.area != "Spider's Den") return
         if (spawnmillis <=startmillis) return
 
         var time: Int = if (bigboy) {

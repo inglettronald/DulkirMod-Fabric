@@ -9,6 +9,9 @@ import com.dulkirfabric.events.chat.OverlayReceivedEvent
 import com.dulkirfabric.features.*
 import com.dulkirfabric.features.chat.AbiPhoneDND
 import com.dulkirfabric.features.chat.BridgeBotFormatter
+import com.dulkirfabric.hud.ActionBarHudReplacements
+import com.dulkirfabric.hud.SpeedOverlay
+import com.dulkirfabric.util.ActionBarUtil
 import com.dulkirfabric.util.TablistUtils
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityEvents
@@ -69,6 +72,9 @@ object Registrations {
         EVENT_BUS.subscribe(CooldownDisplays)
         EVENT_BUS.subscribe(ArachneFeatures)
         EVENT_BUS.subscribe(BridgeBotFormatter)
+        EVENT_BUS.subscribe(SpeedOverlay)
+        EVENT_BUS.subscribe(ActionBarUtil)
+        EVENT_BUS.subscribe(ActionBarHudReplacements)
     }
 
     fun registerEvents() {
@@ -79,8 +85,14 @@ object Registrations {
             tickCount++
         }
         ClientReceiveMessageEvents.ALLOW_GAME.register { message, overlay ->
-            if (overlay) !OverlayReceivedEvent(message.toString()).post()
-            else !ChatReceivedEvent(message).post()
+            if (!overlay)
+                return@register !ChatReceivedEvent(message).post()
+            return@register true
+        }
+        ClientReceiveMessageEvents.MODIFY_GAME.register { message, overlay ->
+            if (overlay)
+                return@register OverlayReceivedEvent(message).post()
+            return@register message
         }
 
         ClientSendMessageEvents.MODIFY_COMMAND.register { command ->
@@ -110,5 +122,6 @@ object Registrations {
         HudRenderCallback.EVENT.register { context, delta ->
             HudRenderEvent(context, delta).post()
         }
+
     }
 }
