@@ -1,4 +1,4 @@
-package com.dulkirfabric.util
+package com.dulkirfabric.util.render
 
 import com.mojang.blaze3d.systems.RenderSystem
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext

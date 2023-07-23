@@ -3,7 +3,7 @@ package com.dulkirfabric.features
 import com.dulkirfabric.config.DulkirConfig
 import com.dulkirfabric.events.BlockOutlineEvent
 import com.dulkirfabric.util.ColorUtil
-import com.dulkirfabric.util.WorldRenderUtils
+import com.dulkirfabric.util.render.WorldRenderUtils
 import meteordevelopment.orbit.EventHandler
 import net.minecraft.util.math.Box
 

@@ -1,10 +1,8 @@
 package com.dulkirfabric.mixin.render;
 
 import com.dulkirfabric.config.DulkirConfig;
-import com.dulkirfabric.events.TooltipRenderChangeEvent;
 import com.dulkirfabric.features.InventoryScale;
 import com.dulkirfabric.features.TooltipImpl;
-import com.dulkirfabric.util.ItemChangeHandler;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import net.minecraft.client.MinecraftClient;

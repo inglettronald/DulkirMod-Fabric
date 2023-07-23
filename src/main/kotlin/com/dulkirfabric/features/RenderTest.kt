@@ -2,7 +2,7 @@ package com.dulkirfabric.features
 
 import com.dulkirfabric.events.EntityLoadEvent
 import com.dulkirfabric.events.WorldRenderLastEvent
-import com.dulkirfabric.util.WorldRenderUtils
+import com.dulkirfabric.util.render.WorldRenderUtils
 import meteordevelopment.orbit.EventHandler
 import net.minecraft.text.Style
 import net.minecraft.text.Text

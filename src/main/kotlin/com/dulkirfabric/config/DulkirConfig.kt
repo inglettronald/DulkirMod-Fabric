@@ -17,7 +17,7 @@ import com.dulkirfabric.DulkirModFabric.mc
 import com.dulkirfabric.config.ConfigHelper.mkKeyField
 import com.dulkirfabric.config.ConfigHelper.mkStringField
 import com.dulkirfabric.config.ConfigHelper.mkToggle
-import com.dulkirfabric.util.AnimationPreset
+import com.dulkirfabric.util.render.AnimationPreset
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.UseSerializers
 import kotlinx.serialization.decodeFromString

@@ -6,7 +6,7 @@ import com.dulkirfabric.events.chat.ChatReceivedEvent
 import com.dulkirfabric.util.TablistUtils
 import com.dulkirfabric.util.TextUtils
 import com.dulkirfabric.util.TextUtils.unformattedString
-import com.dulkirfabric.util.WorldRenderUtils
+import com.dulkirfabric.util.render.WorldRenderUtils
 import meteordevelopment.orbit.EventHandler
 import net.minecraft.text.Style
 import net.minecraft.text.Text

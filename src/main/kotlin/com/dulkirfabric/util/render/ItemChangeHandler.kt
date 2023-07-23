@@ -1,4 +1,4 @@
-package com.dulkirfabric.util
+package com.dulkirfabric.util.render
 
 import com.dulkirfabric.events.TooltipRenderChangeEvent
 

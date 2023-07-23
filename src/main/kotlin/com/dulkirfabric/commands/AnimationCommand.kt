@@ -1,14 +1,11 @@
 package com.dulkirfabric.commands
 
 import com.dulkirfabric.config.DulkirConfig
-import com.dulkirfabric.util.AnimationPreset
+import com.dulkirfabric.util.render.AnimationPreset
 import com.dulkirfabric.util.TextUtils
 import com.google.gson.Gson
 import com.mojang.brigadier.CommandDispatcher
-import com.mojang.brigadier.arguments.StringArgumentType
 import com.mojang.brigadier.builder.LiteralArgumentBuilder
-import com.mojang.brigadier.builder.RequiredArgumentBuilder
-import me.shedaniel.autoconfig.ConfigData
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
 import net.minecraft.command.CommandRegistryAccess
 import java.awt.Toolkit

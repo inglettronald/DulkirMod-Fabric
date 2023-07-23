@@ -1,11 +1,8 @@
 package com.dulkirfabric.mixin.render;
 
 import com.dulkirfabric.config.DulkirConfig;
-import com.dulkirfabric.util.GlowingEntityInterface;
-import net.minecraft.client.MinecraftClient;
+import com.dulkirfabric.util.render.GlowingEntityInterface;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.text.Text;
 import net.minecraft.util.Hand;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

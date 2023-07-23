@@ -1,6 +1,6 @@
 package com.dulkirfabric.mixin.render;
 
-import com.dulkirfabric.util.GlowingEntityInterface;
+import com.dulkirfabric.util.render.GlowingEntityInterface;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.sugar.Local;
 import net.minecraft.client.render.WorldRenderer;
