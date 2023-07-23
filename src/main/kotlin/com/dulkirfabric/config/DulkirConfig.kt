@@ -19,13 +19,13 @@ import com.dulkirfabric.config.ConfigHelper.mkStringField
 import com.dulkirfabric.config.ConfigHelper.mkToggle
 import com.dulkirfabric.util.render.AnimationPreset
 import com.dulkirfabric.util.render.HudElement
-import com.dulkirfabric.util.render.HudElementDefaultPositionings
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.UseSerializers
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import me.shedaniel.clothconfig2.api.ConfigBuilder
+import moe.nea.jarvis.api.Point
 import net.minecraft.client.gui.screen.Screen
 import net.minecraft.client.util.InputUtil
 import net.minecraft.client.util.InputUtil.UNKNOWN_KEY
@@ -267,7 +267,7 @@ class DulkirConfig {
         var bridgeFormatter: Boolean = false,
         var bridgeBotName: String = "Dilkur",
         var bridgeNameColor: Int = Formatting.GOLD.colorValue!!,
-        var hudPosData: HudElementDefaultPositionings = HudElementDefaultPositionings()
+        val positions: MutableMap<String, HudElement.Positioning> = mutableMapOf(),
     )
 
     @Serializable
@@ -288,14 +288,25 @@ class DulkirConfig {
     companion object ConfigVars {
 
         var configOptions = ConfigOptions()
-        var Huds: MutableMap<(HudElementDefaultPositionings) -> HudElement.Positioning, HudElement> = mutableMapOf()
-        fun hudElement(pos: (HudElementDefaultPositionings) -> HudElement.Positioning, label: Text, width: Int, height: Int): HudElement {
-            val hud = HudElement(pos(configOptions.hudPosData), label, width, height)
-            Huds[pos] = hud
-            return hud
+
+        val huds = mutableListOf<Pair<HudElement, Point>>()
+
+        fun hudElement(
+            id: String, label: Text, width: Int, height: Int,
+            defaultPosition: Point
+        ): HudElement {
+            val element = HudElement(
+                configOptions.positions.getOrPut(
+                    id,
+                    { HudElement.Positioning(defaultPosition.x(), defaultPosition.y(), 1F) }
+                ),
+                id,
+                label, width, height,
+            )
+            huds.add(Pair(element, defaultPosition))
+            return element
         }
 
-        val fooHudElement: HudElement = hudElement(HudElementDefaultPositionings::fooPos, Text.literal("§6Hello World!"), 200, 11)
 
         private fun saveConfig() {
             val json = Json {
@@ -324,8 +335,11 @@ class DulkirConfig {
                 }
                 configOptions = json.decodeFromString<ConfigOptions>(configFile.readText())
             }
-            Huds.forEach { (a, b) ->
-                b.positioning = a(configOptions.hudPosData)
+            huds.forEach { (element, defaultPosition) ->
+                element.positioning = configOptions.positions.getOrPut(
+                    element.key,
+                    { HudElement.Positioning(defaultPosition.x(), defaultPosition.y(), 1F) }
+                )
             }
         }
     }

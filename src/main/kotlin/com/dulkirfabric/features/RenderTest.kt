@@ -7,6 +7,7 @@ import com.dulkirfabric.events.HudRenderEvent
 import com.dulkirfabric.events.WorldRenderLastEvent
 import com.dulkirfabric.util.render.WorldRenderUtils
 import meteordevelopment.orbit.EventHandler
+import moe.nea.jarvis.api.Point
 import net.minecraft.text.Style
 import net.minecraft.text.Text
 import net.minecraft.util.math.Vec3d
@@ -34,12 +35,14 @@ object RenderTest {
         //event.entity.setDulkirEntityGlow(true, Color(0, 0, 255, 255),false)
     }
 
+    val fooHud = DulkirConfig.hudElement("foobar", Text.literal("Text"), 200, 10, Point(0.4, 0.4))
+
     @EventHandler
     fun onRenderHud(event: HudRenderEvent) {
         val context = event.context
         val matrices = context.matrices
         matrices.push()
-        DulkirConfig.fooHudElement.applyTransformations(matrices)
+        fooHud.applyTransformations(matrices)
         context.drawText(mc.textRenderer, Text.literal("§6This is the actual element."),0, 0, -1, true)
         matrices.pop()
     }

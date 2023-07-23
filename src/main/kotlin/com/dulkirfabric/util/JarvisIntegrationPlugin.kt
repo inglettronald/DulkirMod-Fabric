@@ -10,6 +10,6 @@ class JarvisIntegrationPlugin: JarvisPlugin {
     }
 
     override fun getAllHuds(): List<JarvisHud> {
-        return DulkirConfig.Huds.values.toList()
+        return DulkirConfig.huds.map { it.first }
     }
 }
