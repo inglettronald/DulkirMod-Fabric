@@ -6,6 +6,7 @@ import moe.nea.jarvis.api.JarvisScalable
 import net.minecraft.text.Text
 
 class HudElement (var positioning: Positioning,
+                  val key: String,
                   private val label: Text,
                   private val width: Int,
                   private val height: Int
