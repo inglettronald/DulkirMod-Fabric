@@ -18,6 +18,8 @@ import com.dulkirfabric.config.ConfigHelper.mkKeyField
 import com.dulkirfabric.config.ConfigHelper.mkStringField
 import com.dulkirfabric.config.ConfigHelper.mkToggle
 import com.dulkirfabric.util.render.AnimationPreset
+import com.dulkirfabric.util.render.HudElement
+import com.dulkirfabric.util.render.HudElementDefaultPositionings
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.UseSerializers
 import kotlinx.serialization.decodeFromString
@@ -264,7 +266,8 @@ class DulkirConfig {
         var arachneSpawnTimer: Boolean = false,
         var bridgeFormatter: Boolean = false,
         var bridgeBotName: String = "Dilkur",
-        var bridgeNameColor: Int = Formatting.GOLD.colorValue!!
+        var bridgeNameColor: Int = Formatting.GOLD.colorValue!!,
+        var hudPosData: HudElementDefaultPositionings = HudElementDefaultPositionings()
     )
 
     @Serializable
@@ -285,6 +288,15 @@ class DulkirConfig {
     companion object ConfigVars {
 
         var configOptions = ConfigOptions()
+        var Huds: MutableMap<(HudElementDefaultPositionings) -> HudElement.Positioning, HudElement> = mutableMapOf()
+        fun hudElement(pos: (HudElementDefaultPositionings) -> HudElement.Positioning, label: Text, width: Int, height: Int): HudElement {
+            val hud = HudElement(pos(configOptions.hudPosData), label, width, height)
+            Huds[pos] = hud
+            return hud
+        }
+
+        val fooHudElement: HudElement = hudElement(HudElementDefaultPositionings::fooPos, Text.literal("§6Hello World!"), 200, 11)
+
         private fun saveConfig() {
             val json = Json {
                 prettyPrint = true
@@ -311,6 +323,9 @@ class DulkirConfig {
                     encodeDefaults = true
                 }
                 configOptions = json.decodeFromString<ConfigOptions>(configFile.readText())
+            }
+            Huds.forEach { (a, b) ->
+                b.positioning = a(configOptions.hudPosData)
             }
         }
     }

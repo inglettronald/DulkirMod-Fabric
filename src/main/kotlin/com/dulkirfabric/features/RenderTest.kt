@@ -1,6 +1,9 @@
 package com.dulkirfabric.features
 
+import com.dulkirfabric.DulkirModFabric.mc
+import com.dulkirfabric.config.DulkirConfig
 import com.dulkirfabric.events.EntityLoadEvent
+import com.dulkirfabric.events.HudRenderEvent
 import com.dulkirfabric.events.WorldRenderLastEvent
 import com.dulkirfabric.util.render.WorldRenderUtils
 import meteordevelopment.orbit.EventHandler
@@ -29,5 +32,15 @@ object RenderTest {
     fun onLoadEnt(event: EntityLoadEvent) {
         //if (event.entity !is GlowingEntityInterface) return
         //event.entity.setDulkirEntityGlow(true, Color(0, 0, 255, 255),false)
+    }
+
+    @EventHandler
+    fun onRenderHud(event: HudRenderEvent) {
+        val context = event.context
+        val matrices = context.matrices
+        matrices.push()
+        DulkirConfig.fooHudElement.applyTransformations(matrices)
+        context.drawText(mc.textRenderer, Text.literal("§6This is the actual element."),0, 0, -1, true)
+        matrices.pop()
     }
 }

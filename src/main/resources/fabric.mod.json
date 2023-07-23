@@ -23,6 +23,9 @@
 				"value": "com.dulkirfabric.DulkirModFabric",
 				"adapter": "kotlin"
 			}
+		],
+		"jarvis": [
+			"com.dulkirfabric.util.JarvisIntegrationPlugin"
 		]
 	},
 	"mixins": [
