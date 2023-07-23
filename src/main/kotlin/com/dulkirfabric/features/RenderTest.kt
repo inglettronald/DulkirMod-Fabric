@@ -1,14 +1,10 @@
 package com.dulkirfabric.features
 
-import com.dulkirfabric.DulkirModFabric.mc
 import com.dulkirfabric.events.EntityLoadEvent
 import com.dulkirfabric.events.HudRenderEvent
 import com.dulkirfabric.events.WorldRenderLastEvent
-import com.dulkirfabric.util.GlowingEntityInterface
-import com.dulkirfabric.util.HudRenderUtil
 import com.dulkirfabric.util.WorldRenderUtils
 import meteordevelopment.orbit.EventHandler
-import net.minecraft.client.gui.DrawContext
 import net.minecraft.text.Style
 import net.minecraft.text.Text
 import net.minecraft.util.math.Vec3d

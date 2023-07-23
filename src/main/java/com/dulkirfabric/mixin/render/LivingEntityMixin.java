@@ -34,10 +34,9 @@ public class LivingEntityMixin implements GlowingEntityInterface {
     private boolean shouldESP_DulkirMod;
 
     @Override
-    public void setDulkirEntityGlow(boolean shouldGlow, @NotNull Color glowColor, boolean shouldESP) {
+    public void setDulkirEntityGlow(boolean shouldGlow, @NotNull Color glowColor) {
         this.shouldGlow_DulkirMod = shouldGlow;
         this.glowColor_DulkirMod = glowColor;
-        this.shouldESP_DulkirMod = shouldESP;
     }
 
     @Override
@@ -49,11 +48,6 @@ public class LivingEntityMixin implements GlowingEntityInterface {
     @Override
     public Color getDulkirEntityGlowColor() {
         return glowColor_DulkirMod;
-    }
-
-    @Override
-    public boolean shouldDulkirEntityESP() {
-        return shouldESP_DulkirMod;
     }
 
     @Inject(method = "tickMovement", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;tickNewAi()V",
