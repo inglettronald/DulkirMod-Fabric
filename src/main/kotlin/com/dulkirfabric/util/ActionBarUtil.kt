@@ -28,12 +28,12 @@ object ActionBarUtil {
         val sb = StringBuilder()
         var stackFlag = false
         event.message.formattedString().split(splitRegex).forEach {
-            healthRegex.matchEntire(TextUtils.stripColorCodes(it)) ?.let { result ->
+            healthRegex.matchEntire(TextUtils.stripColorCodes(it))?.let { result ->
                 healthInt = result.groupValues[1].replace(",", "").toInt()
                 healthStr = it
                 return@forEach
             }
-            defRegex.matchEntire(TextUtils.stripColorCodes(it)) ?.let { result ->
+            defRegex.matchEntire(TextUtils.stripColorCodes(it))?.let { result ->
                 defInt = result.groupValues[1].replace(",", "").toInt()
                 defStr = it.replace(" Defense", "")
                 return@forEach

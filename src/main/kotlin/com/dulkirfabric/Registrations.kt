@@ -3,12 +3,13 @@ package com.dulkirfabric
 import com.dulkirfabric.DulkirModFabric.EVENT_BUS
 import com.dulkirfabric.commands.*
 import com.dulkirfabric.events.*
-import com.dulkirfabric.events.chat.ChatReceivedEvent
+import com.dulkirfabric.events.chat.ChatEvents
 import com.dulkirfabric.events.chat.ModifyCommandEvent
 import com.dulkirfabric.events.chat.OverlayReceivedEvent
 import com.dulkirfabric.features.*
 import com.dulkirfabric.features.chat.AbiPhoneDND
 import com.dulkirfabric.features.chat.BridgeBotFormatter
+import com.dulkirfabric.features.chat.ChatStacking
 import com.dulkirfabric.hud.ActionBarHudReplacements
 import com.dulkirfabric.hud.SpeedOverlay
 import com.dulkirfabric.util.ActionBarUtil
@@ -75,6 +76,7 @@ object Registrations {
         EVENT_BUS.subscribe(SpeedOverlay)
         EVENT_BUS.subscribe(ActionBarUtil)
         EVENT_BUS.subscribe(ActionBarHudReplacements)
+        EVENT_BUS.subscribe(ChatStacking)
     }
 
     fun registerEvents() {
@@ -86,13 +88,13 @@ object Registrations {
         }
         ClientReceiveMessageEvents.ALLOW_GAME.register { message, overlay ->
             if (!overlay)
-                return@register !ChatReceivedEvent(message).post()
+                return@register !ChatEvents.AllowChat(message).post()
             return@register true
         }
         ClientReceiveMessageEvents.MODIFY_GAME.register { message, overlay ->
             if (overlay)
                 return@register OverlayReceivedEvent(message).post()
-            return@register message
+            return@register ChatEvents.ModifyChat(message).post()
         }
 
         ClientSendMessageEvents.MODIFY_COMMAND.register { command ->

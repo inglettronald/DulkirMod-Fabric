@@ -6,16 +6,16 @@
     "defaultRequire": 1
   },
   "client": [
+    "io.KeyboardMixin",
     "io.MouseMixin",
     "io.SoundSystemMixin",
-    "render.HandledScreenMixin",
     "render.AbstractInventoryScreenMixin",
     "render.DrawContextMixin",
     "render.GameMenuScreenMixin",
     "render.GameRendererMixin",
+    "render.HandledScreenMixin",
     "render.HeldItemRendererMixin",
     "render.InGameHudMixin",
-    "io.KeyboardMixin",
     "render.LoomScreenMixin",
     "render.MinecraftClientMixin",
     "render.ParticleManagerMixin",

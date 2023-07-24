@@ -1,8 +1,8 @@
 package com.dulkirfabric.features.chat
 
 import com.dulkirfabric.config.DulkirConfig
-import com.dulkirfabric.events.chat.ChatReceivedEvent
 import com.dulkirfabric.events.PlaySoundEvent
+import com.dulkirfabric.events.chat.ChatEvents
 import com.dulkirfabric.util.TextUtils
 import com.dulkirfabric.util.TextUtils.unformattedString
 import meteordevelopment.orbit.EventHandler
@@ -24,7 +24,7 @@ object AbiPhoneDND {
     }
 
     @EventHandler
-    fun handle(event: ChatReceivedEvent) {
+    fun handle(event: ChatEvents.AllowChat) {
         if (!DulkirConfig.configOptions.abiPhoneDND) return
         val unformatted = event.message.unformattedString
         if (unformatted matches abiPhoneFormat && !unformatted.contains("Elle") && !unformatted.contains("Dean")) {

@@ -2,7 +2,7 @@ package com.dulkirfabric.features
 
 import com.dulkirfabric.config.DulkirConfig
 import com.dulkirfabric.events.WorldRenderLastEvent
-import com.dulkirfabric.events.chat.ChatReceivedEvent
+import com.dulkirfabric.events.chat.ChatEvents
 import com.dulkirfabric.util.TablistUtils
 import com.dulkirfabric.util.TextUtils
 import com.dulkirfabric.util.TextUtils.unformattedString
@@ -45,7 +45,7 @@ object ArachneFeatures {
     }
 
     @EventHandler
-    fun onChat(event: ChatReceivedEvent) {
+    fun onChat(event: ChatEvents.AllowChat) {
         if (!DulkirConfig.configOptions.arachneSpawnTimer) return
         if (TablistUtils.persistentInfo.area != "Spider's Den") return
         val str = event.message.unformattedString.trim()

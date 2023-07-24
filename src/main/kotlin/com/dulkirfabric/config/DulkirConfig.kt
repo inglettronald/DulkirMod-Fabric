@@ -126,10 +126,16 @@ class DulkirConfig {
             entryBuilder.mkToggle(Text.literal("Arachne Boss Spawn Timer"), configOptions::arachneSpawnTimer)
         )
         general.addEntry(
-            entryBuilder.mkToggle(Text.literal("Convert Action Bar to HUD elements"), configOptions::hudifyActionBar, tooltip = Text.literal("This converts Mana/Health/Def/Stacks as HUD elements"))
+            entryBuilder.mkToggle(Text.literal("Convert Action Bar to HUD elements"), configOptions::hudifyActionBar,
+                tooltip = Text.literal("This converts Mana/Health/Def/Stacks as HUD elements"))
         )
         general.addEntry(
-            entryBuilder.mkToggle(Text.literal("Include EHP in def HUD element"), configOptions::showEHP, tooltip = Text.literal("Must have Action Bar HUD elements Enabled"))
+            entryBuilder.mkToggle(Text.literal("Include EHP in def HUD element"), configOptions::showEHP,
+                tooltip = Text.literal("Must have Action Bar HUD elements Enabled"))
+        )
+        general.addEntry(
+            entryBuilder.mkToggle(Text.literal("Hide Held Item Tooltips"), configOptions::hideHeldItemTooltip,
+                tooltip = Text.literal("This is for the pesky overlay that pops up on switching items"))
         )
 
         val shortcuts = builder.getOrCreateCategory(Text.literal("Shortcuts"))
@@ -275,7 +281,8 @@ class DulkirConfig {
         var bridgeNameColor: Int = Formatting.GOLD.colorValue!!,
         val positions: MutableMap<String, HudElement.Positioning> = mutableMapOf(),
         var hudifyActionBar: Boolean = true,
-        var showEHP: Boolean = false
+        var showEHP: Boolean = false,
+        var hideHeldItemTooltip: Boolean = false
     )
 
     @Serializable
