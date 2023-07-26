@@ -9,7 +9,8 @@ import moe.nea.jarvis.api.Point
 import net.minecraft.text.Text
 
 object SpeedOverlay {
-    private val speedHud = DulkirConfig.hudElement("SpeedHud", Text.literal("Speed"), 24 + 4, 11, Point(0.2, 0.2))
+    private val speedHud = DulkirConfig.hudElement("SpeedHud", Text.literal("Speed"), 24 + 4, 11,
+        Point(0.3669986675110943, 0.9857798862704453), 1.6367052f)
 
     @EventHandler
     fun onHudRender(event: HudRenderEvent) {

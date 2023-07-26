@@ -23,7 +23,7 @@ object CustomBlockOutline {
         val z = blockPos.z.toDouble()
         val color = ColorUtil.toRGB(DulkirConfig.configOptions.blockOutlineColor)
 
-        WorldRenderUtils.drawBox(
+        WorldRenderUtils.drawWireFrame(
             event.worldRenderContext, Box(x, y, z, x + 1, y + 1, z + 1),
             color, 3f * DulkirConfig.configOptions.blockOutlineThickness, true
         )

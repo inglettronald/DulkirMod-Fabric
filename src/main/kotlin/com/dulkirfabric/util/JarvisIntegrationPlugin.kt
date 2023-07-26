@@ -12,4 +12,9 @@ class JarvisIntegrationPlugin: JarvisPlugin {
     override fun getAllHuds(): List<JarvisHud> {
         return DulkirConfig.huds.map { it.first }
     }
+
+    override fun onHudEditorClosed() {
+        super.onHudEditorClosed()
+        DulkirConfig.saveConfig()
+    }
 }

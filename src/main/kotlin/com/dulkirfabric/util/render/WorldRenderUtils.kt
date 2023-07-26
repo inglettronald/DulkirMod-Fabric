@@ -12,6 +12,7 @@ import net.minecraft.util.Formatting
 import net.minecraft.util.math.Box
 import net.minecraft.util.math.Vec3d
 import org.joml.Vector3f
+import org.lwjgl.opengl.GL11
 import java.awt.Color
 import kotlin.math.max
 import kotlin.math.pow
@@ -51,7 +52,7 @@ object WorldRenderUtils {
      * TODO: write a more custom rendering function so we don't have to do this ugly translation of
      * Minecraft's screen space rendering logic to a world space rendering function.
      */
-    fun drawBox(
+    fun drawWireFrame(
         context: WorldRenderContext,
         box: Box,
         color: Color,
@@ -215,7 +216,7 @@ object WorldRenderUtils {
         depthTest: Boolean = true,
         scale: Float = 1f
     ) {
-        if (depthTest) {
+        if (!depthTest) {
             RenderSystem.disableDepthTest()
         }
         RenderSystem.enableBlend()
@@ -347,5 +348,39 @@ object WorldRenderUtils {
         RenderSystem.enableDepthTest()
         RenderSystem.enableCull()
         RenderSystem.disableBlend()
+    }
+
+    /**
+     * Draws a filled box at a given position
+     */
+    fun drawBox(
+        context: WorldRenderContext,
+        x: Double,
+        y: Double,
+        z: Double,
+        width: Double,
+        height: Double,
+        depth: Double,
+        color: Color,
+        depthTest: Boolean
+    ) {
+        if (!depthTest) {
+            RenderSystem.disableDepthTest()
+            //RenderSystem.depthMask(false)
+        } else {
+            RenderSystem.enableDepthTest()
+        }
+        val matrices = context.matrixStack()
+        matrices.push()
+        val vertexConsumers = context.worldRenderer().bufferBuilders.entityVertexConsumers
+        val vertexConsumer = vertexConsumers.getBuffer(RenderLayer.getDebugFilledBox())
+
+        matrices.translate(-context.camera().pos.x, -context.camera().pos.y, -context.camera().pos.z)
+
+        WorldRenderer.renderFilledBox(matrices, vertexConsumer, x, y, z, x + width, y + height, z + depth,
+            color.red.toFloat(), color.green.toFloat(), color.blue.toFloat(), color.alpha.toFloat())
+        vertexConsumers.draw()
+        RenderSystem.enableDepthTest()
+        matrices.pop()
     }
 }

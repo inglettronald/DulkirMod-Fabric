@@ -25,6 +25,7 @@ import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import me.shedaniel.clothconfig2.api.ConfigBuilder
+import meteordevelopment.orbit.EventHandler
 import moe.nea.jarvis.api.Point
 import net.minecraft.client.gui.screen.Screen
 import net.minecraft.client.util.InputUtil
@@ -304,25 +305,24 @@ class DulkirConfig {
 
         var configOptions = ConfigOptions()
 
-        val huds = mutableListOf<Pair<HudElement, Point>>()
+        val huds = mutableListOf<Triple<HudElement, Point, Float>>()
 
         fun hudElement(
             id: String, label: Text, width: Int, height: Int,
-            defaultPosition: Point
+            defaultPosition: Point, scale: Float = 1f
         ): HudElement {
             val element = HudElement(
                 configOptions.positions.getOrPut(
                     id
-                ) { HudElement.Positioning(defaultPosition.x(), defaultPosition.y(), 1F) },
+                ) { HudElement.Positioning(defaultPosition.x(), defaultPosition.y(), scale) },
                 id,
                 label, width, height,
             )
-            huds.add(Pair(element, defaultPosition))
+            huds.add(Triple(element, defaultPosition, scale))
             return element
         }
 
-
-        private fun saveConfig() {
+        fun saveConfig() {
             val json = Json {
                 prettyPrint = true
                 ignoreUnknownKeys = true
@@ -349,11 +349,10 @@ class DulkirConfig {
                 }
                 configOptions = json.decodeFromString<ConfigOptions>(configFile.readText())
             }
-            huds.forEach { (element, defaultPosition) ->
+            huds.forEach { (element, defaultPosition, scale) ->
                 element.positioning = configOptions.positions.getOrPut(
-                    element.key,
-                    { HudElement.Positioning(defaultPosition.x(), defaultPosition.y(), 1F) }
-                )
+                    element.key
+                ) { HudElement.Positioning(defaultPosition.x(), defaultPosition.y(), scale) }
             }
         }
     }

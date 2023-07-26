@@ -77,6 +77,9 @@ object Registrations {
         EVENT_BUS.subscribe(ActionBarUtil)
         EVENT_BUS.subscribe(ActionBarHudReplacements)
         EVENT_BUS.subscribe(ChatStacking)
+
+        if (FabricLoader.getInstance().isDevelopmentEnvironment)
+            EVENT_BUS.subscribe(RenderTest)
     }
 
     fun registerEvents() {
@@ -101,7 +104,7 @@ object Registrations {
             ModifyCommandEvent(command).also { it.post() }.command
         }
 
-        WorldRenderEvents.END.register { context -> WorldRenderLastEvent(context).post() }
+        WorldRenderEvents.LAST.register { context -> WorldRenderLastEvent(context).post() }
 
         ScreenEvents.BEFORE_INIT.register(
             ScreenEvents.BeforeInit { client, screen, scaledWidth, scaledHeight ->
