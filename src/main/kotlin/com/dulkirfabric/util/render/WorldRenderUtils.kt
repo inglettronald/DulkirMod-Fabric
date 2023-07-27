@@ -370,16 +370,18 @@ object WorldRenderUtils {
         } else {
             RenderSystem.enableDepthTest()
         }
+        RenderSystem.setShader(GameRenderer::getPositionColorProgram)
+        RenderSystem.enableBlend()
+        RenderSystem.defaultBlendFunc()
+
         val matrices = context.matrixStack()
+        val tes = Tessellator.getInstance()
+        tes.buffer.begin(VertexFormat.DrawMode.TRIANGLE_STRIP, VertexFormats.POSITION_COLOR)
         matrices.push()
-        val vertexConsumers = context.worldRenderer().bufferBuilders.entityVertexConsumers
-        val vertexConsumer = vertexConsumers.getBuffer(RenderLayer.getDebugFilledBox())
-
-        matrices.translate(-context.camera().pos.x, -context.camera().pos.y, -context.camera().pos.z)
-
-        WorldRenderer.renderFilledBox(matrices, vertexConsumer, x, y, z, x + width, y + height, z + depth,
+        matrices.translate(x - context.camera().pos.x, y - context.camera().pos.y, z - context.camera().pos.z)
+        WorldRenderer.renderFilledBox(matrices, tes.buffer, 0.0, 0.0, 0.0, width, height, depth,
             color.red.toFloat(), color.green.toFloat(), color.blue.toFloat(), color.alpha.toFloat())
-        vertexConsumers.draw()
+        tes.draw()
         RenderSystem.enableDepthTest()
         matrices.pop()
     }
