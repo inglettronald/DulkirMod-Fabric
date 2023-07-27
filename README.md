@@ -70,7 +70,7 @@ DulkirMod 1.8.9 Can be found [here](https://github.com/inglettronald/DulkirMod).
 </details>
 
 ## For Users
-Opening the settings menu can be achieved through the escape menu or through the /dulkir command.
+Opening the settings menu can be achieved through the escape menu or through the `/dulkir` command.
 
 Editing HUD positioning makes use of the [JARVIS API](https://github.com/romangraef/jarvis). This library is still in development, but is a fantastic library for a common HUD element editor.
 This allows multiple mods to handle the rendering on their own, but have the positioning logic be handled in one place.
