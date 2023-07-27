@@ -77,6 +77,7 @@ object Registrations {
         EVENT_BUS.subscribe(ActionBarUtil)
         EVENT_BUS.subscribe(ActionBarHudReplacements)
         EVENT_BUS.subscribe(ChatStacking)
+        EVENT_BUS.subscribe(AotvHighlight)
 
         if (FabricLoader.getInstance().isDevelopmentEnvironment)
             EVENT_BUS.subscribe(RenderTest)

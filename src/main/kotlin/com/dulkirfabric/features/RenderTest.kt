@@ -2,6 +2,7 @@ package com.dulkirfabric.features
 
 import com.dulkirfabric.events.EntityLoadEvent
 import com.dulkirfabric.events.WorldRenderLastEvent
+import com.dulkirfabric.util.render.GlowingEntityInterface
 import com.dulkirfabric.util.render.WorldRenderUtils
 import meteordevelopment.orbit.EventHandler
 import net.minecraft.text.Style
@@ -18,12 +19,12 @@ object RenderTest {
             Vec3d(-183.5, 79.0, -465.5)
         )
 
-        WorldRenderUtils.drawBox(event.context, 0.0, 0.0, 0.0, 2.0, 2.0, 2.0, Color(0, 200, 200, 150), false)
+        WorldRenderUtils.drawBox(event.context, 16.0, 119.0, -6.0, 2.0, 2.0, 2.0, Color(0, 200, 200, 150), false)
     }
 
     @EventHandler
     fun onLoadEnt(event: EntityLoadEvent) {
-        //if (event.entity !is GlowingEntityInterface) return
-        //event.entity.setDulkirEntityGlow(true, Color(0, 0, 255, 255),false)
+        if (event.entity !is GlowingEntityInterface) return
+        event.entity.setDulkirEntityGlow(true, Color(0, 0, 255, 255))
     }
 }

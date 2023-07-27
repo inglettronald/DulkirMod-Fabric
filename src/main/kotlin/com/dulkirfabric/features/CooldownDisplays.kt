@@ -5,6 +5,7 @@ import com.dulkirfabric.events.PlaySoundEvent
 import com.dulkirfabric.events.WorldLoadEvent
 import com.dulkirfabric.util.SoundInfo
 import com.dulkirfabric.util.TrackedCooldown
+import com.dulkirfabric.util.Utils
 import meteordevelopment.orbit.EventHandler
 import net.minecraft.item.ItemStack
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable
@@ -19,6 +20,10 @@ object CooldownDisplays {
         Pair(
             SoundInfo("entity.zombie_villager.cure", 0.6984127f, 1f),
             TrackedCooldown("(HYPERION|ASTRAEA|SCYLLA|VALKYRIE)".toRegex(), 5000, 0)
+        ),
+        Pair(
+            SoundInfo("entity.firework_rocket.launch", 1f, 3f),
+            TrackedCooldown("SOS_FLARE".toRegex(), 20000, 0)
         )
     )
 
@@ -34,6 +39,7 @@ object CooldownDisplays {
     @EventHandler
     fun onSound(event: PlaySoundEvent) {
         if (!DulkirConfig.configOptions.duraCooldown) return
+        // Utils.debugSound(event)
         val path = event.sound.id.path
         val pitch = event.sound.pitch
         val volume = event.sound.volume

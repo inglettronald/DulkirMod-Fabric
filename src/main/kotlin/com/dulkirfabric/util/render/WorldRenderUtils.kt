@@ -15,6 +15,7 @@ import org.joml.Vector3f
 import org.lwjgl.opengl.GL11
 import java.awt.Color
 import kotlin.math.max
+import kotlin.math.min
 import kotlin.math.pow
 import kotlin.math.sqrt
 
@@ -380,7 +381,7 @@ object WorldRenderUtils {
         matrices.push()
         matrices.translate(x - context.camera().pos.x, y - context.camera().pos.y, z - context.camera().pos.z)
         WorldRenderer.renderFilledBox(matrices, tes.buffer, 0.0, 0.0, 0.0, width, height, depth,
-            color.red.toFloat(), color.green.toFloat(), color.blue.toFloat(), color.alpha.toFloat())
+            color.red / 255f, color.green / 255f, color.blue / 255f, color.alpha / 255f)
         tes.draw()
         RenderSystem.enableDepthTest()
         matrices.pop()
