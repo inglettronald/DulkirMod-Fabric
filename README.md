@@ -4,6 +4,8 @@
 
 Future home of dulkirmod for modern versions of minecraft.
 
+## Beta 1.0 will be available on **JULY 31st**! You are welcome to compile stuff before this but there is more that will be added before the first beta :)
+
 DulkirMod 1.8.9 Can be found [here](https://github.com/inglettronald/DulkirMod).
 
 <details>
@@ -31,6 +33,8 @@ DulkirMod 1.8.9 Can be found [here](https://github.com/inglettronald/DulkirMod).
   <li>Hide Scoreboard Numbers</li>
   <li>Arachne Spawn Timer and Keeper Waypoints</li>
   <li>Hide Hunger Display option</li>
+  <li>AOTV Etherwarp display</li>
+  <li>Action Bar HUD replacements (HEALTH, MANA, DEF, SPEED)</li>
 </ul>
 </details>
 
@@ -64,3 +68,11 @@ DulkirMod 1.8.9 Can be found [here](https://github.com/inglettronald/DulkirMod).
     a pull request on GitHub. Read more about contributions and pull requests <a href="https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request-from-a-fork">here</a>.
     My discord dms are also publicly open if you have further questions.
 </details>
+
+## For Users
+Opening the settings menu can be achieved through the escape menu or through the /dulkir command.
+
+Editing HUD positioning makes use of the [JARVIS API](https://github.com/romangraef/jarvis). This library is still in development, but is a fantastic library for a common HUD element editor.
+This allows multiple mods to handle the rendering on their own, but have the positioning logic be handled in one place.
+
+Use the command `/jarvis gui` to access the main editor.
