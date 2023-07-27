@@ -1,6 +1,7 @@
 package com.dulkirfabric.features
 
 import com.dulkirfabric.DulkirModFabric.mc
+import com.dulkirfabric.config.DulkirConfig
 import com.dulkirfabric.events.ClientTickEvent
 import com.dulkirfabric.events.LongUpdateEvent
 import com.dulkirfabric.events.WorldRenderLastEvent
@@ -38,6 +39,7 @@ object AotvHighlight {
 
     @EventHandler
     fun onWorldRenderLast(event: WorldRenderLastEvent) {
+        if (!DulkirConfig.configOptions.showEtherwarpPreview) return
         // check that holding aotv
         if (heldItemID != "ASPECT_OF_THE_VOID") return
         val handle = MinecraftClient.getInstance().window.handle
@@ -52,7 +54,7 @@ object AotvHighlight {
 
         // if found display box
         WorldRenderUtils.drawBox(event.context, pos.x.toDouble(), pos.y.toDouble(), pos.z.toDouble(), 1.0, 1.0, 1.0,
-            Color(255, 1, 1, 255), false)
+            Color(DulkirConfig.configOptions.etherwarpPreviewColor, true), false)
     }
 
     private fun raycast(entity: Entity, maxDistance: Double, tickDelta: Float): HitResult {

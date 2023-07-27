@@ -138,6 +138,16 @@ class DulkirConfig {
             entryBuilder.mkToggle(Text.literal("Hide Held Item Tooltips"), configOptions::hideHeldItemTooltip,
                 tooltip = Text.literal("This is for the pesky overlay that pops up on switching items"))
         )
+        general.addEntry(
+            entryBuilder.mkToggle(Text.literal("Etherwarp Preview"), configOptions::showEtherwarpPreview,
+                tooltip = Text.literal("Highlights the targeted block when shifting with a aotv."))
+        )
+        general.addEntry(
+            entryBuilder.startAlphaColorField(Text.literal("Etherwarp Preview Color"), configOptions.etherwarpPreviewColor)
+                .setDefaultValue(0x99FFFFFF.toInt())
+                .setSaveConsumer { newValue -> configOptions.etherwarpPreviewColor = newValue }
+                .build()
+        )
 
         val shortcuts = builder.getOrCreateCategory(Text.literal("Shortcuts"))
         shortcuts.addEntry(
@@ -270,8 +280,8 @@ class DulkirConfig {
         var statusEffectHidden: Boolean = false,
         var inactiveEffigyDisplay: Boolean = false,
         var disableExplosionParticles: Boolean = false,
-        var hideArmorOverlay: Boolean = false,
-        var hideHungerOverlay: Boolean = false,
+        var hideArmorOverlay: Boolean = true,
+        var hideHungerOverlay: Boolean = true,
         var animationPreset: AnimationPreset = AnimationPreset(),
         var duraCooldown: Boolean = false,
         var alarmTimeout: Int = 300,
@@ -283,7 +293,9 @@ class DulkirConfig {
         val positions: MutableMap<String, HudElement.Positioning> = mutableMapOf(),
         var hudifyActionBar: Boolean = true,
         var showEHP: Boolean = false,
-        var hideHeldItemTooltip: Boolean = false
+        var hideHeldItemTooltip: Boolean = false,
+        var showEtherwarpPreview: Boolean = true,
+        var etherwarpPreviewColor: Int = 0x99FFFFFF.toInt()
     )
 
     @Serializable
