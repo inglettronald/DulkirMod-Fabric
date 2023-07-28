@@ -5,6 +5,7 @@ import net.minecraft.text.Text
 
 object TextUtils {
     const val CHAT_PREFIX = "§f<§3DulkirMod§f>§r"
+    private val colorRegex = "§.".toRegex()
     fun info(text: String, prefix: Boolean = true) {
         if (mc.player == null) return
 
@@ -33,6 +34,6 @@ object TextUtils {
     }
 
     fun stripColorCodes(string: String): String {
-        return string.replace("§.".toRegex(), "")
+        return string.replace(colorRegex, "")
     }
 }

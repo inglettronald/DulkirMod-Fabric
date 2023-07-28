@@ -1,6 +1,8 @@
 package com.dulkirfabric.util
 
 import com.dulkirfabric.events.PlaySoundEvent
+import net.minecraft.entity.Entity
+import net.minecraft.util.math.Vec3d
 
 object Utils {
     fun isInSkyblock(): Boolean {
@@ -17,5 +19,17 @@ object Utils {
         println("Path: ${event.sound.id.path}")
         println("Pitch: ${event.sound.pitch}")
         println("Volume: ${event.sound.volume}")
+    }
+
+    private fun lerp(prev: Vec3d, cur: Vec3d, tickDelta: Float): Vec3d {
+        return Vec3d(
+            prev.x + (cur.x - prev.x) * tickDelta,
+            prev.y + (cur.y - prev.y) * tickDelta,
+            prev.z + (cur.z - prev.z) * tickDelta,
+        )
+    }
+    fun Entity.getInterpolatedPos(tickDelta: Float): Vec3d {
+        val prevPos = Vec3d(this.prevX, this.prevY, this.prevZ)
+        return lerp(prevPos, this.pos, tickDelta)
     }
 }

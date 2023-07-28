@@ -10,15 +10,18 @@ import com.dulkirfabric.features.*
 import com.dulkirfabric.features.chat.AbiPhoneDND
 import com.dulkirfabric.features.chat.BridgeBotFormatter
 import com.dulkirfabric.features.chat.ChatStacking
+import com.dulkirfabric.features.slayer.MiniBossHighlight
 import com.dulkirfabric.hud.ActionBarHudReplacements
 import com.dulkirfabric.hud.SpeedOverlay
 import com.dulkirfabric.util.ActionBarUtil
+import com.dulkirfabric.util.ScoreBoardUtils
 import com.dulkirfabric.util.TablistUtils
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityEvents
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents
 import net.fabricmc.fabric.api.client.message.v1.ClientSendMessageEvents
+import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents
@@ -78,6 +81,8 @@ object Registrations {
         EVENT_BUS.subscribe(ActionBarHudReplacements)
         EVENT_BUS.subscribe(ChatStacking)
         EVENT_BUS.subscribe(AotvHighlight)
+        EVENT_BUS.subscribe(MiniBossHighlight)
+        EVENT_BUS.subscribe(ScoreBoardUtils)
 
         if (FabricLoader.getInstance().isDevelopmentEnvironment)
             EVENT_BUS.subscribe(RenderTest)
