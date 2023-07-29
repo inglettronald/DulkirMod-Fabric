@@ -5,6 +5,7 @@ import com.dulkirfabric.config.DulkirConfig
 import com.dulkirfabric.events.ClientTickEvent
 import com.dulkirfabric.events.LongUpdateEvent
 import com.dulkirfabric.events.WorldRenderLastEvent
+import com.dulkirfabric.util.TextUtils
 import com.dulkirfabric.util.render.WorldRenderUtils
 import meteordevelopment.orbit.EventHandler
 import net.minecraft.client.MinecraftClient
@@ -12,6 +13,7 @@ import net.minecraft.client.util.InputUtil
 import net.minecraft.entity.Entity
 import net.minecraft.util.hit.BlockHitResult
 import net.minecraft.util.hit.HitResult
+import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Vec3d
 import net.minecraft.world.RaycastContext
 import org.lwjgl.glfw.GLFW
@@ -43,18 +45,24 @@ object AotvHighlight {
         // check that holding aotv
         if (heldItemID != "ASPECT_OF_THE_VOID") return
         val handle = MinecraftClient.getInstance().window.handle
-        if (!InputUtil.isKeyPressed(handle, GLFW.GLFW_KEY_LEFT_SHIFT)) return
+        if (!InputUtil.isKeyPressed(handle, GLFW.GLFW_KEY_LEFT_SHIFT) || mc.currentScreen != null) return
 
         // Find the targeted block with a range of 60.9
         val entity = mc.cameraEntity
         if (mc.player == null) return
         val blockHit = raycast(entity!!, 60.9, mc.tickDelta)
         if (blockHit.type != HitResult.Type.BLOCK) return
-        val pos = (blockHit as BlockHitResult).blockPos
+        val pos: BlockPos = (blockHit as BlockHitResult).blockPos
+        if (!isValidTeleportLocation(pos)) return
 
         // if found display box
         WorldRenderUtils.drawBox(event.context, pos.x.toDouble(), pos.y.toDouble(), pos.z.toDouble(), 1.0, 1.0, 1.0,
             Color(DulkirConfig.configOptions.etherwarpPreviewColor, true), false)
+    }
+
+    private fun isValidTeleportLocation(pos: BlockPos): Boolean {
+        // TODO: Implement this (LOTS OF CASES, seems annoying)
+        return true
     }
 
     private fun raycast(entity: Entity, maxDistance: Double, tickDelta: Float): HitResult {
@@ -73,5 +81,10 @@ object AotvHighlight {
                     entity
                 )
             )
+    }
+
+    private fun err(): Boolean {
+        TextUtils.info("§6Error in getting block info for AOTV highlight, please report.")
+        return true
     }
 }

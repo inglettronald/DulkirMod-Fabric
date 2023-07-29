@@ -1,4 +1,4 @@
-package com.dulkirfabric.features
+package com.dulkirfabric.features.filters
 
 import com.dulkirfabric.config.DulkirConfig
 import com.dulkirfabric.events.AddParticleEvent

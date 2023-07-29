@@ -4,6 +4,7 @@ import com.dulkirfabric.commands.DynamicKeyCommand
 import com.dulkirfabric.config.DulkirConfig
 import com.dulkirfabric.events.WorldKeyPressEvent
 import com.dulkirfabric.util.TextUtils
+import com.dulkirfabric.util.Utils
 import meteordevelopment.orbit.EventHandler
 
 object KeyShortCutImpl {
@@ -12,6 +13,7 @@ object KeyShortCutImpl {
 
     @EventHandler
     fun onKeyPress(event: WorldKeyPressEvent) {
+        if (DulkirConfig.configOptions.macrosSkyBlockOnly && !Utils.isInSkyblock()) return
         DulkirConfig.configOptions.macrosList.forEach {
             if (it.keyBinding.code == event.key) {
                 // Spam Prevention

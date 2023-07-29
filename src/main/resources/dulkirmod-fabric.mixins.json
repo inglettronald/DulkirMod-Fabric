@@ -16,6 +16,7 @@
     "render.HandledScreenMixin",
     "render.HeldItemRendererMixin",
     "render.InGameHudMixin",
+    "render.InGameOverlayRendererMixin",
     "render.LoomScreenMixin",
     "render.MinecraftClientMixin",
     "render.ParticleManagerMixin",

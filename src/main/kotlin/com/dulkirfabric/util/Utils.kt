@@ -1,6 +1,9 @@
 package com.dulkirfabric.util
 
 import com.dulkirfabric.events.PlaySoundEvent
+import com.dulkirfabric.events.SlayerBossEvents
+import com.dulkirfabric.events.chat.ChatEvents
+import meteordevelopment.orbit.EventHandler
 import net.minecraft.entity.Entity
 import net.minecraft.util.math.Vec3d
 
@@ -13,9 +16,7 @@ object Utils {
      * Prints relevant information about a sound that is being displayed
      */
     fun debugSound(event: PlaySoundEvent) {
-        if (event.sound.id.path == "entity.player.hurt"
-            && event.sound.pitch == 0f
-            && event.sound.volume == 0f) return
+        if (event.sound.id.path == "entity.player.hurt") return
         println("Path: ${event.sound.id.path}")
         println("Pitch: ${event.sound.pitch}")
         println("Volume: ${event.sound.volume}")
@@ -31,5 +32,11 @@ object Utils {
     fun Entity.getInterpolatedPos(tickDelta: Float): Vec3d {
         val prevPos = Vec3d(this.prevX, this.prevY, this.prevZ)
         return lerp(prevPos, this.pos, tickDelta)
+    }
+
+    @EventHandler
+    fun detectSlayerKill(event: ChatEvents.AllowChat) {
+        if (event.message.string.trim() != "SLAYER QUEST COMPLETE!") return
+        SlayerBossEvents.Kill(ScoreBoardUtils.slayerType?: return ScoreBoardUtils.err()).post()
     }
 }

@@ -113,6 +113,12 @@ class DulkirConfig {
             entryBuilder.mkToggle(Text.literal("Hide Hunger Overlay in Skyblock"), configOptions::hideHungerOverlay)
         )
         general.addEntry(
+            entryBuilder.mkToggle(Text.literal("Hide Fire Overlay"), configOptions::hideFireOverlay)
+        )
+        general.addEntry(
+            entryBuilder.mkToggle(Text.literal("Hide Lightning (SkyBlock only)"), configOptions::hideLightning)
+        )
+        general.addEntry(
             entryBuilder.startIntSlider(Text.literal("Anti Downtime Alarm"), configOptions.alarmTimeout, 0, 1000)
                 .setSaveConsumer {
                     configOptions.alarmTimeout = it
@@ -152,6 +158,10 @@ class DulkirConfig {
         val shortcuts = builder.getOrCreateCategory(Text.literal("Shortcuts"))
         shortcuts.addEntry(
             entryBuilder.mkKeyField(Text.literal("Dynamic Key"), configOptions::dynamicKey)
+        )
+        shortcuts.addEntry(
+            entryBuilder.mkToggle(Text.literal("Only Register Shortcuts in Skyblock"), configOptions::macrosSkyBlockOnly,
+                Text.literal("Useful if you want to use some of these binds elsewhere for non-skyblock specific stuff."))
         )
         shortcuts.addEntry(
             ConfigHelper.mkConfigList(
@@ -259,6 +269,18 @@ class DulkirConfig {
                 .build()
         )
 
+        val slayer = builder.getOrCreateCategory(Text.literal("Slayer"))
+        slayer.addEntry(
+            entryBuilder.mkToggle(Text.literal("MiniBoss Highlight Box"), configOptions::boxMinis)
+        )
+        slayer.addEntry(
+            entryBuilder.mkToggle(Text.literal("MiniBoss Announcement Alert"), configOptions::announceMinis)
+        )
+        slayer.addEntry(
+            entryBuilder.mkToggle(Text.literal("Blaze Slayer Attunement Display"), configOptions::attunementDisplay,
+                Text.literal("Shows a wireframe in the correct color for the slayer."))
+        )
+
         builder.transparentBackground()
         screen = builder.build()
     }
@@ -268,6 +290,7 @@ class DulkirConfig {
         var invScaleBool: Boolean = false,
         var inventoryScale: Float = 1f,
         var macrosList: List<Macro> = listOf(Macro(UNKNOWN_KEY, "")),
+        var macrosSkyBlockOnly: Boolean = false,
         var aliasList: List<Alias> = listOf(Alias("", "")),
         var ignoreReverseThirdPerson: Boolean = false,
         var dynamicKey: InputUtil.Key = UNKNOWN_KEY,
@@ -284,7 +307,7 @@ class DulkirConfig {
         var hideHungerOverlay: Boolean = true,
         var animationPreset: AnimationPreset = AnimationPreset(),
         var duraCooldown: Boolean = false,
-        var alarmTimeout: Int = 300,
+        var alarmTimeout: Int = 0,
         var arachneKeeperWaypoints: Boolean = false,
         var arachneSpawnTimer: Boolean = false,
         var bridgeFormatter: Boolean = false,
@@ -295,7 +318,12 @@ class DulkirConfig {
         var showEHP: Boolean = false,
         var hideHeldItemTooltip: Boolean = false,
         var showEtherwarpPreview: Boolean = true,
-        var etherwarpPreviewColor: Int = 0x99FFFFFF.toInt()
+        var etherwarpPreviewColor: Int = 0x99FFFFFF.toInt(),
+        var announceMinis: Boolean = false,
+        var boxMinis: Boolean = false,
+        var attunementDisplay: Boolean = false,
+        var hideFireOverlay: Boolean = false,
+        var hideLightning: Boolean = false
     )
 
     @Serializable
