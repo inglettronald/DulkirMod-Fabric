@@ -9,7 +9,6 @@ import com.dulkirfabric.events.chat.OverlayReceivedEvent
 import com.dulkirfabric.features.*
 import com.dulkirfabric.features.chat.AbiPhoneDND
 import com.dulkirfabric.features.chat.BridgeBotFormatter
-import com.dulkirfabric.features.chat.ChatStacking
 import com.dulkirfabric.features.filters.CullExplosionParticles
 import com.dulkirfabric.features.filters.Lightning
 import com.dulkirfabric.features.slayer.BossTimer
