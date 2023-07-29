@@ -3,16 +3,16 @@ package com.dulkirfabric.features.slayer
 import com.dulkirfabric.DulkirModFabric.mc
 import com.dulkirfabric.config.DulkirConfig
 import com.dulkirfabric.events.AddParticleEvent
-import com.dulkirfabric.events.PlaySoundEvent
+import com.dulkirfabric.events.EntityLoadEvent
 import com.dulkirfabric.events.SlayerBossEvents
 import com.dulkirfabric.events.WorldRenderLastEvent
 import com.dulkirfabric.util.TablistUtils
 import com.dulkirfabric.util.TextUtils
-import com.dulkirfabric.util.Utils.debugSound
 import com.dulkirfabric.util.Utils.getInterpolatedPos
 import com.dulkirfabric.util.render.WorldRenderUtils
 import meteordevelopment.orbit.EventHandler
 import net.minecraft.entity.decoration.ArmorStandEntity
+import net.minecraft.entity.projectile.SmallFireballEntity
 import net.minecraft.util.math.Box
 import java.awt.Color
 
@@ -69,5 +69,13 @@ object Demonlord {
         if (!DulkirConfig.configOptions.cleanBlaze) return
         if (!inBoss) return
         event.cancel()
+    }
+
+    @EventHandler
+    fun onEntityLoad(event: EntityLoadEvent) {
+        if (!DulkirConfig.configOptions.cleanBlaze) return
+        if (!inBoss) return
+        if (event.entity is SmallFireballEntity)
+            event.entity.kill()
     }
 }

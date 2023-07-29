@@ -10,6 +10,7 @@ import com.dulkirfabric.features.*
 import com.dulkirfabric.features.chat.AbiPhoneDND
 import com.dulkirfabric.features.chat.BridgeBotFormatter
 import com.dulkirfabric.features.filters.CullExplosionParticles
+import com.dulkirfabric.features.filters.DamageNumbers
 import com.dulkirfabric.features.filters.Lightning
 import com.dulkirfabric.features.slayer.BossTimer
 import com.dulkirfabric.features.slayer.Demonlord
@@ -91,6 +92,7 @@ object Registrations {
         EVENT_BUS.subscribe(Lightning)
         EVENT_BUS.subscribe(Utils)
         EVENT_BUS.subscribe(BossTimer)
+        EVENT_BUS.subscribe(DamageNumbers)
 
         if (FabricLoader.getInstance().isDevelopmentEnvironment)
             EVENT_BUS.subscribe(RenderTest)

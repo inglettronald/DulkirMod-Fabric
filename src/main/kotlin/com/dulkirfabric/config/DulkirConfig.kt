@@ -25,7 +25,6 @@ import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import me.shedaniel.clothconfig2.api.ConfigBuilder
-import meteordevelopment.orbit.EventHandler
 import moe.nea.jarvis.api.Point
 import net.minecraft.client.gui.screen.Screen
 import net.minecraft.client.util.InputUtil
@@ -117,6 +116,15 @@ class DulkirConfig {
         )
         general.addEntry(
             entryBuilder.mkToggle(Text.literal("Hide Lightning (SkyBlock only)"), configOptions::hideLightning)
+        )
+        general.addEntry(
+            entryBuilder.mkToggle(Text.literal("Hide Non-Crits"), configOptions::hideNonCrits)
+        )
+        general.addEntry(
+            entryBuilder.mkToggle(Text.literal("Hide Crits"), configOptions::hideCrits)
+        )
+        general.addEntry(
+            entryBuilder.mkToggle(Text.literal("Truncate Crits"), configOptions::truncateDamage)
         )
         general.addEntry(
             entryBuilder.startIntSlider(Text.literal("Anti Downtime Alarm"), configOptions.alarmTimeout, 0, 1000)
@@ -328,6 +336,9 @@ class DulkirConfig {
         var hideLightning: Boolean = false,
         var cleanBlaze: Boolean= false,
         var timeSlayerBoss: Boolean = false,
+        var hideNonCrits: Boolean = false,
+        var truncateDamage: Boolean = false,
+        var hideCrits: Boolean = false
     )
 
     @Serializable
