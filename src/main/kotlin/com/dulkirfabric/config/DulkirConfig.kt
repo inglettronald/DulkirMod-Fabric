@@ -280,7 +280,9 @@ class DulkirConfig {
             entryBuilder.mkToggle(Text.literal("Blaze Slayer Attunement Display"), configOptions::attunementDisplay,
                 Text.literal("Shows a wireframe in the correct color for the slayer."))
         )
-
+        slayer.addEntry(
+            entryBuilder.mkToggle(Text.literal("Disable ALL particles during Blaze slayer boss"), configOptions::cleanBlaze)
+        )
         builder.transparentBackground()
         screen = builder.build()
     }
@@ -323,7 +325,9 @@ class DulkirConfig {
         var boxMinis: Boolean = false,
         var attunementDisplay: Boolean = false,
         var hideFireOverlay: Boolean = false,
-        var hideLightning: Boolean = false
+        var hideLightning: Boolean = false,
+        var cleanBlaze: Boolean= false,
+        var timeSlayerBoss: Boolean = false,
     )
 
     @Serializable

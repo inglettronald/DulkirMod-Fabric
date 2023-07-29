@@ -12,6 +12,7 @@ import com.dulkirfabric.features.chat.BridgeBotFormatter
 import com.dulkirfabric.features.chat.ChatStacking
 import com.dulkirfabric.features.filters.CullExplosionParticles
 import com.dulkirfabric.features.filters.Lightning
+import com.dulkirfabric.features.slayer.BossTimer
 import com.dulkirfabric.features.slayer.Demonlord
 import com.dulkirfabric.features.slayer.MiniBossHighlight
 import com.dulkirfabric.hud.ActionBarHudReplacements
@@ -83,7 +84,6 @@ object Registrations {
         EVENT_BUS.subscribe(SpeedOverlay)
         EVENT_BUS.subscribe(ActionBarUtil)
         EVENT_BUS.subscribe(ActionBarHudReplacements)
-        EVENT_BUS.subscribe(ChatStacking)
         EVENT_BUS.subscribe(AotvHighlight)
         EVENT_BUS.subscribe(MiniBossHighlight)
         EVENT_BUS.subscribe(ScoreBoardUtils)
@@ -91,6 +91,7 @@ object Registrations {
         EVENT_BUS.subscribe(Demonlord)
         EVENT_BUS.subscribe(Lightning)
         EVENT_BUS.subscribe(Utils)
+        EVENT_BUS.subscribe(BossTimer)
 
         if (FabricLoader.getInstance().isDevelopmentEnvironment)
             EVENT_BUS.subscribe(RenderTest)

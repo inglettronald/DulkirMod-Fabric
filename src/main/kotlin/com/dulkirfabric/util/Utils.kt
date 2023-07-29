@@ -35,8 +35,11 @@ object Utils {
     }
 
     @EventHandler
-    fun detectSlayerKill(event: ChatEvents.AllowChat) {
-        if (event.message.string.trim() != "SLAYER QUEST COMPLETE!") return
-        SlayerBossEvents.Kill(ScoreBoardUtils.slayerType?: return ScoreBoardUtils.err()).post()
+    fun detectSlayerEvents(event: ChatEvents.AllowChat) {
+        if (event.message.string.trim() == "SLAYER QUEST COMPLETE!") {
+            SlayerBossEvents.Kill(ScoreBoardUtils.slayerType ?: return ScoreBoardUtils.err()).post()
+        } else if (event.message.string.trim() == "SLAYER QUEST FAILED!") {
+            SlayerBossEvents.Fail(ScoreBoardUtils.slayerType ?: return ScoreBoardUtils.err()).post()
+        }
     }
 }

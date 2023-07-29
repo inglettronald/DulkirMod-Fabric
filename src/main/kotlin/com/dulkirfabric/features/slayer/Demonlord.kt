@@ -1,7 +1,10 @@
 package com.dulkirfabric.features.slayer
 
 import com.dulkirfabric.DulkirModFabric.mc
+import com.dulkirfabric.config.DulkirConfig
+import com.dulkirfabric.events.AddParticleEvent
 import com.dulkirfabric.events.PlaySoundEvent
+import com.dulkirfabric.events.SlayerBossEvents
 import com.dulkirfabric.events.WorldRenderLastEvent
 import com.dulkirfabric.util.TablistUtils
 import com.dulkirfabric.util.TextUtils
@@ -21,6 +24,8 @@ object Demonlord {
         "SPIRIT ♨" to Color(255, 255, 255, 255)
     )
     private val box = Box(-.5, -.4, -.5, .5, -1.9, .5)
+    private var inBoss: Boolean = false
+    private var lastSpawnTime: Long = 0
 
     @EventHandler
     fun attunementHighlight(event: WorldRenderLastEvent) {
@@ -39,5 +44,30 @@ object Demonlord {
                 )
             }
         }
+    }
+
+    @EventHandler
+    fun onSlayerStart(event: SlayerBossEvents.Spawn) {
+        if (event.type.contains("Demonlord")) {
+            inBoss = true
+            lastSpawnTime = event.timestamp
+        }
+    }
+
+    @EventHandler
+    fun onSlayerKill(event: SlayerBossEvents.Kill) {
+        inBoss = false
+    }
+
+    @EventHandler
+    fun onSlayerFail(event: SlayerBossEvents.Fail) {
+        inBoss = false
+    }
+
+    @EventHandler
+    fun onParticle(event: AddParticleEvent) {
+        if (!DulkirConfig.configOptions.cleanBlaze) return
+        if (!inBoss) return
+        event.cancel()
     }
 }
