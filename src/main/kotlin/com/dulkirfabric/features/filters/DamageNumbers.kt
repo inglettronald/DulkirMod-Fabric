@@ -25,6 +25,7 @@ object DamageNumbers {
             val name = it.customName?.string ?: return@forEach
             if (name matches nonCritFormat && DulkirConfig.configOptions.hideNonCrits) {
                 it.isCustomNameVisible = false
+                return@forEach
             }
             if (name.startsWith('✧')) {
                 if (DulkirConfig.configOptions.hideCrits) {
