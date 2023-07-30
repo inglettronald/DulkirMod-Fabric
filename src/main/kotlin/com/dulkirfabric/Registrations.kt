@@ -95,6 +95,7 @@ object Registrations {
         EVENT_BUS.subscribe(BossTimer)
         EVENT_BUS.subscribe(DamageNumbers)
         EVENT_BUS.subscribe(Garden)
+        EVENT_BUS.subscribe(VisitorAlert)
 
         if (FabricLoader.getInstance().isDevelopmentEnvironment)
             EVENT_BUS.subscribe(RenderTest)

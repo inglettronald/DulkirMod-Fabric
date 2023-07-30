@@ -1,6 +1,7 @@
 package com.dulkirfabric.util
 
 import com.dulkirfabric.DulkirModFabric.mc
+import com.dulkirfabric.events.AreaChangeEvent
 import com.dulkirfabric.events.LongUpdateEvent
 import meteordevelopment.orbit.EventHandler
 import net.minecraft.client.network.PlayerListEntry
@@ -35,7 +36,10 @@ object TablistUtils {
         tablist!!.forEach {
             val str = it.displayName?.string?.trim() ?: return@forEach
             areaPattern.find(str)?.let { result ->
-                persistentInfo.area = result.groupValues[1]
+                if (persistentInfo.area != result.groupValues[1]) {
+                    AreaChangeEvent(result.groupValues[1], persistentInfo.area).post()
+                    persistentInfo.area = result.groupValues[1]
+                }
                 return@forEach
             }
 

@@ -285,6 +285,10 @@ class DulkirConfig {
             entryBuilder.mkToggle(Text.literal("MiniBoss Announcement Alert"), configOptions::announceMinis)
         )
         slayer.addEntry(
+            entryBuilder.mkToggle(Text.literal("Show Kill Time on Slayer Completion"), configOptions::slayerKillTime,
+                Text.literal("Shows up in chat!"))
+        )
+        slayer.addEntry(
             entryBuilder.mkToggle(Text.literal("Blaze Slayer Attunement Display"), configOptions::attunementDisplay,
                 Text.literal("Shows a wireframe in the correct color for the slayer."))
         )
@@ -298,6 +302,12 @@ class DulkirConfig {
         )
         garden.addEntry(
             entryBuilder.mkToggle(Text.literal("Show Composter Info in HUD"), configOptions::showComposterInfo)
+        )
+        garden.addEntry(
+            entryBuilder.mkToggle(Text.literal("Show Title alert when max visitors"), configOptions::visitorAlert)
+        )
+        garden.addEntry(
+            entryBuilder.mkToggle(Text.literal("Persistent Visitor alert (dependent on previous)"), configOptions::persistentVisitorAlert)
         )
 
         builder.transparentBackground()
@@ -350,6 +360,9 @@ class DulkirConfig {
         var hideCrits: Boolean = false,
         var visitorHud: Boolean = false,
         var showComposterInfo: Boolean = false,
+        var slayerKillTime: Boolean = false,
+        var visitorAlert: Boolean = false,
+        var persistentVisitorAlert: Boolean = false,
     )
 
     @Serializable
