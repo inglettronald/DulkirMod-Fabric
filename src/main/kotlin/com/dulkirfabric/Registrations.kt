@@ -15,6 +15,7 @@ import com.dulkirfabric.features.filters.Lightning
 import com.dulkirfabric.features.slayer.BossTimer
 import com.dulkirfabric.features.slayer.Demonlord
 import com.dulkirfabric.features.slayer.MiniBossHighlight
+import com.dulkirfabric.features.slayer.Vampire
 import com.dulkirfabric.hud.ActionBarHudReplacements
 import com.dulkirfabric.hud.Garden
 import com.dulkirfabric.hud.SpeedOverlay
@@ -97,6 +98,7 @@ object Registrations {
         EVENT_BUS.subscribe(Garden)
         EVENT_BUS.subscribe(VisitorAlert)
         EVENT_BUS.subscribe(BrokenHyp)
+        EVENT_BUS.subscribe(Vampire)
 
         if (FabricLoader.getInstance().isDevelopmentEnvironment)
             EVENT_BUS.subscribe(RenderTest)

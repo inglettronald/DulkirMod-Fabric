@@ -43,9 +43,9 @@ dependencies {
 	include "com.github.llamalad7.mixinextras:mixinextras-fabric:0.2.0-beta.9"
 	implementation "com.github.llamalad7.mixinextras:mixinextras-fabric:0.2.0-beta.9"
 	annotationProcessor "com.github.llamalad7.mixinextras:mixinextras-fabric:0.2.0-beta.9"
-	modImplementation("moe.nea.jarvis:jarvis-fabric:1.1.0")
-	include("moe.nea.jarvis:jarvis-fabric:1.1.0")
-	modLocalRuntime("moe.nea.jarvis:jarvis-fabric:1.1.0")
+	modImplementation("moe.nea.jarvis:jarvis-fabric:1.1.1")
+	include("moe.nea.jarvis:jarvis-fabric:1.1.1")
+	modLocalRuntime("moe.nea.jarvis:jarvis-fabric:1.1.1")
 }
 
 loom {

@@ -26,8 +26,9 @@ DulkirMod 1.8.9 Can be found [here](https://github.com/inglettronald/DulkirMod).
   <li>Custom Selected Block outline</li>
   <li>Inactive Effigy Waypoints (rift)</li>
   <li>Custom Held Item Placement/Animations</li>
-  <li>Glow Utility (ESP Toggle currently broken on AMD, HMU if you're a wizard with OpenGL and feel inclined to help)</li>
-  <li>Cooldown Tracking through Durability Display (Working for some sound cooldowns, need to input some data)</li>
+  <li>Commands for Preset Export/Import to/from Clipboard (see /animations)</li>
+  <li>Glow Utility (no ESP toggle, currently not used for anything)</li>
+  <li>Cooldown Tracking through Durability Display (Working for some sound cooldowns)</li>
   <li>NO DOWNTIME alarm. Plays Iphone alarm if you stop moving after a certain amount of time.</li>
   <li>Large Explosion Particle render toggle</li>
   <li>Hide Scoreboard Numbers</li>
@@ -35,6 +36,16 @@ DulkirMod 1.8.9 Can be found [here](https://github.com/inglettronald/DulkirMod).
   <li>Hide Hunger Display option</li>
   <li>AOTV Etherwarp display</li>
   <li>Action Bar HUD replacements (HEALTH, MANA, DEF, SPEED)</li>
+  <li>Hide Lightning in Skyblock</li>
+  <li>Hide Fire Overlay</li>
+  <li>Slayer Miniboss Alerts + Boxes</li>
+  <li>Boss Kill time Feedback for slayers</li>
+  <li>Clean Blaze Slayer Mode! (Removes particles and kills fireballs)</li>
+  <li>Damage Splash Truncate/Hide</li>
+  <li>Blaze Attunement Display</li>
+  <li>Broken Hyperion Notification</li>
+  <li>Max Visitors Notification</li>
+  <li>Garden HUD for Composter/Visitors</li>
 </ul>
 </details>
 
@@ -43,12 +54,7 @@ DulkirMod 1.8.9 Can be found [here](https://github.com/inglettronald/DulkirMod).
         <b>Planned</b>
     </summary>
     <ul>
-      <li>Most features from DulkirMod 1.8.9</li>
-      <li>Lots more Rendering Utility</li>
-      <li>OldAnimations ??</li>
-      <li>Etherwarp display</li>
-      <li>HUD for health, Mana, Speed</li>
-      <li>A lot more I'm forgetting about</li>
+      <li>More Enderman Slayer Features</li>
     </ul>
 </details>
 
@@ -76,3 +82,5 @@ Editing HUD positioning makes use of the [JARVIS API](https://github.com/romangr
 This allows multiple mods to handle the rendering on their own, but have the positioning logic be handled in one place.
 
 Use the command `/jarvis gui` to access the main editor.
+
+Use the command `/animations` to share animation profiles.

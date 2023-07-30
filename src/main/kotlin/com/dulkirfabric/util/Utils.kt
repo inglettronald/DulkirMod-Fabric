@@ -4,7 +4,11 @@ import com.dulkirfabric.events.PlaySoundEvent
 import com.dulkirfabric.events.SlayerBossEvents
 import com.dulkirfabric.events.chat.ChatEvents
 import meteordevelopment.orbit.EventHandler
+import net.minecraft.block.entity.SkullBlockEntity
+import net.minecraft.client.texture.PlayerSkinProvider
 import net.minecraft.entity.Entity
+import net.minecraft.item.ItemStack
+import net.minecraft.nbt.NbtHelper
 import net.minecraft.util.math.Vec3d
 
 object Utils {
@@ -41,5 +45,10 @@ object Utils {
         } else if (event.message.string.trim() == "SLAYER QUEST FAILED!") {
             SlayerBossEvents.Fail(ScoreBoardUtils.slayerType ?: return ScoreBoardUtils.err()).post()
         }
+    }
+
+    fun getSkullTexture(itemStack: ItemStack): String? {
+        return itemStack.getSubNbt(SkullBlockEntity.SKULL_OWNER_KEY)?.let(NbtHelper::toGameProfile)?.properties?.get(
+            PlayerSkinProvider.TEXTURES)?.first()?.value
     }
 }

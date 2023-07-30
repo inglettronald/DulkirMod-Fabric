@@ -298,6 +298,14 @@ class DulkirConfig {
         slayer.addEntry(
             entryBuilder.mkToggle(Text.literal("Disable ALL particles during Blaze slayer boss"), configOptions::cleanBlaze)
         )
+        slayer.addEntry(
+            entryBuilder.mkToggle(Text.literal("Vampire Steak Display"), configOptions::steakDisplay,
+                Text.literal("Shows a wireframe on vampire boss when you can 1 tap it"))
+        )
+        slayer.addEntry(
+            entryBuilder.mkToggle(Text.literal("Blood Ichor Highlight"), configOptions::ichorHighlight,
+                Text.literal("Highlights the T5 mechanic that you line up with the boss."))
+        )
 
         val garden = builder.getOrCreateCategory(Text.literal("Garden"))
         garden.addEntry(
@@ -367,6 +375,8 @@ class DulkirConfig {
         var visitorAlert: Boolean = false,
         var persistentVisitorAlert: Boolean = false,
         var brokenHypNotif: Boolean = false,
+        var steakDisplay: Boolean = false,
+        var ichorHighlight: Boolean = false,
     )
 
     @Serializable

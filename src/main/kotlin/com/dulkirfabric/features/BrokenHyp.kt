@@ -31,6 +31,7 @@ object BrokenHyp {
         // get info about held item
         val tag = stack.nbt ?: return
         id = tag.getCompound("ExtraAttributes")?.getString("id") ?: ""
+
         kill = tag.getCompound("ExtraAttributes")?.getInt("stats_book") ?: -1
         championXp = tag.getCompound("ExtraAttributes")?.getDouble("champion_combat_xp") ?: -1.0
 
