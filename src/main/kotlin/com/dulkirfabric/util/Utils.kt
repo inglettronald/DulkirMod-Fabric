@@ -2,6 +2,7 @@ package com.dulkirfabric.util
 
 import com.dulkirfabric.events.PlaySoundEvent
 import com.dulkirfabric.events.SlayerBossEvents
+import com.dulkirfabric.events.WorldLoadEvent
 import com.dulkirfabric.events.chat.ChatEvents
 import meteordevelopment.orbit.EventHandler
 import net.minecraft.block.entity.SkullBlockEntity
@@ -12,6 +13,9 @@ import net.minecraft.nbt.NbtHelper
 import net.minecraft.util.math.Vec3d
 
 object Utils {
+
+    private var inSlayerBoss = false
+
     fun isInSkyblock(): Boolean {
         return ScoreBoardUtils.getLines() != null
     }
@@ -45,6 +49,27 @@ object Utils {
         } else if (event.message.string.trim() == "SLAYER QUEST FAILED!") {
             SlayerBossEvents.Fail(ScoreBoardUtils.slayerType ?: return ScoreBoardUtils.err()).post()
         }
+    }
+
+    @EventHandler
+    fun onSpawn(event: SlayerBossEvents.Spawn) {
+        inSlayerBoss = true
+    }
+
+    @EventHandler
+    fun onSwap(event: WorldLoadEvent) {
+        if (inSlayerBoss)
+            SlayerBossEvents.Fail(ScoreBoardUtils.slayerType).post()
+    }
+
+    @EventHandler
+    fun onKill(event: SlayerBossEvents.Kill) {
+        inSlayerBoss = false
+    }
+
+    @EventHandler
+    fun onFail(event: SlayerBossEvents.Fail) {
+        inSlayerBoss = false
     }
 
     fun getSkullTexture(itemStack: ItemStack): String? {

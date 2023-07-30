@@ -14,7 +14,7 @@ class SlayerBossEvents {
     ): Event()
 
     data class Fail(
-        val type: String,
+        val type: String?,
         var timestamp: Long = System.currentTimeMillis()
     ): Event()
 }
