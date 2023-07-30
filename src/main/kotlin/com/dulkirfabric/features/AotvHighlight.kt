@@ -68,7 +68,7 @@ object AotvHighlight {
     private fun raycast(entity: Entity, maxDistance: Double, tickDelta: Float): HitResult {
         // 1.7 if not crouch, 1.54 if crouch
         val crouching = mc.player!!.isSneaking
-        var vec3d: Vec3d = mc.player!!.pos.add(0.0, if (crouching) 1.54 else 1.7, 0.0)
+        val vec3d: Vec3d = mc.player!!.pos.add(0.0, if (crouching) 1.54 else 1.7, 0.0)
         val vec3d2: Vec3d = entity.getRotationVec(tickDelta)
         val vec3d3 = vec3d.add(vec3d2.x * maxDistance, vec3d2.y * maxDistance, vec3d2.z * maxDistance)
         return mc.world!!
