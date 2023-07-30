@@ -9,9 +9,16 @@ object TablistUtils {
     var tablist: List<PlayerListEntry>? = null
     private val areaPattern = "Area: (.+)".toRegex()
     private val speedPattern = "^Speed: (.+)".toRegex()
+    private val visitorPattern = "Visitors: \\((.+)\\)".toRegex()
+    private val nextVisitorPattern = "Next Visitor: (.+)".toRegex()
+    private val compostTimePattern = "Time Left: (.+)".toRegex()
+
     data class PersistentInfo(
         var area: String = "",
-        var speed: String = ""
+        var speed: String = "",
+        var numVisitors: Int = 0,
+        var nextVisitorTime: String = "",
+        var compostTime: String = ""
     )
 
     var persistentInfo: PersistentInfo = PersistentInfo()
@@ -26,17 +33,31 @@ object TablistUtils {
     private fun updatePersistentData() {
         if (tablist == null) return
         tablist!!.forEach {
-            areaPattern.find(it.displayName?.string ?: return@forEach) ?.let { result ->
+            val str = it.displayName?.string?.trim() ?: return@forEach
+            areaPattern.find(str)?.let { result ->
                 persistentInfo.area = result.groupValues[1]
                 return@forEach
             }
 
-            speedPattern.matchEntire(it.displayName?.string?.trim() ?: return@forEach) ?.let { result ->
+            speedPattern.matchEntire(str)?.let { result ->
                 persistentInfo.speed = result.groupValues[1]
                 return@forEach
             }
 
-        }
+            visitorPattern.matchEntire(str)?.let { result ->
+                persistentInfo.numVisitors = result.groupValues[1].toInt()
+                return@forEach
+            }
 
+            nextVisitorPattern.matchEntire(str)?.let { result ->
+                persistentInfo.nextVisitorTime = result.groupValues[1]
+                return@forEach
+            }
+
+            compostTimePattern.matchEntire(str)?.let { result ->
+                persistentInfo.compostTime = result.groupValues[1]
+                return@forEach
+            }
+        }
     }
 }

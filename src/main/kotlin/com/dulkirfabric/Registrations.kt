@@ -16,6 +16,7 @@ import com.dulkirfabric.features.slayer.BossTimer
 import com.dulkirfabric.features.slayer.Demonlord
 import com.dulkirfabric.features.slayer.MiniBossHighlight
 import com.dulkirfabric.hud.ActionBarHudReplacements
+import com.dulkirfabric.hud.Garden
 import com.dulkirfabric.hud.SpeedOverlay
 import com.dulkirfabric.util.ActionBarUtil
 import com.dulkirfabric.util.ScoreBoardUtils
@@ -93,6 +94,7 @@ object Registrations {
         EVENT_BUS.subscribe(Utils)
         EVENT_BUS.subscribe(BossTimer)
         EVENT_BUS.subscribe(DamageNumbers)
+        EVENT_BUS.subscribe(Garden)
 
         if (FabricLoader.getInstance().isDevelopmentEnvironment)
             EVENT_BUS.subscribe(RenderTest)

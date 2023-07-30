@@ -291,6 +291,15 @@ class DulkirConfig {
         slayer.addEntry(
             entryBuilder.mkToggle(Text.literal("Disable ALL particles during Blaze slayer boss"), configOptions::cleanBlaze)
         )
+
+        val garden = builder.getOrCreateCategory(Text.literal("Garden"))
+        garden.addEntry(
+            entryBuilder.mkToggle(Text.literal("Show Visitor Info in HUD"), configOptions::visitorHud)
+        )
+        garden.addEntry(
+            entryBuilder.mkToggle(Text.literal("Show Composter Info in HUD"), configOptions::showComposterInfo)
+        )
+
         builder.transparentBackground()
         screen = builder.build()
     }
@@ -338,7 +347,9 @@ class DulkirConfig {
         var timeSlayerBoss: Boolean = false,
         var hideNonCrits: Boolean = false,
         var truncateDamage: Boolean = false,
-        var hideCrits: Boolean = false
+        var hideCrits: Boolean = false,
+        var visitorHud: Boolean = false,
+        var showComposterInfo: Boolean = false,
     )
 
     @Serializable
