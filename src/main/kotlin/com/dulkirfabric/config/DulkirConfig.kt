@@ -162,6 +162,9 @@ class DulkirConfig {
                 .setSaveConsumer { newValue -> configOptions.etherwarpPreviewColor = newValue }
                 .build()
         )
+        general.addEntry(
+            entryBuilder.mkToggle(Text.literal("Broken Hype Notification"), configOptions::brokenHypNotif)
+        )
 
         val shortcuts = builder.getOrCreateCategory(Text.literal("Shortcuts"))
         shortcuts.addEntry(
@@ -363,6 +366,7 @@ class DulkirConfig {
         var slayerKillTime: Boolean = false,
         var visitorAlert: Boolean = false,
         var persistentVisitorAlert: Boolean = false,
+        var brokenHypNotif: Boolean = false,
     )
 
     @Serializable

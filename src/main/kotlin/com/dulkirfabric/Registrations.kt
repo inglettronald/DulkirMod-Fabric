@@ -96,6 +96,7 @@ object Registrations {
         EVENT_BUS.subscribe(DamageNumbers)
         EVENT_BUS.subscribe(Garden)
         EVENT_BUS.subscribe(VisitorAlert)
+        EVENT_BUS.subscribe(BrokenHyp)
 
         if (FabricLoader.getInstance().isDevelopmentEnvironment)
             EVENT_BUS.subscribe(RenderTest)
