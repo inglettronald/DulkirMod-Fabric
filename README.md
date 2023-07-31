@@ -82,9 +82,38 @@ are off by default, so you **will** want to look into this upon first launch.
 Editing HUD positioning makes use of the [JARVIS API](https://github.com/romangraef/jarvis). This library is still in development, but is a fantastic library for a common HUD element editor.
 This allows multiple mods to handle the rendering on their own, but have the positioning logic be handled in one place.
 
-Use the command `/jarvis gui` to access the main editor.
+Use the command `/jarvis gui` to access the main editor. There is an addressable keybinding for this as well (default `RSHIFT`)
 
 Use the command `/animations` to share animation profiles.
+
+### Dependencies
+This mod has 2 dependencies to run:
+
+[Fabric API](https://github.com/FabricMC/fabric/releases/)
+
+[Fabric Kotlin Language Support](https://github.com/FabricMC/fabric-language-kotlin/releases/)
+
+Theoretically, I could throw these in the JAR, but almost all current Fabric mods already have these dependencies anyway.
+
+### Recommendations
+(Disclaimer: None of these mods are personally checked by myself for malicious behavior. However, they are well known mods
+in the Fabric community, so I thought I would include something about them here.)
+
+There are a few mods here that I would recommend installing as a baseline:
+
+[Sodium](https://modrinth.com/mod/sodium/version/mc1.20-0.4.10?hl=en-US) and [Lithium](https://modrinth.com/mod/lithium?hl=en-US) are basically the Optifine/Patcher of 1.20. They are aimed at general performance improvements.
+
+[Zoomify](https://modrinth.com/mod/zoomify/versions) is the zoom mod I choose to use to replace Optifine's functionality.
+
+[Iris](https://modrinth.com/mod/iris/version/1.6.4+1.20?hl=en-US) allows you to use shaders.
+
+[Borderless Mining](https://www.curseforge.com/minecraft/mc-mods/borderless-mining) is a nice utility for windowed fullscreen, if you're partial to that.
+
+[Farsight](https://www.curseforge.com/minecraft/mc-mods/farsight-fabric/files) is a novel mod that caches chunks outside of server render distance, allowing you to get some WICKED screenshots.
+
+Skyblock Specific: [Firmament](https://github.com/romangraef/Firmament) is a mod that aims to accomplish some of the stuff you would see in NEU 1.8.9. It is also in
+a beta state right now and in development, but brings some utility like item list, not resetting cursor between inventories,
+image preview (chat), slot locking, and more.
 
 ## For Developers
 This is intended to be run with Jetbrains Runtime to enable hot-swap to work properly.
