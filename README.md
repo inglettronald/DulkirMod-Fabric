@@ -4,7 +4,7 @@
 
 Future home of dulkirmod for modern versions of minecraft.
 
-## Beta 1.0 will be available on **JULY 31st**! You are welcome to compile stuff before this but there is more that will be added before the first beta :)
+## Beta 1.0 is available now! See the release panel on the right side for compiled source
 
 DulkirMod 1.8.9 Can be found [here](https://github.com/inglettronald/DulkirMod).
 
@@ -94,6 +94,8 @@ This mod has 2 dependencies to run:
 [Fabric API](https://github.com/FabricMC/fabric/releases/)
 
 [Fabric Kotlin Language Support](https://github.com/FabricMC/fabric-language-kotlin/releases/)
+
+[Cloth Config API](https://modrinth.com/mod/cloth-config/version/11.1.106+forge)
 
 Theoretically, I could throw these in the JAR, but almost all current Fabric mods already have these dependencies anyway.
 
