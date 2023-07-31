@@ -95,6 +95,8 @@ This mod has 2 dependencies to run:
 
 [Fabric Kotlin Language Support](https://github.com/FabricMC/fabric-language-kotlin/releases/)
 
+[Cloth Config API](https://modrinth.com/mod/cloth-config/version/11.1.106+forge)
+
 Theoretically, I could throw these in the JAR, but almost all current Fabric mods already have these dependencies anyway.
 
 ### Recommendations
