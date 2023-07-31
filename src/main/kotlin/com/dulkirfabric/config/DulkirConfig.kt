@@ -28,11 +28,8 @@ import me.shedaniel.clothconfig2.api.ConfigBuilder
 import moe.nea.jarvis.api.Point
 import net.minecraft.client.gui.screen.Screen
 import net.minecraft.client.util.InputUtil
-import net.minecraft.client.util.InputUtil.UNKNOWN_KEY
-import net.minecraft.text.LiteralTextContent
-import net.minecraft.text.MutableText
-import net.minecraft.text.Text
-import net.minecraft.text.TextColor
+import net.minecraft.client.util.InputUtil.*
+import net.minecraft.text.*
 import net.minecraft.util.Formatting
 import net.minecraft.util.Identifier
 import java.io.File
@@ -53,9 +50,11 @@ class DulkirConfig {
         val entryBuilder = builder.entryBuilder()
         val general = builder.getOrCreateCategory(Text.literal("General"))
         general.addEntry(
-            entryBuilder.mkToggle(Text.literal("Inventory Scale Toggle"),
+            entryBuilder.mkToggle(
+                Text.literal("Inventory Scale Toggle"),
                 configOptions::invScaleBool,
-                Text.literal("This is a tooltip"))
+                Text.literal("This is a tooltip")
+            )
         )
         general.addEntry(
             entryBuilder.startFloatField(Text.literal("Inventory Scale"), configOptions.inventoryScale)
@@ -86,7 +85,10 @@ class DulkirConfig {
                 .build()
         )
         general.addEntry(
-            entryBuilder.startColorField(Text.literal("Outline Color"), TextColor.fromRgb(configOptions.blockOutlineColor))
+            entryBuilder.startColorField(
+                Text.literal("Outline Color"),
+                TextColor.fromRgb(configOptions.blockOutlineColor)
+            )
                 .setSaveConsumer { newValue -> configOptions.blockOutlineColor = newValue }
                 .build()
         )
@@ -141,26 +143,37 @@ class DulkirConfig {
             entryBuilder.mkToggle(Text.literal("Arachne Boss Spawn Timer"), configOptions::arachneSpawnTimer)
         )
         general.addEntry(
-            entryBuilder.mkToggle(Text.literal("Convert Action Bar to HUD elements"), configOptions::hudifyActionBar,
-                tooltip = Text.literal("This converts Mana/Health/Def/Stacks as HUD elements"))
+            entryBuilder.mkToggle(
+                Text.literal("Convert Action Bar to HUD elements"), configOptions::hudifyActionBar,
+                tooltip = Text.literal("This converts Mana/Health/Def/Stacks as HUD elements")
+            )
         )
         general.addEntry(
             entryBuilder.mkToggle(Text.literal("Show Speed in HUD"), configOptions::speedHud)
         )
         general.addEntry(
-            entryBuilder.mkToggle(Text.literal("Include EHP in def HUD element"), configOptions::showEHP,
-                tooltip = Text.literal("Must have Action Bar HUD elements Enabled"))
+            entryBuilder.mkToggle(
+                Text.literal("Include EHP in def HUD element"), configOptions::showEHP,
+                tooltip = Text.literal("Must have Action Bar HUD elements Enabled")
+            )
         )
         general.addEntry(
-            entryBuilder.mkToggle(Text.literal("Hide Held Item Tooltips"), configOptions::hideHeldItemTooltip,
-                tooltip = Text.literal("This is for the pesky overlay that pops up on switching items"))
+            entryBuilder.mkToggle(
+                Text.literal("Hide Held Item Tooltips"), configOptions::hideHeldItemTooltip,
+                tooltip = Text.literal("This is for the pesky overlay that pops up on switching items")
+            )
         )
         general.addEntry(
-            entryBuilder.mkToggle(Text.literal("Etherwarp Preview"), configOptions::showEtherwarpPreview,
-                tooltip = Text.literal("Highlights the targeted block when shifting with a aotv."))
+            entryBuilder.mkToggle(
+                Text.literal("Etherwarp Preview"), configOptions::showEtherwarpPreview,
+                tooltip = Text.literal("Highlights the targeted block when shifting with a aotv.")
+            )
         )
         general.addEntry(
-            entryBuilder.startAlphaColorField(Text.literal("Etherwarp Preview Color"), configOptions.etherwarpPreviewColor)
+            entryBuilder.startAlphaColorField(
+                Text.literal("Etherwarp Preview Color"),
+                configOptions.etherwarpPreviewColor
+            )
                 .setDefaultValue(0x99FFFFFF.toInt())
                 .setSaveConsumer { newValue -> configOptions.etherwarpPreviewColor = newValue }
                 .build()
@@ -174,8 +187,10 @@ class DulkirConfig {
             entryBuilder.mkKeyField(Text.literal("Dynamic Key"), configOptions::dynamicKey)
         )
         shortcuts.addEntry(
-            entryBuilder.mkToggle(Text.literal("Only Register Shortcuts in Skyblock"), configOptions::macrosSkyBlockOnly,
-                Text.literal("Useful if you want to use some of these binds elsewhere for non-skyblock specific stuff."))
+            entryBuilder.mkToggle(
+                Text.literal("Only Register Shortcuts in Skyblock"), configOptions::macrosSkyBlockOnly,
+                Text.literal("Useful if you want to use some of these binds elsewhere for non-skyblock specific stuff.")
+            )
         )
         shortcuts.addEntry(
             ConfigHelper.mkConfigList(
@@ -262,8 +277,11 @@ class DulkirConfig {
                 .build()
         )
         animations.addEntry(
-            entryBuilder.startBooleanToggle(Text.literal("Cancel Re-Equip Animation"), configOptions.animationPreset.cancelReEquip)
-                .setSaveConsumer {newValue -> configOptions.animationPreset.cancelReEquip = newValue }
+            entryBuilder.startBooleanToggle(
+                Text.literal("Cancel Re-Equip Animation"),
+                configOptions.animationPreset.cancelReEquip
+            )
+                .setSaveConsumer { newValue -> configOptions.animationPreset.cancelReEquip = newValue }
                 .setDefaultValue(false)
                 .build()
         )
@@ -291,23 +309,34 @@ class DulkirConfig {
             entryBuilder.mkToggle(Text.literal("MiniBoss Announcement Alert"), configOptions::announceMinis)
         )
         slayer.addEntry(
-            entryBuilder.mkToggle(Text.literal("Show Kill Time on Slayer Completion"), configOptions::slayerKillTime,
-                Text.literal("Shows up in chat!"))
+            entryBuilder.mkToggle(
+                Text.literal("Show Kill Time on Slayer Completion"), configOptions::slayerKillTime,
+                Text.literal("Shows up in chat!")
+            )
         )
         slayer.addEntry(
-            entryBuilder.mkToggle(Text.literal("Blaze Slayer Attunement Display"), configOptions::attunementDisplay,
-                Text.literal("Shows a wireframe in the correct color for the slayer."))
+            entryBuilder.mkToggle(
+                Text.literal("Blaze Slayer Attunement Display"), configOptions::attunementDisplay,
+                Text.literal("Shows a wireframe in the correct color for the slayer.")
+            )
         )
         slayer.addEntry(
-            entryBuilder.mkToggle(Text.literal("Disable ALL particles during Blaze slayer boss"), configOptions::cleanBlaze)
+            entryBuilder.mkToggle(
+                Text.literal("Disable ALL particles during Blaze slayer boss"),
+                configOptions::cleanBlaze
+            )
         )
         slayer.addEntry(
-            entryBuilder.mkToggle(Text.literal("Vampire Steak Display"), configOptions::steakDisplay,
-                Text.literal("Shows a wireframe on vampire boss when you can 1 tap it"))
+            entryBuilder.mkToggle(
+                Text.literal("Vampire Steak Display"), configOptions::steakDisplay,
+                Text.literal("Shows a wireframe on vampire boss when you can 1 tap it")
+            )
         )
         slayer.addEntry(
-            entryBuilder.mkToggle(Text.literal("Blood Ichor Highlight"), configOptions::ichorHighlight,
-                Text.literal("Highlights the T5 mechanic that you line up with the boss."))
+            entryBuilder.mkToggle(
+                Text.literal("Blood Ichor Highlight"), configOptions::ichorHighlight,
+                Text.literal("Highlights the T5 mechanic that you line up with the boss.")
+            )
         )
 
         val garden = builder.getOrCreateCategory(Text.literal("Garden"))
@@ -321,7 +350,10 @@ class DulkirConfig {
             entryBuilder.mkToggle(Text.literal("Show Title alert when max visitors"), configOptions::visitorAlert)
         )
         garden.addEntry(
-            entryBuilder.mkToggle(Text.literal("Persistent Visitor alert (dependent on previous)"), configOptions::persistentVisitorAlert)
+            entryBuilder.mkToggle(
+                Text.literal("Persistent Visitor alert (dependent on previous)"),
+                configOptions::persistentVisitorAlert
+            )
         )
         garden.addEntry(
             entryBuilder.mkToggle(Text.literal("Show Blocks per second (SPEED)"), configOptions::speedBpsHud)
@@ -330,6 +362,51 @@ class DulkirConfig {
             entryBuilder.mkToggle(Text.literal("Show Pitch/Yaw in HUD"), configOptions::pitchYawDisplay)
         )
 
+//        val farmControls = builder.getOrCreateCategory(Text.literal("Farming Controls"))
+//        farmControls.addEntry(
+//            entryBuilder.startTextDescription(Text.literal("This is used for quickly swapping between control schemes!")
+//                .setStyle(Style.EMPTY.withColor(Formatting.GRAY)))
+//                .build()
+//        )
+//        farmControls.addEntry(
+//            entryBuilder.startTextDescription(Text.literal("Run the command ")
+//                .setStyle(Style.EMPTY.withColor(Formatting.GRAY))
+//                .append(Text.literal("/farmcontrols").setStyle(Style.EMPTY.withColor(Formatting.GOLD)))
+//                .append(Text.literal(" to toggle the setting on and off.")
+//                    .setStyle(Style.EMPTY.withColor(Formatting.GRAY))))
+//                .build()
+//        )
+//        farmControls.addEntry(
+//            entryBuilder.startTextDescription(Text.literal("Tip:").setStyle(Style.EMPTY.withColor(Formatting.RED))
+//                .append(Text.literal(" if you want a keybinding for this feature, check out the Shortcuts category!")
+//                    .setStyle(Style.EMPTY.withColor(Formatting.GRAY))))
+//                .build()
+//        )
+//
+//        farmControls.addEntry(
+//            entryBuilder.startKeyCodeField(Text.literal("Farming Break Key"), configOptions.farmBreakKey)
+//                .setDefaultValue(fromKeyCode(GLFW_KEY_SPACE, GLFW_KEY_SPACE))
+//                .setKeySaveConsumer { newValue -> configOptions.farmBreakKey = newValue }
+//                .build()
+//        )
+//        farmControls.addEntry(
+//            entryBuilder.startKeyCodeField(Text.literal("Default Break Key"), configOptions.defaultBreakKey)
+//                .setDefaultValue(fromTranslationKey("key.mouse.left"))
+//                .setKeySaveConsumer { newValue -> configOptions.defaultBreakKey = newValue }
+//                .build()
+//        )
+//        farmControls.addEntry(
+//            entryBuilder.startIntSlider(Text.literal("Farming Sensitivity (# of Percent)"), configOptions.farmSens, 0, 200)
+//                .setDefaultValue(0)
+//                .setSaveConsumer { newValue -> configOptions.farmSens = newValue }
+//                .build()
+//        )
+//        farmControls.addEntry(
+//            entryBuilder.startIntSlider(Text.literal("Default Sensitivity (# of Percent)"), configOptions.defaultSens, 0, 200)
+//                .setDefaultValue(100)
+//                .setSaveConsumer { newValue -> configOptions.defaultSens = newValue }
+//                .build()
+//        )
         builder.transparentBackground()
         screen = builder.build()
     }
@@ -342,7 +419,7 @@ class DulkirConfig {
         var macrosSkyBlockOnly: Boolean = false,
         var aliasList: List<Alias> = listOf(Alias("", "")),
         var ignoreReverseThirdPerson: Boolean = false,
-        var dynamicKey: InputUtil.Key = UNKNOWN_KEY,
+        var dynamicKey: Key = UNKNOWN_KEY,
         var customBlockOutlines: Boolean = false,
         var blockOutlineThickness: Int = 3,
         var blockOutlineColor: Int = 0xFFFFFF,
@@ -389,11 +466,15 @@ class DulkirConfig {
         var speedHud: Boolean = false,
         var speedBpsHud: Boolean = false,
         var pitchYawDisplay: Boolean = false,
+//        var farmBreakKey: Key = fromKeyCode(GLFW_KEY_SPACE, GLFW_KEY_SPACE),
+//        var defaultBreakKey: Key = fromTranslationKey("key.mouse.left"),
+//        var farmSens: Int = 0,
+//        var defaultSens: Int = 100,
     )
 
     @Serializable
     data class Macro(
-        var keyBinding: InputUtil.Key,
+        var keyBinding: Key,
         var command: String,
     )
 
