@@ -1,17 +1,14 @@
 package com.dulkirfabric.commands
 
+import com.dulkirfabric.DulkirModFabric.mc
 import com.dulkirfabric.config.DulkirConfig
-import com.dulkirfabric.util.render.AnimationPreset
 import com.dulkirfabric.util.TextUtils
+import com.dulkirfabric.util.render.AnimationPreset
 import com.google.gson.Gson
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.builder.LiteralArgumentBuilder
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
 import net.minecraft.command.CommandRegistryAccess
-import java.awt.Toolkit
-import java.awt.datatransfer.Clipboard
-import java.awt.datatransfer.DataFlavor
-import java.awt.datatransfer.StringSelection
 import java.util.*
 
 object AnimationCommand {
@@ -51,8 +48,7 @@ object AnimationCommand {
 
     private fun applyPresetFromClipboard() {
         val gson = Gson()
-        val clipboard = Toolkit.getDefaultToolkit().systemClipboard
-        val base64 = clipboard.getData(DataFlavor.stringFlavor) as String
+        val base64 = mc.keyboard.clipboard
         try {
             val jsonString = String(Base64.getDecoder().decode(base64))
             val import = gson.fromJson(jsonString, AnimationPreset::class.java)
@@ -74,14 +70,11 @@ object AnimationCommand {
     }
 
     private fun applyPresetToClipboard() {
-        var s = ""
         val gson = Gson()
         val jsonString = gson.toJson(DulkirConfig.configOptions.animationPreset)
-        s = Base64.getEncoder().encodeToString(jsonString.toByteArray())
+        val s = Base64.getEncoder().encodeToString(jsonString.toByteArray())
         // set clipboard
-        val selection = StringSelection(s)
-        val clipboard: Clipboard = Toolkit.getDefaultToolkit().systemClipboard
-        clipboard.setContents(selection, selection)
+        mc.keyboard.clipboard = s
         TextUtils.info("§6Animation config has been copied to clipboard")
     }
 }

@@ -76,7 +76,8 @@ DulkirMod 1.8.9 Can be found [here](https://github.com/inglettronald/DulkirMod).
 </details>
 
 ## For Users
-Opening the settings menu can be achieved through the escape menu or through the `/dulkir` command.
+Opening the settings menu can be achieved through the escape menu or through the `/dulkir` command. Almost all features
+are off by default, so you **will** want to look into this upon first launch.
 
 Editing HUD positioning makes use of the [JARVIS API](https://github.com/romangraef/jarvis). This library is still in development, but is a fantastic library for a common HUD element editor.
 This allows multiple mods to handle the rendering on their own, but have the positioning logic be handled in one place.
@@ -84,3 +85,14 @@ This allows multiple mods to handle the rendering on their own, but have the pos
 Use the command `/jarvis gui` to access the main editor.
 
 Use the command `/animations` to share animation profiles.
+
+## For Developers
+This is intended to be run with Jetbrains Runtime to enable hot-swap to work properly.
+To get hot swapping with DCEVM working in this version, I found the most convenient way of achieving this is manually installing
+the hotswap jar here and changing your VM args in `build.gradle` to link your java agent properly. I'm not an insane wizard with
+this stuff, so my terminology might be kinda poor here. If any developer is interested in helping me refine instructions to
+be better to understand, feel free to hit me up.
+
+In the meantime, if you're struggling, I would suggest not worrying about DCEVM. You can (probably?) achieve this by just removing the
+last 2 VMargs inside your `build.gradle` and regenerating your run configuration. My DMs are always open to try to offer support
+on this stuff, as it will help me learn a thing or two as well.

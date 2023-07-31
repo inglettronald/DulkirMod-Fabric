@@ -145,6 +145,9 @@ class DulkirConfig {
                 tooltip = Text.literal("This converts Mana/Health/Def/Stacks as HUD elements"))
         )
         general.addEntry(
+            entryBuilder.mkToggle(Text.literal("Show Speed in HUD"), configOptions::speedHud)
+        )
+        general.addEntry(
             entryBuilder.mkToggle(Text.literal("Include EHP in def HUD element"), configOptions::showEHP,
                 tooltip = Text.literal("Must have Action Bar HUD elements Enabled"))
         )
@@ -320,6 +323,12 @@ class DulkirConfig {
         garden.addEntry(
             entryBuilder.mkToggle(Text.literal("Persistent Visitor alert (dependent on previous)"), configOptions::persistentVisitorAlert)
         )
+        garden.addEntry(
+            entryBuilder.mkToggle(Text.literal("Show Blocks per second (SPEED)"), configOptions::speedBpsHud)
+        )
+        garden.addEntry(
+            entryBuilder.mkToggle(Text.literal("Show Pitch/Yaw in HUD"), configOptions::pitchYawDisplay)
+        )
 
         builder.transparentBackground()
         screen = builder.build()
@@ -377,6 +386,9 @@ class DulkirConfig {
         var brokenHypNotif: Boolean = false,
         var steakDisplay: Boolean = false,
         var ichorHighlight: Boolean = false,
+        var speedHud: Boolean = false,
+        var speedBpsHud: Boolean = false,
+        var pitchYawDisplay: Boolean = false,
     )
 
     @Serializable
