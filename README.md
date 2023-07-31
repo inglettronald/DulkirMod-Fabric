@@ -4,7 +4,7 @@
 
 Future home of dulkirmod for modern versions of minecraft.
 
-## Beta 1.0 will be available on **JULY 31st**! You are welcome to compile stuff before this but there is more that will be added before the first beta :)
+## Beta 1.0 is available now! See the release panel on the right side for download links
 
 DulkirMod 1.8.9 Can be found [here](https://github.com/inglettronald/DulkirMod).
 
