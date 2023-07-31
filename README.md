@@ -46,6 +46,7 @@ DulkirMod 1.8.9 Can be found [here](https://github.com/inglettronald/DulkirMod).
   <li>Broken Hyperion Notification</li>
   <li>Max Visitors Notification</li>
   <li>Garden HUD for Composter/Visitors</li>
+  <li>Some vampire slayer features (steak display and ichor highlight)</li>
 </ul>
 </details>
 
@@ -55,6 +56,7 @@ DulkirMod 1.8.9 Can be found [here](https://github.com/inglettronald/DulkirMod).
     </summary>
     <ul>
       <li>More Enderman Slayer Features</li>
+      <li>Farming Controls Scheme Features</li>
     </ul>
 </details>
 
