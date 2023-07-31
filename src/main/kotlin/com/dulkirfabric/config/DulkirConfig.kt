@@ -38,9 +38,9 @@ class DulkirConfig {
 
     private val buttonText: Text =
         MutableText.of(LiteralTextContent("Dulkir")).formatted(Formatting.BOLD, Formatting.YELLOW)
-    var screen: Screen
+    var screen: Screen = buildScreen(null)
 
-    init {
+    fun buildScreen(parentScreen: Screen? = null): Screen {
         val builder = ConfigBuilder.create().setTitle(buttonText)
         builder.setDefaultBackgroundTexture(Identifier("minecraft:textures/block/oak_planks.png"))
         builder.setGlobalized(true)
@@ -408,7 +408,9 @@ class DulkirConfig {
 //                .build()
 //        )
         builder.transparentBackground()
-        screen = builder.build()
+        if (parentScreen != null)
+            builder.setParentScreen(parentScreen)
+        return builder.build()
     }
 
     @Serializable

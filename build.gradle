@@ -27,6 +27,12 @@ repositories {
 	maven { url "https://maven.shedaniel.me/" }
 	maven { url "https://maven.terraformersmc.com/releases/" }
 	maven { url = "https://jitpack.io/" }
+    maven {
+        url "https://api.modrinth.com/maven"
+        content {
+            includeGroup("maven.modrinth")
+        }
+    }
 }
 
 dependencies {
@@ -47,6 +53,8 @@ dependencies {
 	modImplementation("moe.nea.jarvis:jarvis-api:1.1.1")
 	include("moe.nea.jarvis:jarvis-fabric:1.1.1")
 	modLocalRuntime("moe.nea.jarvis:jarvis-fabric:1.1.1")
+    modImplementation "maven.modrinth:modmenu:7.0.0"
+    modLocalRuntime "maven.modrinth:modmenu:7.0.0"
 }
 
 loom {

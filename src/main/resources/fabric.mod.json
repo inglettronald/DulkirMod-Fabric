@@ -26,8 +26,11 @@
 		],
 		"jarvis": [
 			"com.dulkirfabric.util.JarvisIntegrationPlugin"
-		]
-	},
+		],
+        "modmenu": [
+            "com.dulkirfabric.util.DulkirModMenuPlugin"
+        ]
+    },
 	"mixins": [
 		"dulkirmod-fabric.mixins.json"
 	],
