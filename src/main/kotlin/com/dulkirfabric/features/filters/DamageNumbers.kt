@@ -10,7 +10,7 @@ import net.minecraft.text.Text
 object DamageNumbers {
 
     private val nonCritFormat = """^(\d{1,3}(,\d{3})*|\d+)$""".toRegex()
-    private val trimPattern = "[✧,]".toRegex()
+    private val trimPattern = "[✧,❤]".toRegex()
     private val critColorList = listOf(
         "§e", "§f", "§c", "§6"
     )
