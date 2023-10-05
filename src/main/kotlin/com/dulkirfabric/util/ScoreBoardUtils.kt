@@ -5,6 +5,7 @@ import com.dulkirfabric.events.LongUpdateEvent
 import com.dulkirfabric.events.PlaySoundEvent
 import com.dulkirfabric.events.SlayerBossEvents
 import meteordevelopment.orbit.EventHandler
+import net.minecraft.scoreboard.ScoreboardDisplaySlot
 import net.minecraft.scoreboard.Team
 import net.minecraft.text.StringVisitable
 import net.minecraft.text.Style
@@ -21,15 +22,19 @@ object ScoreBoardUtils {
      * Gets Scoreboard lines, will return null if not in Skyblock.
      */
     fun getLines(): MutableList<String>? {
+        return getLines { it.string.replace("§.".toRegex(), "") }
+    }
+
+    fun getLines(textMapper: (Text) -> String): MutableList<String>? {
         val scoreboard = DulkirModFabric.mc.player?.scoreboard ?: return null
         // This returns null if we're not in skyblock curiously
-        val sidebarObjective = scoreboard.getObjective("SBScoreboard") ?: return null
+        val sidebarObjective = scoreboard.getObjectiveForSlot(ScoreboardDisplaySlot.SIDEBAR) ?: return null
+        if (sidebarObjective.name != "SBScoreboard") return null
         val scores = scoreboard.getAllPlayerScores(sidebarObjective)
         val lines: MutableList<String> = ArrayList()
         for (score in scores.reversed()) {
             val team = scoreboard.getPlayerTeam(score.playerName)
-            var str = Team.decorateName(team, Text.literal(score.playerName)).string
-                .replace("§[^a-f0-9]".toRegex(), "")
+            var str = textMapper(Team.decorateName(team, Text.literal(score.playerName)))
             lines.add(str)
         }
         return lines
@@ -40,16 +45,7 @@ object ScoreBoardUtils {
      * namely effigy display for now - but might be useful later? Who knows.
      */
     fun getLinesWithColor(): MutableList<String>? {
-        val scoreboard = DulkirModFabric.mc.player?.scoreboard ?: return null
-        // This returns null if we're not in skyblock curiously
-        val sidebarObjective = scoreboard.getObjective("SBScoreboard") ?: return null
-        val scores = scoreboard.getAllPlayerScores(sidebarObjective)
-        val lines: MutableList<String> = ArrayList()
-        for (score in scores.reversed()) {
-            val team = scoreboard.getPlayerTeam(score.playerName)
-            lines.add(Team.decorateName(team, Text.literal(score.playerName)).formattedString())
-        }
-        return lines
+        return getLines { it.formattedString() }
     }
 
     /**
@@ -97,7 +93,7 @@ object ScoreBoardUtils {
         if (event.sound.id.path != "entity.wither.shoot") return
         if (event.sound.pitch != 0.6984127f) return
         if (event.sound.volume != .5f) return
-        SlayerBossEvents.Spawn(slayerType?: return err()).post()
+        SlayerBossEvents.Spawn(slayerType ?: return err()).post()
     }
 
     fun err() {

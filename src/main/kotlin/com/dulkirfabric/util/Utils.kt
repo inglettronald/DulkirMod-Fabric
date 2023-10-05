@@ -74,6 +74,6 @@ object Utils {
 
     fun getSkullTexture(itemStack: ItemStack): String? {
         return itemStack.getSubNbt(SkullBlockEntity.SKULL_OWNER_KEY)?.let(NbtHelper::toGameProfile)?.properties?.get(
-            PlayerSkinProvider.TEXTURES)?.first()?.value
+            "textures")?.first()?.value
     }
 }

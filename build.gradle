@@ -1,103 +1,106 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-	id 'fabric-loom' version '1.2-SNAPSHOT'
-	id 'maven-publish'
-  	id "org.jetbrains.kotlin.jvm" version "1.8.21"
-	id "io.github.juuxel.loom-quiltflower" version "1.10.0"
-	id "org.jetbrains.kotlin.plugin.serialization" version "1.8.10"
+    id "fabric-loom" version "1.2-SNAPSHOT"
+    id "maven-publish"
+    id "org.jetbrains.kotlin.jvm" version "1.8.21"
+    id "io.github.juuxel.loom-quiltflower" version "1.10.0"
+    id "org.jetbrains.kotlin.plugin.serialization" version "1.8.10"
+    id "com.github.ben-manes.versions" version "0.48.0"
 }
 
 version = project.mod_version
 group = project.maven_group
 
 base {
-	archivesName = project.archives_base_name
+    archivesName = project.archives_base_name
 }
 
 repositories {
-	// Add repositories to retrieve artifacts from in here.
-	// You should only use this when depending on other mods because
-	// Loom adds the essential maven repositories to download Minecraft and libraries from automatically.
-	// See https://docs.gradle.org/current/userguide/declaring_repositories.html
-	// for more information about repositories.
-	maven { url = "https://pkgs.dev.azure.com/djtheredstoner/DevAuth/_packaging/public/maven/v1" }
-	maven { url "https://repo.nea.moe/mirror" }
-	maven { url "https://repo.nea.moe/releases/" }
-	maven { url "https://maven.shedaniel.me/" }
-	maven { url "https://maven.terraformersmc.com/releases/" }
-	maven { url = "https://jitpack.io/" }
+    maven { url "https://pkgs.dev.azure.com/djtheredstoner/DevAuth/_packaging/public/maven/v1" }
+    maven { url "https://repo.nea.moe/releases/" }
+    maven { url "https://maven.shedaniel.me/" }
+    maven { url "https://maven.terraformersmc.com/releases/" }
+    maven {
+        url "https://jitpack.io/"
+        content {
+            includeGroupByRegex("(com|io)\\.github\\..+")
+        }
+    }
     maven {
         url "https://api.modrinth.com/maven"
         content {
             includeGroup("maven.modrinth")
         }
     }
+    maven { url "https://repo.nea.moe/mirror" }
 }
 
 dependencies {
-	minecraft "com.mojang:minecraft:${project.minecraft_version}"
-	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
-	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+    minecraft "com.mojang:minecraft:${project.minecraft_version}"
+    mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
+    modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
-	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-	modImplementation "net.fabricmc:fabric-language-kotlin:${project.fabric_kotlin_version}"
-	modRuntimeOnly("me.djtheredstoner:DevAuth-fabric:1.1.2")
-	implementation "meteordevelopment:orbit:0.2.3"
-	include "meteordevelopment:orbit:0.2.3"
-	modApi "me.shedaniel.cloth:cloth-config-fabric:11.0.99"
-	include "me.shedaniel.cloth:cloth-config-fabric:11.0.99"
-	include "com.github.llamalad7.mixinextras:mixinextras-fabric:0.2.0-beta.9"
-	implementation "com.github.llamalad7.mixinextras:mixinextras-fabric:0.2.0-beta.9"
-	annotationProcessor "com.github.llamalad7.mixinextras:mixinextras-fabric:0.2.0-beta.9"
-	modImplementation("moe.nea.jarvis:jarvis-api:1.1.1")
-	include("moe.nea.jarvis:jarvis-fabric:1.1.1")
-	modLocalRuntime("moe.nea.jarvis:jarvis-fabric:1.1.1")
-    modImplementation "maven.modrinth:modmenu:7.0.0"
-    modLocalRuntime "maven.modrinth:modmenu:7.0.0"
+    modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+    modImplementation "net.fabricmc:fabric-language-kotlin:${project.fabric_kotlin_version}"
+    modRuntimeOnly "me.djtheredstoner:DevAuth-fabric:${project.devauth_version}"
+    implementation "meteordevelopment:orbit:${project.orbit_version}"
+    include "meteordevelopment:orbit:${project.orbit_version}"
+    modApi "me.shedaniel.cloth:cloth-config-fabric:${project.cloth_config_version}"
+    include "me.shedaniel.cloth:cloth-config-fabric:${project.cloth_config_version}"
+    include "com.github.llamalad7.mixinextras:mixinextras-fabric:${project.mixinextras_version}"
+    implementation "com.github.llamalad7.mixinextras:mixinextras-fabric:${project.mixinextras_version}"
+    annotationProcessor "com.github.llamalad7.mixinextras:mixinextras-fabric:${project.mixinextras_version}"
+    modImplementation "moe.nea.jarvis:jarvis-api:${project.jarvis_version}"
+    include "moe.nea.jarvis:jarvis-fabric:${project.jarvis_version}"
+    modLocalRuntime "moe.nea.jarvis:jarvis-fabric:${project.jarvis_version}"
+    modImplementation "maven.modrinth:modmenu:${project.modmenu_version}"
+    modLocalRuntime "maven.modrinth:modmenu:${project.modmenu_version}"
 }
 
 loom {
-	runs {
-		removeIf { it.name != "client" }
-		named("client") {
-			property("devauth.enabled", "true")
-			property("fabric.log.level", "info")
-			vmArg("-ea")
-			vmArg("-XX:+AllowEnhancedClassRedefinition")
-			vmArg("-XX:HotswapAgent=external")
-			vmArg("-javaagent:/home/ronald/Software-Packages/hotswap-agent-1.4.2-SNAPSHOT.jar")
-		}
-	}
-	accessWidenerPath = file("src/main/resources/dulkirmod.accesswidener")
+    runs {
+        removeIf { it.name != "client" }
+        named("client") {
+            property("devauth.enabled", "true")
+            property("fabric.log.level", "info")
+            vmArg("-ea")
+        }
+    }
+    accessWidenerPath = file("src/main/resources/dulkirmod.accesswidener")
 }
 
+def javaVersion = 17
 processResources {
-	inputs.property "version", project.version
+    inputs.property "version", project.version
+    inputs.property "fabric_loader_version", project.loader_version
+    inputs.property "minecraft_version", project.minecraft_version
+    inputs.property "java_version", javaVersion
+    inputs.property "fabric_api_version", project.fabric_version
 
-	filesMatching("fabric.mod.json") {
-		expand "version": project.version
-	}
+    filesMatching("fabric.mod.json") {
+        expand inputs.properties
+    }
 }
 
 tasks.withType(JavaCompile).configureEach {
-	it.options.encoding = "UTF-8"
-	it.options.release = 17
+    it.options.encoding = "UTF-8"
+    it.options.release = javaVersion
 }
 
 tasks.withType(KotlinCompile).configureEach {
-	kotlinOptions.jvmTarget = 17
+    kotlinOptions.jvmTarget = javaVersion
 }
 
 java {
-	withSourcesJar()
+    withSourcesJar()
 
-	sourceCompatibility = JavaVersion.VERSION_17
-	targetCompatibility = JavaVersion.VERSION_17
+    sourceCompatibility = JavaVersion.toVersion(javaVersion)
+    targetCompatibility = JavaVersion.toVersion(javaVersion)
 }
 
 jar {
-	from("LICENSE") {
-		rename { "${it}_${base.archivesName.get()}"}
-	}
+    from("LICENSE") {
+        rename { "${it}_${base.archivesName.get()}" }
+    }
 }
