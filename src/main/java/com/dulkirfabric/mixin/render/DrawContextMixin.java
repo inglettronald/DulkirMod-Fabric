@@ -43,7 +43,7 @@ public class DrawContextMixin {
     }
 
     @Inject(method = "drawTooltip(Lnet/minecraft/client/font/TextRenderer;Ljava/util/List;IILnet/minecraft/client/gui/tooltip/TooltipPositioner;)V",
-            at = @At(target = "Lnet/minecraft/client/util/math/MatrixStack;push()V", value = "INVOKE"))
+            at = @At(target = "Lnet/minecraft/client/util/math/MatrixStack;push()V", value = "INVOKE", shift = At.Shift.AFTER))
     public void onPush(TextRenderer textRenderer, List<TooltipComponent> components, int x, int y, TooltipPositioner positioner, CallbackInfo ci) {
         if (MinecraftClient.getInstance().currentScreen instanceof HandledScreen) {
             TooltipImpl.INSTANCE.applyScale(matrices);

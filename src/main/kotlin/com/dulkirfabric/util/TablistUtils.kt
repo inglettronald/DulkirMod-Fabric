@@ -11,7 +11,6 @@ object TablistUtils {
     private val areaPattern = "Area: (.+)".toRegex()
     private val speedPattern = "^Speed: (.+)".toRegex()
     private val visitorPattern = "Visitors: \\((.+)\\)".toRegex()
-    private val nextVisitorPattern = "Next Visitor: (.+)".toRegex()
     private val compostTimePattern = "Time Left: (.+)".toRegex()
 
     data class PersistentInfo(
@@ -49,12 +48,14 @@ object TablistUtils {
             }
 
             visitorPattern.matchEntire(str)?.let { result ->
-                persistentInfo.numVisitors = result.groupValues[1].toInt()
-                return@forEach
-            }
-
-            nextVisitorPattern.matchEntire(str)?.let { result ->
                 persistentInfo.nextVisitorTime = result.groupValues[1]
+                var index = tablist!!.indexOf(it) + 1
+                var visitors = 0
+                while (tablist!!.get(index).displayName?.string != "") {
+                    index++
+                    visitors++
+                }
+                persistentInfo.numVisitors = visitors
                 return@forEach
             }
 
