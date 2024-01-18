@@ -51,7 +51,7 @@ object TablistUtils {
                 persistentInfo.nextVisitorTime = result.groupValues[1]
                 var index = tablist!!.indexOf(it) + 1
                 var visitors = 0
-                while (tablist!!.get(index).displayName?.string != "") {
+                while (index < tablist!!.size && tablist!![index].displayName?.string != "" && visitors < 5) {
                     index++
                     visitors++
                 }
