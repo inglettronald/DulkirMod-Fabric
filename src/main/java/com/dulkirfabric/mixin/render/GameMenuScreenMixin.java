@@ -32,7 +32,8 @@ import java.util.function.Supplier;
 @Mixin(GameMenuScreen.class)
 public abstract class GameMenuScreenMixin extends ScreenMixin {
 
-	private final Text buttonText = MutableText.of(new LiteralTextContent("Dulkir")).formatted(Formatting.BOLD, Formatting.YELLOW);
+	private final Text buttonText = MutableText.of(new PlainTextContent.Literal("Dulkir"))
+			.formatted(Formatting.BOLD, Formatting.YELLOW);
 
 	@Shadow
 	protected abstract ButtonWidget createButton(Text text, Supplier<Screen> screenSupplier);

@@ -23,12 +23,12 @@ object ScoreBoardUtils {
     fun getLines(): MutableList<String>? {
         val scoreboard = DulkirModFabric.mc.player?.scoreboard ?: return null
         // This returns null if we're not in skyblock curiously
-        val sidebarObjective = scoreboard.getObjective("SBScoreboard") ?: return null
-        val scores = scoreboard.getAllPlayerScores(sidebarObjective)
+        val sidebarObjective = scoreboard.getNullableObjective("SBScoreboard") ?: return null
+        val scores = scoreboard.getScoreboardEntries(sidebarObjective)
         val lines: MutableList<String> = ArrayList()
         for (score in scores.reversed()) {
-            val team = scoreboard.getPlayerTeam(score.playerName)
-            var str = Team.decorateName(team, Text.literal(score.playerName)).string
+            val team = scoreboard.getTeam(score.owner)
+            var str = Team.decorateName(team, Text.literal(score.owner)).string
                 .replace("§[^a-f0-9]".toRegex(), "")
             lines.add(str)
         }
@@ -42,12 +42,12 @@ object ScoreBoardUtils {
     fun getLinesWithColor(): MutableList<String>? {
         val scoreboard = DulkirModFabric.mc.player?.scoreboard ?: return null
         // This returns null if we're not in skyblock curiously
-        val sidebarObjective = scoreboard.getObjective("SBScoreboard") ?: return null
-        val scores = scoreboard.getAllPlayerScores(sidebarObjective)
+        val sidebarObjective = scoreboard.getNullableObjective("SBScoreboard") ?: return null
+        val scores = scoreboard.getScoreboardEntries(sidebarObjective)
         val lines: MutableList<String> = ArrayList()
         for (score in scores.reversed()) {
-            val team = scoreboard.getPlayerTeam(score.playerName)
-            lines.add(Team.decorateName(team, Text.literal(score.playerName)).formattedString())
+            val team = scoreboard.getTeam(score.owner)
+            lines.add(Team.decorateName(team, Text.literal(score.owner)).formattedString())
         }
         return lines
     }
@@ -97,7 +97,7 @@ object ScoreBoardUtils {
         if (event.sound.id.path != "entity.wither.shoot") return
         if (event.sound.pitch != 0.6984127f) return
         if (event.sound.volume != .5f) return
-        SlayerBossEvents.Spawn(slayerType?: return err()).post()
+        SlayerBossEvents.Spawn(slayerType ?: return err()).post()
     }
 
     fun err() {

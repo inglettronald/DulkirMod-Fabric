@@ -21,15 +21,17 @@ import com.dulkirfabric.util.render.AnimationPreset
 import com.dulkirfabric.util.render.HudElement
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.UseSerializers
-import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import me.shedaniel.clothconfig2.api.ConfigBuilder
 import moe.nea.jarvis.api.Point
 import net.minecraft.client.gui.screen.Screen
-import net.minecraft.client.util.InputUtil
-import net.minecraft.client.util.InputUtil.*
-import net.minecraft.text.*
+import net.minecraft.client.util.InputUtil.Key
+import net.minecraft.client.util.InputUtil.UNKNOWN_KEY
+import net.minecraft.text.MutableText
+import net.minecraft.text.PlainTextContent.Literal
+import net.minecraft.text.Text
+import net.minecraft.text.TextColor
 import net.minecraft.util.Formatting
 import net.minecraft.util.Identifier
 import java.io.File
@@ -37,7 +39,7 @@ import java.io.File
 class DulkirConfig {
 
     private val buttonText: Text =
-        MutableText.of(LiteralTextContent("Dulkir")).formatted(Formatting.BOLD, Formatting.YELLOW)
+        MutableText.of(Literal("Dulkir")).formatted(Formatting.BOLD, Formatting.YELLOW)
     var screen: Screen = buildScreen(null)
 
     fun buildScreen(parentScreen: Screen? = null): Screen {

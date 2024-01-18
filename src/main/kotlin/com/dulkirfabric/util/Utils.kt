@@ -6,7 +6,6 @@ import com.dulkirfabric.events.WorldLoadEvent
 import com.dulkirfabric.events.chat.ChatEvents
 import meteordevelopment.orbit.EventHandler
 import net.minecraft.block.entity.SkullBlockEntity
-import net.minecraft.client.texture.PlayerSkinProvider
 import net.minecraft.entity.Entity
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NbtHelper
@@ -74,6 +73,6 @@ object Utils {
 
     fun getSkullTexture(itemStack: ItemStack): String? {
         return itemStack.getSubNbt(SkullBlockEntity.SKULL_OWNER_KEY)?.let(NbtHelper::toGameProfile)?.properties?.get(
-            PlayerSkinProvider.TEXTURES)?.first()?.value
+            "textures")?.first()?.value
     }
 }

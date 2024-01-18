@@ -2,9 +2,8 @@
 [![discord badge](https://img.shields.io/discord/819011720001224735?label=discord&color=9089DA&logo=discord&style=for-the-badge)](https://discord.gg/WnJwrNZQSn)
 [![twitch](https://img.shields.io/twitch/status/dulkir?style=for-the-badge)](https://www.twitch.tv/dulkir)
 
-Future home of dulkirmod for modern versions of minecraft.
+Home of dulkirmod for modern versions of minecraft.
 
-## Beta 1.0 is available now! See the release panel on the right side for compiled source
 
 DulkirMod 1.8.9 Can be found [here](https://github.com/inglettronald/DulkirMod).
 
@@ -54,27 +53,17 @@ DulkirMod 1.8.9 Can be found [here](https://github.com/inglettronald/DulkirMod).
     <summary>
         <b>Planned</b>
     </summary>
-    <ul>
-      <li>More Enderman Slayer Features</li>
-      <li>Farming Controls Scheme Features</li>
-    </ul>
-</details>
-
-<details>
-    <summary>
-        <b>Suggestions</b>
-    </summary>
-    Please feel free to drop any suggestions for stuff to add to this mod over in my discord, linked above! I think I
-    usually have a good understanding of what mod features need coding, but I'm always open to ideas.
+    There are no longer plans to add features to this mod, as I have been working at Lunar Client now. I will attempt
+    to keep up with bug-fixes and version bumps when I have the time.
 </details>
 
 <details>
     <summary>
         <b>Contributing</b>
     </summary>
-    Contributions are welcome! The best way to do this is to create a fork of this repository and suggest changes through
-    a pull request on GitHub. Read more about contributions and pull requests <a href="https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request-from-a-fork">here</a>.
-    My discord dms are also publicly open if you have further questions.
+    Unfortunately, contributions are not open at this time. By all means, feel free to make your own branch and maintain
+    it if you'd like though. I will not directly endorse any forks of this mod, but I won't be taking any steps to take
+    them down so long as licenses are abided by.
 </details>
 
 ## For Users
