@@ -10,13 +10,14 @@ object TablistUtils {
     var tablist: List<PlayerListEntry>? = null
     private val areaPattern = "Area: (.+)".toRegex()
     private val speedPattern = "^Speed: (.+)".toRegex()
-    private val visitorPattern = "Visitors: \\((.+)\\)".toRegex()
+    private val numVisitorPattern = "Visitors: \\((\\d)\\)".toRegex()
+    private val nextVisitorPattern = "Next Visitor: (.+)".toRegex()
     private val compostTimePattern = "Time Left: (.+)".toRegex()
 
     data class PersistentInfo(
         var area: String = "",
         var speed: String = "",
-        var numVisitors: Int = 0,
+        var numVisitors: Int = -1,
         var nextVisitorTime: String = "",
         var compostTime: String = ""
     )
@@ -32,6 +33,11 @@ object TablistUtils {
 
     private fun updatePersistentData() {
         if (tablist == null) return
+
+        var speedFlag = false
+        var numVisitorFlag = false
+        var compostFlag = false
+
         tablist!!.forEach {
             val str = it.displayName?.string?.trim() ?: return@forEach
             areaPattern.find(str)?.let { result ->
@@ -44,25 +50,37 @@ object TablistUtils {
 
             speedPattern.matchEntire(str)?.let { result ->
                 persistentInfo.speed = result.groupValues[1]
+                speedFlag = true
                 return@forEach
             }
 
-            visitorPattern.matchEntire(str)?.let { result ->
+            numVisitorPattern.matchEntire(str)?.let { result ->
+                persistentInfo.numVisitors = Integer.parseInt(result.groupValues[1])
+                numVisitorFlag = true
+                return@forEach
+            }
+
+            nextVisitorPattern.matchEntire(str)?.let { result ->
                 persistentInfo.nextVisitorTime = result.groupValues[1]
-                var index = tablist!!.indexOf(it) + 1
-                var visitors = 0
-                while (index < tablist!!.size && tablist!![index].displayName?.string != "" && visitors < 5) {
-                    index++
-                    visitors++
-                }
-                persistentInfo.numVisitors = visitors
                 return@forEach
             }
 
             compostTimePattern.matchEntire(str)?.let { result ->
                 persistentInfo.compostTime = result.groupValues[1]
+                compostFlag = true
                 return@forEach
             }
+        }
+
+        if (!speedFlag) {
+            persistentInfo.speed = "Unknown"
+        }
+        if (!numVisitorFlag) {
+            persistentInfo.numVisitors = -1
+            persistentInfo.nextVisitorTime = "Unknown"
+        }
+        if (!compostFlag) {
+            persistentInfo.compostTime = "Unknown"
         }
     }
 }
