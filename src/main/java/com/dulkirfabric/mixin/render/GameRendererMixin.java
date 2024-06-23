@@ -5,6 +5,7 @@ import com.dulkirfabric.features.InventoryScale;
 import com.llamalad7.mixinextras.sugar.Local;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.GameRenderer;
+import net.minecraft.client.render.RenderTickCounter;
 import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -50,7 +51,7 @@ public class GameRendererMixin {
                     ordinal = 1
             )
     )
-    public void onScreenRenderPre(float tickDelta, long startTime, boolean tick, CallbackInfo ci, @Local DrawContext drawContext) {
+    public void onScreenRenderPre(RenderTickCounter tickCounter, boolean tick, CallbackInfo ci, @Local DrawContext drawContext) {
         drawContext.getMatrices().push();
         drawContext.getMatrices().scale(InventoryScale.INSTANCE.getScale(), InventoryScale.INSTANCE.getScale(), 1f);
     }
@@ -66,7 +67,7 @@ public class GameRendererMixin {
                     ordinal = 3
             )
     )
-    public void onScreenRenderPost(float tickDelta, long startTime, boolean tick, CallbackInfo ci, @Local DrawContext drawContext) {
+    public void onScreenRenderPost(RenderTickCounter tickCounter, boolean tick, CallbackInfo ci, @Local DrawContext drawContext) {
        drawContext.getMatrices().pop();
     }
 }

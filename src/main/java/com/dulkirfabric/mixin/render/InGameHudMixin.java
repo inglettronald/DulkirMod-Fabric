@@ -3,12 +3,14 @@ package com.dulkirfabric.mixin.render;
 import com.dulkirfabric.config.DulkirConfig;
 import com.dulkirfabric.util.Utils;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
+import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.LayeredDrawer;
 import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.client.render.RenderTickCounter;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.text.Text;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -32,30 +34,30 @@ public class InGameHudMixin {
         }
     }
 
-    @Redirect(
-            method = "method_55440([Lnet/minecraft/client/gui/hud/InGameHud$SidebarEntry;ILnet/minecraft/client/gui/DrawContext;Lnet/minecraft/text/Text;I)V",
+    @WrapWithCondition(
+            method = "method_55440",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/client/gui/DrawContext;drawText(Lnet/minecraft/client/font/TextRenderer;Lnet/minecraft/text/Text;IIIZ)I",
+                    target = "Lnet/minecraft/client/gui/DrawContext;drawText(Lnet/minecraft/client/font/TextRenderer;" +
+                            "Lnet/minecraft/text/Text;IIIZ)I",
                     ordinal = 2
             )
     )
-    public int removeScoreBoardNumbers(DrawContext instance, TextRenderer textRenderer, Text text, int x, int y, int color, boolean shadow) {
-        return 0;
+    public boolean removeScoreBoardNumbers(DrawContext instance, TextRenderer textRenderer, Text text,
+                                       int x, int y, int color, boolean shadow) {
+        return !(DulkirConfig.ConfigVars.getConfigOptions().getHideScoreboardNumbers());
     }
 
-    @ModifyExpressionValue(
+    @WrapWithCondition(
             method = "renderStatusBars(Lnet/minecraft/client/gui/DrawContext;)V",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/entity/player/PlayerEntity;getArmor()I"
+                    target = "Lnet/minecraft/client/gui/hud/InGameHud;renderArmor(Lnet/minecraft/client/gui/" +
+                            "DrawContext;Lnet/minecraft/entity/player/PlayerEntity;IIII)V"
             )
     )
-    public int onGrabArmorAmount(int original) {
-        if (DulkirConfig.ConfigVars.getConfigOptions().getHideArmorOverlay() && Utils.INSTANCE.isInSkyblock()) {
-            return 0;
-        }
-        return original;
+    public boolean onGrabArmorAmount(DrawContext context, PlayerEntity player, int i, int j, int k, int x) {
+        return !(DulkirConfig.ConfigVars.getConfigOptions().getHideArmorOverlay() && Utils.INSTANCE.isInSkyblock());
     }
 
     @ModifyExpressionValue(

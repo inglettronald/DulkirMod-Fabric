@@ -183,6 +183,9 @@ class DulkirConfig {
         general.addEntry(
             entryBuilder.mkToggle(Text.literal("Broken Hype Notification"), configOptions::brokenHypNotif)
         )
+        general.addEntry(
+                entryBuilder.mkToggle(Text.literal("Hide Scoreboard numbers"), configOptions::hideScoreboardNumbers)
+        )
 
         val shortcuts = builder.getOrCreateCategory(Text.literal("Shortcuts"))
         shortcuts.addEntry(
@@ -363,52 +366,6 @@ class DulkirConfig {
         garden.addEntry(
             entryBuilder.mkToggle(Text.literal("Show Pitch/Yaw in HUD"), configOptions::pitchYawDisplay)
         )
-
-//        val farmControls = builder.getOrCreateCategory(Text.literal("Farming Controls"))
-//        farmControls.addEntry(
-//            entryBuilder.startTextDescription(Text.literal("This is used for quickly swapping between control schemes!")
-//                .setStyle(Style.EMPTY.withColor(Formatting.GRAY)))
-//                .build()
-//        )
-//        farmControls.addEntry(
-//            entryBuilder.startTextDescription(Text.literal("Run the command ")
-//                .setStyle(Style.EMPTY.withColor(Formatting.GRAY))
-//                .append(Text.literal("/farmcontrols").setStyle(Style.EMPTY.withColor(Formatting.GOLD)))
-//                .append(Text.literal(" to toggle the setting on and off.")
-//                    .setStyle(Style.EMPTY.withColor(Formatting.GRAY))))
-//                .build()
-//        )
-//        farmControls.addEntry(
-//            entryBuilder.startTextDescription(Text.literal("Tip:").setStyle(Style.EMPTY.withColor(Formatting.RED))
-//                .append(Text.literal(" if you want a keybinding for this feature, check out the Shortcuts category!")
-//                    .setStyle(Style.EMPTY.withColor(Formatting.GRAY))))
-//                .build()
-//        )
-//
-//        farmControls.addEntry(
-//            entryBuilder.startKeyCodeField(Text.literal("Farming Break Key"), configOptions.farmBreakKey)
-//                .setDefaultValue(fromKeyCode(GLFW_KEY_SPACE, GLFW_KEY_SPACE))
-//                .setKeySaveConsumer { newValue -> configOptions.farmBreakKey = newValue }
-//                .build()
-//        )
-//        farmControls.addEntry(
-//            entryBuilder.startKeyCodeField(Text.literal("Default Break Key"), configOptions.defaultBreakKey)
-//                .setDefaultValue(fromTranslationKey("key.mouse.left"))
-//                .setKeySaveConsumer { newValue -> configOptions.defaultBreakKey = newValue }
-//                .build()
-//        )
-//        farmControls.addEntry(
-//            entryBuilder.startIntSlider(Text.literal("Farming Sensitivity (# of Percent)"), configOptions.farmSens, 0, 200)
-//                .setDefaultValue(0)
-//                .setSaveConsumer { newValue -> configOptions.farmSens = newValue }
-//                .build()
-//        )
-//        farmControls.addEntry(
-//            entryBuilder.startIntSlider(Text.literal("Default Sensitivity (# of Percent)"), configOptions.defaultSens, 0, 200)
-//                .setDefaultValue(100)
-//                .setSaveConsumer { newValue -> configOptions.defaultSens = newValue }
-//                .build()
-//        )
         builder.transparentBackground()
         if (parentScreen != null)
             builder.setParentScreen(parentScreen)
@@ -470,10 +427,7 @@ class DulkirConfig {
         var speedHud: Boolean = false,
         var speedBpsHud: Boolean = false,
         var pitchYawDisplay: Boolean = false,
-//        var farmBreakKey: Key = fromKeyCode(GLFW_KEY_SPACE, GLFW_KEY_SPACE),
-//        var defaultBreakKey: Key = fromTranslationKey("key.mouse.left"),
-//        var farmSens: Int = 0,
-//        var defaultSens: Int = 100,
+        var hideScoreboardNumbers: Boolean = false
     )
 
     @Serializable

@@ -36,6 +36,7 @@ object EffigyDisplay {
             }
         }
     }
+
     @EventHandler
     fun checkEffigies(event: LongUpdateEvent) {
         if (!DulkirConfig.configOptions.inactiveEffigyDisplay) return

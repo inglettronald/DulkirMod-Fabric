@@ -1,6 +1,7 @@
 package com.dulkirfabric.mixin.render;
 
 import com.dulkirfabric.features.InventoryScale;
+import com.llamalad7.mixinextras.sugar.Local;
 import net.minecraft.block.entity.BannerPattern;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ingame.LoomScreen;
@@ -24,12 +25,10 @@ public class LoomScreenMixin {
                     value = "INVOKE",
                     target = "Lnet/minecraft/client/util/math/MatrixStack;push()V",
                     shift = At.Shift.AFTER
-            ),
-            locals = LocalCapture.CAPTURE_FAILHARD
+            )
     )
-    public void onCreateMatrix(DrawContext context, RegistryEntry<BannerPattern> pattern, int x, int y,
-                               CallbackInfo ci, NbtCompound nbtCompound, NbtList nbtList,
-                               ItemStack itemStack, MatrixStack matrixStack) {
+    public void onCreateMatrix(DrawContext context, RegistryEntry<BannerPattern> pattern,
+                               int x, int y, CallbackInfo ci, @Local MatrixStack matrixStack) {
         matrixStack.scale(InventoryScale.INSTANCE.getScale(), InventoryScale.INSTANCE.getScale(), 1F);
     }
 

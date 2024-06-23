@@ -42,10 +42,9 @@ object WorldRenderUtils {
     private fun line(matrix: MatrixStack.Entry, buffer: BufferBuilder, from: Vector3f, to: Vector3f) {
         val normal = to.sub(from, Vector3f()).mul(-1F)
         buffer.vertex(matrix.positionMatrix, from.x, from.y, from.z)
-            .normal(matrix.normalMatrix, normal.x, normal.y, normal.z).next()
+            .normal(matrix, normal.x, normal.y, normal.z)
         buffer.vertex(matrix.positionMatrix, to.x, to.y, to.z)
-            .normal(matrix.normalMatrix, normal.x, normal.y, normal.z)
-            .next()
+            .normal(matrix, normal.x, normal.y, normal.z)
     }
 
     /**
@@ -60,7 +59,7 @@ object WorldRenderUtils {
         thickness: Float,
         depthTest: Boolean = true
     ) {
-        val matrices = context.matrixStack()
+        val matrices = context.matrixStack() ?: return
         matrices.push()
         val prevShader = RenderSystem.getShader()
         RenderSystem.setShader(GameRenderer::getRenderTypeLinesProgram)
@@ -76,11 +75,10 @@ object WorldRenderUtils {
         }
         matrices.translate(-context.camera().pos.x, -context.camera().pos.y, -context.camera().pos.z)
         val tess = RenderSystem.renderThreadTesselator()
-        val buf = tess.buffer
+        val buf = tess.begin(VertexFormat.DrawMode.LINES, VertexFormats.LINES)
         val me = matrices.peek()
 
-        buf.begin(VertexFormat.DrawMode.LINES, VertexFormats.LINES)
-        buf.fixedColor(255, 255, 255, 255)
+        buf.color(255, 255, 255, 255)
 
         // X Axis aligned lines
         line(me, buf, box.minX, box.minY, box.minZ, box.maxX, box.minY, box.minZ, thickness)
@@ -100,8 +98,7 @@ object WorldRenderUtils {
         line(me, buf, box.minX, box.maxY, box.minZ, box.minX, box.maxY, box.maxZ, thickness)
         line(me, buf, box.maxX, box.maxY, box.minZ, box.maxX, box.maxY, box.maxZ, thickness)
 
-        buf.unfixColor()
-        tess.draw()
+        BufferRenderer.drawWithGlobalProgram(buf.end())
 
         RenderSystem.depthMask(true)
         RenderSystem.enableDepthTest()
@@ -119,7 +116,7 @@ object WorldRenderUtils {
      * For drawing many lines in a series, save them to an array and use the drawLineArray function.
      */
     fun drawLine(context: WorldRenderContext, startPos: Vec3d, endPos: Vec3d, color: Color, thickness: Float, depthTest: Boolean = true) {
-        val matrices = context.matrixStack()
+        val matrices = context.matrixStack() ?: return
         matrices.push()
         val prevShader = RenderSystem.getShader()
         RenderSystem.setShader(GameRenderer::getRenderTypeLinesProgram)
@@ -135,16 +132,14 @@ object WorldRenderUtils {
         }
         matrices.translate(-context.camera().pos.x, -context.camera().pos.y, -context.camera().pos.z)
         val tess = RenderSystem.renderThreadTesselator()
-        val buf = tess.buffer
+        val buf = tess.begin(VertexFormat.DrawMode.LINES, VertexFormats.LINES)
         val me = matrices.peek()
 
-        buf.begin(VertexFormat.DrawMode.LINES, VertexFormats.LINES)
-        buf.fixedColor(255, 255, 255, 255)
+        buf.color(255, 255, 255, 255)
 
         line(me, buf, startPos.x.toFloat(), startPos.y.toFloat(), startPos.z.toFloat(), endPos.x.toFloat(), endPos.y.toFloat(), endPos.z.toFloat(), thickness)
 
-        buf.unfixColor()
-        tess.draw()
+        BufferRenderer.drawWithGlobalProgram(buf.end())
 
         RenderSystem.depthMask(true)
         RenderSystem.enableDepthTest()
@@ -162,7 +157,7 @@ object WorldRenderUtils {
      * drawLine function being called many times in series.
      */
     fun drawLineArray(context: WorldRenderContext, posArr: List<Vec3d>, color: Color, thickness: Float, depthTest: Boolean = true) {
-        val matrices = context.matrixStack()
+        val matrices = context.matrixStack() ?: return
         matrices.push()
         val prevShader = RenderSystem.getShader()
         RenderSystem.setShader(GameRenderer::getRenderTypeLinesProgram)
@@ -178,11 +173,10 @@ object WorldRenderUtils {
         }
         matrices.translate(-context.camera().pos.x, -context.camera().pos.y, -context.camera().pos.z)
         val tess = RenderSystem.renderThreadTesselator()
-        val buf = tess.buffer
+        val buf = tess.begin(VertexFormat.DrawMode.LINES, VertexFormats.LINES)
         val me = matrices.peek()
 
-        buf.begin(VertexFormat.DrawMode.LINES, VertexFormats.LINES)
-        buf.fixedColor(255, 255, 255, 255)
+        buf.color(255, 255, 255, 255)
 
         for (i in 0 until posArr.size - 1) {
             val startPos = posArr[i]
@@ -190,8 +184,7 @@ object WorldRenderUtils {
             line(me, buf, startPos.x.toFloat(), startPos.y.toFloat(), startPos.z.toFloat(), endPos.x.toFloat(), endPos.y.toFloat(), endPos.z.toFloat(), thickness)
         }
 
-        buf.unfixColor()
-        tess.draw()
+        BufferRenderer.drawWithGlobalProgram(buf.end())
 
         RenderSystem.depthMask(true)
         RenderSystem.enableDepthTest()
@@ -225,7 +218,7 @@ object WorldRenderUtils {
         RenderSystem.disableCull()
 
         val vertexConsumer = context.worldRenderer().bufferBuilders.entityVertexConsumers
-        val matrices = context.matrixStack()
+        val matrices = context.matrixStack() ?: return
         matrices.push()
         matrices.translate(
             pos.x - context.camera().pos.x,
@@ -241,19 +234,15 @@ object WorldRenderUtils {
         buf.vertex(matrix4f, -1.0f - textRenderer.getWidth(text) / 2, -1.0f, 0.0f)
             .color(j)
             .light(LightmapTextureManager.MAX_BLOCK_LIGHT_COORDINATE)
-            .next()
         buf.vertex(matrix4f, -1.0f - textRenderer.getWidth(text) / 2, textRenderer.fontHeight.toFloat(), 0.0f)
             .color(j)
             .light(LightmapTextureManager.MAX_BLOCK_LIGHT_COORDINATE)
-            .next()
         buf.vertex(matrix4f, textRenderer.getWidth(text).toFloat() / 2, textRenderer.fontHeight.toFloat(), 0.0f)
             .color(j)
             .light(LightmapTextureManager.MAX_BLOCK_LIGHT_COORDINATE)
-            .next()
         buf.vertex(matrix4f, textRenderer.getWidth(text).toFloat() / 2, -1.0f, 0.0f)
             .color(j)
             .light(LightmapTextureManager.MAX_BLOCK_LIGHT_COORDINATE)
-            .next()
 
         matrices.translate(0F, 0F, 0.01F)
 
@@ -283,7 +272,7 @@ object WorldRenderUtils {
         RenderSystem.disableCull()
         val d: Double = pos.distanceTo(MinecraftClient.getInstance().player?.pos)
         val distText = Text.literal(d.toInt().toString() + "m").setStyle(Style.EMPTY.withColor(Formatting.YELLOW))
-        val matrices = context.matrixStack()
+        val matrices = context.matrixStack() ?: return
         val vertexConsumer = context.worldRenderer().bufferBuilders.entityVertexConsumers
         matrices.push()
         val magnitude = sqrt((pos.x - context.camera().pos.x).pow(2) +
@@ -316,19 +305,15 @@ object WorldRenderUtils {
         buf.vertex(matrix4f, -1.0f - textRenderer.getWidth(text) / 2, -1.0f, 0.0f)
             .color(j)
             .light(LightmapTextureManager.MAX_BLOCK_LIGHT_COORDINATE)
-            .next()
         buf.vertex(matrix4f, -1.0f - textRenderer.getWidth(text) / 2, textRenderer.fontHeight.toFloat(), 0.0f)
             .color(j)
             .light(LightmapTextureManager.MAX_BLOCK_LIGHT_COORDINATE)
-            .next()
         buf.vertex(matrix4f, textRenderer.getWidth(text).toFloat() / 2, textRenderer.fontHeight.toFloat(), 0.0f)
             .color(j)
             .light(LightmapTextureManager.MAX_BLOCK_LIGHT_COORDINATE)
-            .next()
         buf.vertex(matrix4f, textRenderer.getWidth(text).toFloat() / 2, -1.0f, 0.0f)
             .color(j)
             .light(LightmapTextureManager.MAX_BLOCK_LIGHT_COORDINATE)
-            .next()
 
         matrices.translate(0F, 0F, 0.01F)
 
@@ -375,14 +360,14 @@ object WorldRenderUtils {
         RenderSystem.enableBlend()
         RenderSystem.defaultBlendFunc()
 
-        val matrices = context.matrixStack()
+        val matrices = context.matrixStack() ?: return
         val tes = Tessellator.getInstance()
-        tes.buffer.begin(VertexFormat.DrawMode.TRIANGLE_STRIP, VertexFormats.POSITION_COLOR)
+        val buf = tes.begin(VertexFormat.DrawMode.TRIANGLE_STRIP, VertexFormats.POSITION_COLOR)
         matrices.push()
         matrices.translate(x - context.camera().pos.x, y - context.camera().pos.y, z - context.camera().pos.z)
-        WorldRenderer.renderFilledBox(matrices, tes.buffer, 0.0, 0.0, 0.0, width, height, depth,
+        WorldRenderer.renderFilledBox(matrices, buf, 0.0, 0.0, 0.0, width, height, depth,
             color.red / 255f, color.green / 255f, color.blue / 255f, color.alpha / 255f)
-        tes.draw()
+        BufferRenderer.drawWithGlobalProgram(buf.end())
         RenderSystem.enableDepthTest()
         matrices.pop()
     }
