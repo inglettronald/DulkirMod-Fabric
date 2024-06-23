@@ -34,7 +34,7 @@ object AotvHighlight {
     fun getHeldItemID(): String {
         val stack = mc.player?.mainHandStack ?: return ""
         val tag = Utils.getNbt(stack) ?: return ""
-        val id = tag.getCompound("ExtraAttributes").get("id") ?: return ""
+        val id = tag.get("id") ?: return ""
         return id.toString().trim('"')
     }
 

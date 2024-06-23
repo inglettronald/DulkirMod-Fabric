@@ -43,8 +43,10 @@ object WorldRenderUtils {
         val normal = to.sub(from, Vector3f()).mul(-1F)
         buffer.vertex(matrix.positionMatrix, from.x, from.y, from.z)
             .normal(matrix, normal.x, normal.y, normal.z)
+                .color(0xFFFFFFFF.toInt())
         buffer.vertex(matrix.positionMatrix, to.x, to.y, to.z)
             .normal(matrix, normal.x, normal.y, normal.z)
+                .color(0xFFFFFFFF.toInt())
     }
 
     /**
