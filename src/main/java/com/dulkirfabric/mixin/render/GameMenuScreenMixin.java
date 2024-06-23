@@ -41,7 +41,13 @@ public abstract class GameMenuScreenMixin extends ScreenMixin {
 	/**
 	 * Method to create the config entry point button inside the escape menu
 	 */
-	@Inject(method = "initWidgets", at = @At(value = "FIELD", target = "Lnet/minecraft/client/gui/screen/GameMenuScreen;OPTIONS_TEXT:Lnet/minecraft/text/Text;"), locals = LocalCapture.CAPTURE_FAILEXCEPTION)
+	@Inject(
+			method = "initWidgets",
+			at = @At(
+					value = "FIELD",
+					target = "Lnet/minecraft/client/gui/screen/GameMenuScreen;OPTIONS_TEXT:Lnet/minecraft/text/Text;"),
+			locals = LocalCapture.CAPTURE_FAILEXCEPTION
+	)
 	private void initWidget(CallbackInfo ci, GridWidget gridWidget, GridWidget.Adder adder) {
 		adder.add(this.createButton(buttonText, new DulkirConfig()::getScreen));
 	}

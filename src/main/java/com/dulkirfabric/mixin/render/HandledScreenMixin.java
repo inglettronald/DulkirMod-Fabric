@@ -14,9 +14,16 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 @Mixin(HandledScreen.class)
 public class HandledScreenMixin {
-    @Inject(method = "keyPressed", at = @At(value = "INVOKE",
-            target = "Lnet/minecraft/client/gui/screen/ingame/HandledScreen;handleHotbarKeyPressed(II)Z",
-            shift = At.Shift.BEFORE), cancellable = true)
+
+    @Inject(
+            method = "keyPressed",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/client/gui/screen/ingame/HandledScreen;handleHotbarKeyPressed(II)Z",
+                    shift = At.Shift.BEFORE
+            ),
+            cancellable = true
+    )
     public void onKeyPressed(int keyCode, int scanCode, int modifiers, CallbackInfoReturnable<Boolean> cir) {
         if (new InventoryKeyPressEvent(keyCode, scanCode, modifiers).post()) {
             cir.setReturnValue(true);
@@ -31,15 +38,25 @@ public class HandledScreenMixin {
         }
     }*/
 
-    @Inject(method = "render", at = @At(value = "INVOKE",
-            target = "Lnet/minecraft/client/gui/screen/ingame/HandledScreen;drawSlot(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/screen/slot/Slot;)V",
-            shift = At.Shift.AFTER), locals = LocalCapture.CAPTURE_FAILHARD)
-    public void onAfterDrawSlot(DrawContext context, int mouseX, int mouseY, float delta, CallbackInfo ci, int i, int j, int k, Slot slot) {
+    @Inject(
+            method = "render",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/client/gui/screen/ingame/HandledScreen;drawSlot(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/screen/slot/Slot;)V",
+                    shift = At.Shift.AFTER
+            ),
+            locals = LocalCapture.CAPTURE_FAILHARD
+    )
+    public void onAfterDrawSlot(DrawContext context, int mouseX, int mouseY, float delta, CallbackInfo ci,
+                                int i, int j, int k, Slot slot) {
         SlotRenderEvent.After event = new SlotRenderEvent.After(context, slot, mouseX, mouseY, delta);
         event.post();
     }
 
-    @Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/ingame/HandledScreen;drawSlot(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/screen/slot/Slot;)V", shift = At.Shift.BEFORE), locals = LocalCapture.CAPTURE_FAILHARD)
+    @Inject(
+            method = "render",
+            at = @At(value = "INVOKE",
+                    target = "Lnet/minecraft/client/gui/screen/ingame/HandledScreen;drawSlot(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/screen/slot/Slot;)V", shift = At.Shift.BEFORE), locals = LocalCapture.CAPTURE_FAILHARD)
     public void onBeforeDrawSlot(DrawContext context, int mouseX, int mouseY, float delta, CallbackInfo ci, int i, int j, int k, Slot slot) {
         SlotRenderEvent.Before event = new SlotRenderEvent.Before(context, slot, mouseX, mouseY, delta);
         event.post();

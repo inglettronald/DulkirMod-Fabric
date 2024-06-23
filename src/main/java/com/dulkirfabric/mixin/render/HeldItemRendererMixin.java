@@ -28,9 +28,21 @@ public abstract class HeldItemRendererMixin {
 
     @Shadow private float equipProgressOffHand;
 
-    @Inject(method = "renderFirstPersonItem(Lnet/minecraft/client/network/AbstractClientPlayerEntity;FFLnet/minecraft/util/Hand;FLnet/minecraft/item/ItemStack;FLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;I)V",
-    at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/item/HeldItemRenderer;renderItem(Lnet/minecraft/entity/LivingEntity;Lnet/minecraft/item/ItemStack;Lnet/minecraft/client/render/model/json/ModelTransformationMode;ZLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;I)V"))
-    public void onRenderHeldItem(AbstractClientPlayerEntity player, float tickDelta, float pitch, Hand hand, float swingProgress, ItemStack item, float equipProgress, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, CallbackInfo ci) {
+    @Inject(
+            method = "renderFirstPersonItem(Lnet/minecraft/client/network/AbstractClientPlayerEntity;FFLnet/" +
+                    "minecraft/util/Hand;FLnet/minecraft/item/ItemStack;FLnet/minecraft/client/util/math/" +
+                    "MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;I)V",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/client/render/item/HeldItemRenderer;renderItem(Lnet/minecraft" +
+                            "/entity/LivingEntity;Lnet/minecraft/item/ItemStack;Lnet/minecraft/client/render" +
+                            "/model/json/ModelTransformationMode;ZLnet/minecraft/client/util/math/MatrixStack" +
+                            ";Lnet/minecraft/client/render/VertexConsumerProvider;I)V"
+            )
+    )
+    public void onRenderHeldItem(AbstractClientPlayerEntity player, float tickDelta, float pitch, Hand hand,
+                                 float swingProgress, ItemStack item, float equipProgress, MatrixStack matrices,
+                                 VertexConsumerProvider vertexConsumers, int light, CallbackInfo ci) {
         if (hand == Hand.MAIN_HAND) {
             float rotX = DulkirConfig.ConfigVars.getConfigOptions().getAnimationPreset().getRotX();
             float rotY = DulkirConfig.ConfigVars.getConfigOptions().getAnimationPreset().getRotY();
@@ -54,12 +66,22 @@ public abstract class HeldItemRendererMixin {
      * @param original
      * @return 1f if enabled, else original
      */
-    @ModifyExpressionValue(method = "updateHeldItems", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerEntity;getAttackCooldownProgress(F)F"))
+    @ModifyExpressionValue(
+            method = "updateHeldItems",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/client/network/ClientPlayerEntity;getAttackCooldownProgress(F)F"
+            )
+    )
     public float attackCooldown(float original) {
         return 1f;
     }
 
-    @Inject(method = "applyEquipOffset", at = @At("HEAD"), cancellable = true)
+    @Inject(
+            method = "applyEquipOffset",
+            at = @At("HEAD"),
+            cancellable = true
+    )
     public void onApplyEquipOffset(MatrixStack matrices, Arm arm, float equipProgress, CallbackInfo ci) {
         if (DulkirConfig.ConfigVars.getConfigOptions().getAnimationPreset().getCancelReEquip()) {
             int i = arm == Arm.RIGHT ? 1 : -1;
@@ -68,8 +90,13 @@ public abstract class HeldItemRendererMixin {
         }
     }
 
-    @Inject(method = "applyEatOrDrinkTransformation", at = @At(value = "INVOKE",
-            target = "Ljava/lang/Math;pow(DD)D", shift = At.Shift.BEFORE),
+    @Inject(
+            method = "applyEatOrDrinkTransformation",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Ljava/lang/Math;pow(DD)D",
+                    shift = At.Shift.BEFORE
+            ),
             cancellable = true
     )
     public void onDrink(MatrixStack matrices, float tickDelta, Arm arm, ItemStack stack, CallbackInfo ci) {

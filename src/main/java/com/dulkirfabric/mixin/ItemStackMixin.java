@@ -19,7 +19,10 @@ import java.util.List;
 public abstract class ItemStackMixin {
     @Shadow public abstract Item getItem();
 
-    @Inject(method = "getTooltip", at = @At("HEAD"))
+    @Inject(
+            method = "getTooltip",
+            at = @At("HEAD")
+    )
     private void onGetTooltip(@Nullable PlayerEntity player, TooltipContext context, CallbackInfoReturnable<List<Text>> cir) {
         ItemChangeHandler.INSTANCE.handle(this.getItem().getName().getString());
     }

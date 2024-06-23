@@ -12,7 +12,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public abstract class PerspectiveMixin {
     @Shadow public abstract boolean isFirstPerson();
 
-    @Inject(method = "next", at = @At("HEAD"), cancellable = true)
+    @Inject(
+            method = "next",
+            at = @At("HEAD"),
+            cancellable = true
+    )
     public void skipPerspective(CallbackInfoReturnable<Perspective> cir) {
         if (DulkirConfig.ConfigVars.getConfigOptions().getIgnoreReverseThirdPerson()) {
             if (this.isFirstPerson()) cir.setReturnValue(Perspective.THIRD_PERSON_BACK);

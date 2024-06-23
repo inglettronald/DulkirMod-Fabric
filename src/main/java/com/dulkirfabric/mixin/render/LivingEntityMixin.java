@@ -47,8 +47,14 @@ public class LivingEntityMixin implements GlowingEntityInterface {
         return glowColor_DulkirMod;
     }
 
-    @Inject(method = "tickMovement", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;tickNewAi()V",
-    shift = At.Shift.AFTER))
+    @Inject(
+            method = "tickMovement",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/entity/LivingEntity;tickNewAi()V",
+                    shift = At.Shift.AFTER
+            )
+    )
     public void onWhatever(CallbackInfo ci) {
         if (DulkirConfig.ConfigVars.getConfigOptions().getAnimationPreset().getSwingDuration() == 6) return;
         if (animationTicks > DulkirConfig.ConfigVars.getConfigOptions().getAnimationPreset().getSwingDuration()) {

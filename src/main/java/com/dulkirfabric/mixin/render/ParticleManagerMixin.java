@@ -17,7 +17,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(ParticleManager.class)
 public abstract class ParticleManagerMixin implements ResourceReloader {
 
-    @Inject(at = @At("HEAD"), method = "addParticle(Lnet/minecraft/client/particle/Particle;)V", cancellable = true)
+    @Inject(
+            at = @At("HEAD"),
+            method = "addParticle(Lnet/minecraft/client/particle/Particle;)V",
+            cancellable = true
+    )
     public void onAddParticle(Particle particle, CallbackInfo ci) {
         if (new AddParticleEvent(particle).post()) {
             ci.cancel();

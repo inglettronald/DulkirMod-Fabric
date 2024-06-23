@@ -59,6 +59,7 @@ object CooldownDisplays {
         val cooldown = fetchCooldownItem(stack) ?: return
         cir.returnValue = round(13f * (System.currentTimeMillis() - cooldown.lastUsage) / cooldown.cooldownDuration).toInt()
     }
+
     @EventHandler
     fun onSound(event: PlaySoundEvent) {
         if (!DulkirConfig.configOptions.duraCooldown) return

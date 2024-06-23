@@ -32,13 +32,27 @@ public abstract class ScreenMixin {
 
     @Shadow public int height;
 
-    @Inject(method = "init(Lnet/minecraft/client/MinecraftClient;II)V", at = @At(value = "FIELD", target = "Lnet/minecraft/client/gui/screen/Screen;height:I", shift = At.Shift.AFTER))
+    @Inject(
+            method = "init(Lnet/minecraft/client/MinecraftClient;II)V",
+            at = @At(
+                    value = "FIELD",
+                    target = "Lnet/minecraft/client/gui/screen/Screen;height:I",
+                    shift = At.Shift.AFTER
+            )
+    )
     public void onInitAfterViewportSizeSet(MinecraftClient client, int width, int height, CallbackInfo ci) {
         this.width = (int) ceil(width / InventoryScale.INSTANCE.getScale());
         this.height = (int) ceil(height /  InventoryScale.INSTANCE.getScale());
     }
 
-    @Inject(method = "resize", at = @At(value = "FIELD", target = "Lnet/minecraft/client/gui/screen/Screen;height:I", shift = At.Shift.AFTER))
+    @Inject(
+            method = "resize",
+            at = @At(
+                    value = "FIELD",
+                    target = "Lnet/minecraft/client/gui/screen/Screen;height:I",
+                    shift = At.Shift.AFTER
+            )
+    )
     public void onResizeAfterViewportSizeSet(MinecraftClient client, int width, int height, CallbackInfo ci) {
         this.width = (int) ceil(width / InventoryScale.INSTANCE.getScale());
         this.height = (int) ceil(height /  InventoryScale.INSTANCE.getScale());

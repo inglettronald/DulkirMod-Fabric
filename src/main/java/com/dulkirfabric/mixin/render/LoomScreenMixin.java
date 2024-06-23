@@ -17,9 +17,21 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 @Mixin(LoomScreen.class)
 public class LoomScreenMixin {
-    @Inject(method = "drawBanner", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/util/math/MatrixStack;push()V", shift = At.Shift.AFTER), locals = LocalCapture.CAPTURE_FAILHARD)
-    public void onCreateMatrix(DrawContext context, RegistryEntry<BannerPattern> pattern, int x, int y, CallbackInfo ci, NbtCompound nbtCompound, NbtList nbtList, ItemStack itemStack, MatrixStack matrixStack) {
+
+    @Inject(
+            method = "drawBanner",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/client/util/math/MatrixStack;push()V",
+                    shift = At.Shift.AFTER
+            ),
+            locals = LocalCapture.CAPTURE_FAILHARD
+    )
+    public void onCreateMatrix(DrawContext context, RegistryEntry<BannerPattern> pattern, int x, int y,
+                               CallbackInfo ci, NbtCompound nbtCompound, NbtList nbtList,
+                               ItemStack itemStack, MatrixStack matrixStack) {
         matrixStack.scale(InventoryScale.INSTANCE.getScale(), InventoryScale.INSTANCE.getScale(), 1F);
     }
+
 }
 

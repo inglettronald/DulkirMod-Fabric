@@ -35,6 +35,7 @@ object ArachneFeatures {
     private var endmillis: Long = -1
     private var spawnmillis: Long = -1
     private var bigboy: Boolean = false
+
     @EventHandler
     fun onRenderWorldLast(event: WorldRenderLastEvent) {
         if (TablistUtils.persistentInfo.area != "Spider's Den") return
@@ -68,7 +69,7 @@ object ArachneFeatures {
     fun onWorldRenderLast(event: WorldRenderLastEvent) {
         if (!DulkirConfig.configOptions.arachneSpawnTimer) return
         if (TablistUtils.persistentInfo.area != "Spider's Den") return
-        if (spawnmillis <=startmillis) return
+        if (spawnmillis <= startmillis) return
 
         var time: Int = if (bigboy) {
             (40 - (System.currentTimeMillis() - spawnmillis) / 1000).toInt()
