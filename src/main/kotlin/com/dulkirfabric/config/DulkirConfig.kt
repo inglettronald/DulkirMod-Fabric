@@ -44,7 +44,7 @@ class DulkirConfig {
 
     fun buildScreen(parentScreen: Screen? = null): Screen {
         val builder = ConfigBuilder.create().setTitle(buttonText)
-        builder.setDefaultBackgroundTexture(Identifier("minecraft:textures/block/oak_planks.png"))
+        builder.setDefaultBackgroundTexture(Identifier.of("minecraft:textures/block/oak_planks.png"))
         builder.setGlobalized(true)
         builder.setGlobalizedExpanded(false)
         builder.setParentScreen(mc.currentScreen)

@@ -1,7 +1,7 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-	id 'fabric-loom' version '1.5-SNAPSHOT'
+	id 'fabric-loom' version '1.7-SNAPSHOT'
 	id 'maven-publish'
   	id "org.jetbrains.kotlin.jvm" version "1.8.21"
 	id "org.jetbrains.kotlin.plugin.serialization" version "1.8.10"

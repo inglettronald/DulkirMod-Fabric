@@ -90,7 +90,7 @@ object CooldownDisplays {
     }
 
     private fun fetchCooldownItem(stack: ItemStack): TrackedCooldown? {
-        val tag = stack.nbt ?: return null
+        val tag = Utils.getNbt(stack) ?: return null
         val id = tag.getCompound("ExtraAttributes").get("id") ?: return null
         val idStr = id.toString().trim('"')
         trackedCooldowns.forEach {

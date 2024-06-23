@@ -3,11 +3,16 @@ package com.dulkirfabric.mixin.render;
 import com.dulkirfabric.config.DulkirConfig;
 import com.dulkirfabric.util.Utils;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.LayeredDrawer;
 import net.minecraft.client.gui.hud.InGameHud;
+import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.text.Text;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
@@ -21,7 +26,7 @@ public class InGameHudMixin {
             at = @At("HEAD"),
             cancellable = true
     )
-    public void onRenderStatusEffectOverlay(DrawContext context, CallbackInfo ci) {
+    public void onRenderStatusEffectOverlay(DrawContext context, RenderTickCounter tickCounter, CallbackInfo ci) {
         if (DulkirConfig.ConfigVars.getConfigOptions().getStatusEffectHidden()) {
             ci.cancel();
         }

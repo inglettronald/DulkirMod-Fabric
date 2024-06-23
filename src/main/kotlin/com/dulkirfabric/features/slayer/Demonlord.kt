@@ -35,7 +35,7 @@ object Demonlord {
             if (ent is ArmorStandEntity && ent.hasCustomName()) {
                 val name = TextUtils.stripColorCodes(ent.customName?.string ?: return@forEach)
                 val color = phaseColors.firstOrNull { name.contains(it.first) }?.second ?: return@forEach
-                val pos = ent.getInterpolatedPos(event.context.tickDelta())
+                val pos = ent.getInterpolatedPos(event.context.tickCounter().getTickDelta(true))
                 WorldRenderUtils.drawWireFrame(
                     event.context,
                     box.offset(pos.x, pos.y, pos.z),

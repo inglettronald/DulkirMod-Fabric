@@ -6,10 +6,14 @@ import com.dulkirfabric.events.ClientTickEvent
 import com.dulkirfabric.events.LongUpdateEvent
 import com.dulkirfabric.events.WorldRenderLastEvent
 import com.dulkirfabric.util.TextUtils
+import com.dulkirfabric.util.Utils
 import com.dulkirfabric.util.render.WorldRenderUtils
+import com.mojang.serialization.MapDecoder
 import meteordevelopment.orbit.EventHandler
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.util.InputUtil
+import net.minecraft.component.ComponentType
+import net.minecraft.component.DataComponentTypes
 import net.minecraft.entity.Entity
 import net.minecraft.util.hit.BlockHitResult
 import net.minecraft.util.hit.HitResult
@@ -29,7 +33,7 @@ object AotvHighlight {
 
     fun getHeldItemID(): String {
         val stack = mc.player?.mainHandStack ?: return ""
-        val tag = stack.nbt ?: return ""
+        val tag = Utils.getNbt(stack) ?: return ""
         val id = tag.getCompound("ExtraAttributes").get("id") ?: return ""
         return id.toString().trim('"')
     }
@@ -50,7 +54,7 @@ object AotvHighlight {
         // Find the targeted block with a range of 60.9
         val entity = mc.cameraEntity
         if (mc.player == null) return
-        val blockHit = raycast(entity!!, 60.9, mc.tickDelta)
+        val blockHit = raycast(entity!!, 60.9, mc.renderTickCounter.getTickDelta(true))
         if (blockHit.type != HitResult.Type.BLOCK) return
         val pos: BlockPos = (blockHit as BlockHitResult).blockPos
         if (!isValidTeleportLocation(pos)) return

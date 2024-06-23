@@ -4,6 +4,7 @@ import com.dulkirfabric.DulkirModFabric.mc
 import com.dulkirfabric.config.DulkirConfig
 import com.dulkirfabric.events.LongUpdateEvent
 import com.dulkirfabric.util.TablistUtils
+import com.dulkirfabric.util.Utils
 import com.dulkirfabric.util.render.HudRenderUtil
 import meteordevelopment.orbit.EventHandler
 import net.minecraft.item.ItemStack
@@ -29,7 +30,7 @@ object BrokenHyp {
         val stack: ItemStack = mc.player?.mainHandStack ?: return
 
         // get info about held item
-        val tag = stack.nbt ?: return
+        val tag = Utils.getNbt(stack) ?: return
         id = tag.getCompound("ExtraAttributes")?.getString("id") ?: ""
 
         kill = tag.getCompound("ExtraAttributes")?.getInt("stats_book") ?: -1

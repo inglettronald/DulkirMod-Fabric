@@ -146,8 +146,8 @@ object Registrations {
         ServerWorldEvents.LOAD.register { server, world ->
             WorldLoadEvent(server, world).post()
         }
-        HudRenderCallback.EVENT.register { context, delta ->
-            HudRenderEvent(context, delta).post()
+        HudRenderCallback.EVENT.register { context, renderTickCounter ->
+            HudRenderEvent(context, renderTickCounter.getTickDelta(true)).post()
         }
 
     }

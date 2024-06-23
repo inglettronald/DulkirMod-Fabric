@@ -58,8 +58,12 @@ object MiniBossHighlight {
             if (it !is ArmorStandEntity) return@forEach
             val name = it.customName?.string ?: return@forEach
             val result = miniBosses.find { mini -> name.contains(mini.name) } ?: return@forEach
-            WorldRenderUtils.drawWireFrame(event.context, result.box.offset(it.getInterpolatedPos(event.context.tickDelta()))
-                , Color(0, 255, 0), 8f)
+            WorldRenderUtils.drawWireFrame(
+                    event.context,
+                    result.box.offset(it.getInterpolatedPos(event.context.tickCounter().getTickDelta(true))),
+                    Color(0, 255, 0),
+                    8f
+            )
         }
     }
 

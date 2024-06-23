@@ -10,7 +10,7 @@ import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.random.LocalRandom
 
 object SoundUtil {
-    val iphone = SoundEvent.of(Identifier("dulkirmod:iphone"))
+    val iphone = SoundEvent.of(Identifier.of("dulkirmod:iphone"))
 
 
     fun stop(sounds: List<SoundInstance>) {
