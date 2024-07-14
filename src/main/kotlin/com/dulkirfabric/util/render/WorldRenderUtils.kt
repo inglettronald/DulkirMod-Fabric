@@ -1,5 +1,6 @@
 package com.dulkirfabric.util.render
 
+import com.dulkirfabric.DulkirModFabric.mc
 import com.mojang.blaze3d.systems.RenderSystem
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext
 import net.minecraft.client.MinecraftClient
@@ -12,10 +13,8 @@ import net.minecraft.util.Formatting
 import net.minecraft.util.math.Box
 import net.minecraft.util.math.Vec3d
 import org.joml.Vector3f
-import org.lwjgl.opengl.GL11
 import java.awt.Color
 import kotlin.math.max
-import kotlin.math.min
 import kotlin.math.pow
 import kotlin.math.sqrt
 

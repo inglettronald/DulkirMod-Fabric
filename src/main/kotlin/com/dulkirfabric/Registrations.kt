@@ -126,7 +126,7 @@ object Registrations {
             ModifyCommandEvent(command).also { it.post() }.command
         }
 
-        WorldRenderEvents.END.register { context -> WorldRenderLastEvent(context).post() }
+        WorldRenderEvents.LAST.register { context -> WorldRenderLastEvent(context).post() }
 
         ScreenEvents.BEFORE_INIT.register(
             ScreenEvents.BeforeInit { client, screen, scaledWidth, scaledHeight ->

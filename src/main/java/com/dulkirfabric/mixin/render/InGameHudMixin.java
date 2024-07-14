@@ -78,7 +78,7 @@ public class InGameHudMixin {
             at = @At("HEAD"),
             cancellable = true
     )
-    public void changeItemDisplay (DrawContext context, CallbackInfo ci) {
+    public void changeItemDisplay(DrawContext context, CallbackInfo ci) {
         if (DulkirConfig.ConfigVars.getConfigOptions().getHideHeldItemTooltip())
             ci.cancel();
     }
