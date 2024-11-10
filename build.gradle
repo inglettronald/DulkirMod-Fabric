@@ -60,8 +60,8 @@ loom {
 			property("devauth.enabled", "true")
 			property("fabric.log.level", "info")
 			vmArg("-ea")
-			vmArg("-XX:+AllowEnhancedClassRedefinition")
-		  /*vmArg("-XX:HotswapAgent=external")
+			/*vmArg("-XX:+AllowEnhancedClassRedefinition")*/
+		    /*vmArg("-XX:HotswapAgent=external")
 			vmArg("-javaagent:/home/ronald/Software-Packages/hotswap-agent-1.4.2-SNAPSHOT.jar")*/
 		}
 	}
