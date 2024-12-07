@@ -13,6 +13,7 @@ import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.gui.tooltip.TooltipComponent;
 import net.minecraft.client.gui.tooltip.TooltipPositioner;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.util.Identifier;
 import org.joml.Vector2ic;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -28,14 +29,15 @@ public class DrawContextMixin {
     @Shadow @Final private MatrixStack matrices;
 
     @WrapOperation(
-            method = "drawTooltip(Lnet/minecraft/client/font/TextRenderer;Ljava/util/List;IILnet/minecraft/" +
-                    "client/gui/tooltip/TooltipPositioner;)V",
+            method = "drawTooltip(Lnet/minecraft/client/font/TextRenderer;Ljava/util/List;" +
+                    "IILnet/minecraft/client/gui/tooltip/TooltipPositioner;Lnet/minecraft/util/Identifier;)V",
             at = @At(
                     target = "Lnet/minecraft/client/gui/tooltip/TooltipPositioner;getPosition(IIIIII)Lorg/joml/Vector2ic;",
                     value = "INVOKE"
             )
     )
-    public Vector2ic drawTooltip(TooltipPositioner positionerInstance, int sw, int sh, int mx, int my, int tw, int th, Operation<Vector2ic> operation) {
+    public Vector2ic drawTooltip(TooltipPositioner positionerInstance, int sw, int sh, int mx, int my, int tw,
+                                 int th, Operation<Vector2ic> operation) {
         Screen screen = MinecraftClient.getInstance().currentScreen;
         if (!(screen instanceof HandledScreen)) {
             return operation.call(positionerInstance, sw, sh, mx, my, tw, th);
@@ -49,15 +51,16 @@ public class DrawContextMixin {
     }
 
     @Inject(
-            method = "drawTooltip(Lnet/minecraft/client/font/TextRenderer;Ljava/util/List;IILnet/" +
-                    "minecraft/client/gui/tooltip/TooltipPositioner;)V",
+            method = "drawTooltip(Lnet/minecraft/client/font/TextRenderer;Ljava/util/List;II" +
+                    "Lnet/minecraft/client/gui/tooltip/TooltipPositioner;Lnet/minecraft/util/Identifier;)V",
             at = @At(
                     target = "Lnet/minecraft/client/util/math/MatrixStack;push()V",
                     value = "INVOKE",
                     shift = At.Shift.AFTER
             )
     )
-    public void onPush(TextRenderer textRenderer, List<TooltipComponent> components, int x, int y, TooltipPositioner positioner, CallbackInfo ci) {
+    public void onPush(TextRenderer textRenderer, List<TooltipComponent> components, int x, int y,
+                       TooltipPositioner positioner, Identifier texture, CallbackInfo ci) {
         if (MinecraftClient.getInstance().currentScreen instanceof HandledScreen) {
             TooltipImpl.INSTANCE.applyScale(matrices);
         }

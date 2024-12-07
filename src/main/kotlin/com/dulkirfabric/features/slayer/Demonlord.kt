@@ -11,9 +11,11 @@ import com.dulkirfabric.util.TextUtils
 import com.dulkirfabric.util.Utils.getInterpolatedPos
 import com.dulkirfabric.util.render.WorldRenderUtils
 import meteordevelopment.orbit.EventHandler
+import net.minecraft.entity.Entity
 import net.minecraft.entity.decoration.ArmorStandEntity
 import net.minecraft.entity.projectile.SmallFireballEntity
 import net.minecraft.util.math.Box
+import net.minecraft.world.event.GameEvent
 import java.awt.Color
 
 object Demonlord {
@@ -75,7 +77,9 @@ object Demonlord {
     fun onEntityLoad(event: EntityLoadEvent) {
         if (!DulkirConfig.configOptions.cleanBlaze) return
         if (!inBoss) return
-        if (event.entity is SmallFireballEntity)
-            event.entity.kill()
+        if (event.entity is SmallFireballEntity) {
+            event.entity.remove(Entity.RemovalReason.KILLED)
+            event.entity.emitGameEvent(GameEvent.ENTITY_DIE)
+        }
     }
 }

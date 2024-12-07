@@ -1,8 +1,8 @@
 package com.dulkirfabric.mixin.render;
 
 import com.dulkirfabric.config.DulkirConfig;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.hud.InGameOverlayRenderer;
+import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.util.math.MatrixStack;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -17,7 +17,7 @@ public class InGameOverlayRendererMixin {
             at = @At("HEAD"),
             cancellable = true
     )
-    private static void onFireOverlay(MinecraftClient client, MatrixStack matrices, CallbackInfo ci) {
+    private static void onFireOverlay(MatrixStack matrices, VertexConsumerProvider vertexConsumers, CallbackInfo ci) {
         if (DulkirConfig.ConfigVars.getConfigOptions().getHideFireOverlay())
             ci.cancel();
     }

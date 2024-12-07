@@ -1,10 +1,10 @@
 package com.dulkirfabric.util.render
 
-import com.dulkirfabric.DulkirModFabric.mc
 import com.mojang.blaze3d.systems.RenderSystem
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.font.TextRenderer
+import net.minecraft.client.gl.ShaderProgramKeys
 import net.minecraft.client.render.*
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.text.Style
@@ -63,7 +63,7 @@ object WorldRenderUtils {
         val matrices = context.matrixStack() ?: return
         matrices.push()
         val prevShader = RenderSystem.getShader()
-        RenderSystem.setShader(GameRenderer::getRenderTypeLinesProgram)
+        RenderSystem.setShader(ShaderProgramKeys.RENDERTYPE_LINES)
         RenderSystem.disableBlend()
         RenderSystem.disableCull()
         // RenderSystem.defaultBlendFunc()
@@ -107,7 +107,7 @@ object WorldRenderUtils {
         RenderSystem.setShaderColor(
             1f, 1f, 1f, 1f
         )
-        RenderSystem.setShader { prevShader }
+        RenderSystem.setShader(prevShader)
         RenderSystem.enableCull()
         matrices.pop()
     }
@@ -120,7 +120,7 @@ object WorldRenderUtils {
         val matrices = context.matrixStack() ?: return
         matrices.push()
         val prevShader = RenderSystem.getShader()
-        RenderSystem.setShader(GameRenderer::getRenderTypeLinesProgram)
+        RenderSystem.setShader(ShaderProgramKeys.RENDERTYPE_LINES)
         RenderSystem.disableBlend()
         RenderSystem.disableCull()
         // RenderSystem.defaultBlendFunc()
@@ -148,7 +148,7 @@ object WorldRenderUtils {
         RenderSystem.setShaderColor(
             1f, 1f, 1f, 1f
         )
-        RenderSystem.setShader { prevShader }
+        RenderSystem.setShader(prevShader)
         RenderSystem.enableCull()
         matrices.pop()
     }
@@ -161,7 +161,7 @@ object WorldRenderUtils {
         val matrices = context.matrixStack() ?: return
         matrices.push()
         val prevShader = RenderSystem.getShader()
-        RenderSystem.setShader(GameRenderer::getRenderTypeLinesProgram)
+        RenderSystem.setShader(ShaderProgramKeys.RENDERTYPE_LINES)
         RenderSystem.disableBlend()
         RenderSystem.disableCull()
         // RenderSystem.defaultBlendFunc()
@@ -193,7 +193,7 @@ object WorldRenderUtils {
         RenderSystem.setShaderColor(
             1f, 1f, 1f, 1f
         )
-        RenderSystem.setShader { prevShader }
+        RenderSystem.setShader(prevShader)
         RenderSystem.enableCull()
         matrices.pop()
     }
@@ -357,7 +357,7 @@ object WorldRenderUtils {
         } else {
             RenderSystem.enableDepthTest()
         }
-        RenderSystem.setShader(GameRenderer::getPositionColorProgram)
+        RenderSystem.setShader(ShaderProgramKeys.POSITION_COLOR)
         RenderSystem.enableBlend()
         RenderSystem.defaultBlendFunc()
 
@@ -366,7 +366,7 @@ object WorldRenderUtils {
         val buf = tes.begin(VertexFormat.DrawMode.TRIANGLE_STRIP, VertexFormats.POSITION_COLOR)
         matrices.push()
         matrices.translate(x - context.camera().pos.x, y - context.camera().pos.y, z - context.camera().pos.z)
-        WorldRenderer.renderFilledBox(matrices, buf, 0.0, 0.0, 0.0, width, height, depth,
+        VertexRendering.drawFilledBox(matrices, buf, 0.0, 0.0, 0.0, width, height, depth,
             color.red / 255f, color.green / 255f, color.blue / 255f, color.alpha / 255f)
         BufferRenderer.drawWithGlobalProgram(buf.end())
         RenderSystem.enableDepthTest()

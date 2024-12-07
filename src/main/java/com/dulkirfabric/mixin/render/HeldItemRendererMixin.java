@@ -2,7 +2,6 @@ package com.dulkirfabric.mixin.render;
 
 import com.dulkirfabric.config.DulkirConfig;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
-import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.item.HeldItemRenderer;
@@ -12,7 +11,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.Arm;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.RotationAxis;
-import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -23,6 +21,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 // SOURCE FOR A LOT OF THIS: https://github.com/cosrnic/smallviewmodel/blob/main/src/main/java/uk/cosrnic/smallviewmodel/mixin/MixinHeldItemRenderer.java
 @Mixin(HeldItemRenderer.class)
 public abstract class HeldItemRendererMixin {
+
     @Shadow public abstract void resetEquipProgress(Hand hand);
 
     @Shadow private float equipProgressMainHand;
@@ -35,10 +34,10 @@ public abstract class HeldItemRendererMixin {
                     "MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;I)V",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/client/render/item/HeldItemRenderer;renderItem(Lnet/minecraft" +
-                            "/entity/LivingEntity;Lnet/minecraft/item/ItemStack;Lnet/minecraft/client/render" +
-                            "/model/json/ModelTransformationMode;ZLnet/minecraft/client/util/math/MatrixStack" +
-                            ";Lnet/minecraft/client/render/VertexConsumerProvider;I)V"
+                    target = "Lnet/minecraft/client/render/item/HeldItemRenderer;renderItem(" +
+                            "Lnet/minecraft/entity/LivingEntity;Lnet/minecraft/item/ItemStack;" +
+                            "Lnet/minecraft/item/ModelTransformationMode;ZLnet/minecraft/client/util/math/MatrixStack;" +
+                            "Lnet/minecraft/client/render/VertexConsumerProvider;I)V"
             )
     )
     public void onRenderHeldItem(AbstractClientPlayerEntity player, float tickDelta, float pitch, Hand hand,

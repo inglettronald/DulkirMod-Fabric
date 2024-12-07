@@ -2,17 +2,17 @@ package com.dulkirfabric.mixin.render;
 
 import com.dulkirfabric.config.DulkirConfig;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.ingame.AbstractInventoryScreen;
+import net.minecraft.client.gui.screen.ingame.StatusEffectsDisplay;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(AbstractInventoryScreen.class)
+@Mixin(StatusEffectsDisplay.class)
 public class AbstractInventoryScreenMixin {
 
     @Inject(
-            method = "drawStatusEffects",
+            method = "drawStatusEffects(Lnet/minecraft/client/gui/DrawContext;II)V",
             at = @At("HEAD"),
             cancellable = true
     )
