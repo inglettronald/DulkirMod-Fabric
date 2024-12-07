@@ -1,7 +1,7 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-	id 'fabric-loom' version '1.7-SNAPSHOT'
+	id 'fabric-loom' version '1.9-SNAPSHOT'
 	id 'maven-publish'
   	id "org.jetbrains.kotlin.jvm" version "2.1.0"
 	id "org.jetbrains.kotlin.plugin.serialization" version "2.1.0"
@@ -78,18 +78,18 @@ processResources {
 
 tasks.withType(JavaCompile).configureEach {
 	it.options.encoding = "UTF-8"
-	it.options.release = 17
+	it.options.release = 21
 }
 
 tasks.withType(KotlinCompile).configureEach {
-	kotlinOptions.jvmTarget = 17
+	kotlinOptions.jvmTarget = 21
 }
 
 java {
 	withSourcesJar()
 
-	sourceCompatibility = JavaVersion.VERSION_17
-	targetCompatibility = JavaVersion.VERSION_17
+	sourceCompatibility = JavaVersion.VERSION_21
+	targetCompatibility = JavaVersion.VERSION_21
 }
 
 jar {
