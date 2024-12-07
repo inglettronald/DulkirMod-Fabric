@@ -12,7 +12,6 @@ import net.minecraft.util.Arm;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.RotationAxis;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -21,12 +20,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 // SOURCE FOR A LOT OF THIS: https://github.com/cosrnic/smallviewmodel/blob/main/src/main/java/uk/cosrnic/smallviewmodel/mixin/MixinHeldItemRenderer.java
 @Mixin(HeldItemRenderer.class)
 public abstract class HeldItemRendererMixin {
-
-    @Shadow public abstract void resetEquipProgress(Hand hand);
-
-    @Shadow private float equipProgressMainHand;
-
-    @Shadow private float equipProgressOffHand;
 
     @Inject(
             method = "renderFirstPersonItem(Lnet/minecraft/client/network/AbstractClientPlayerEntity;FFLnet/" +
