@@ -276,7 +276,7 @@ class DulkirConfig {
                 .build()
         )
         animations.addEntry(
-            entryBuilder.startIntSlider(Text.literal("Swing Speed"), configOptions.animationPreset.swingDuration, 2, 20)
+            entryBuilder.startIntSlider(Text.literal("Swing Duration"), configOptions.animationPreset.swingDuration, 2, 20)
                 .setSaveConsumer { newValue -> configOptions.animationPreset.swingDuration = newValue }
                 .setDefaultValue(6)
                 .build()
