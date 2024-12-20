@@ -10,7 +10,9 @@ import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 
 @Mixin(InventoryScreen.class)
 public class InventoryScreenMixin {
-    @ModifyArgs(
+
+    // No longer needed as of 1.21.4
+    /*@ModifyArgs(
             method = "drawEntity(Lnet/minecraft/client/gui/DrawContext;IIIIIFFFLnet/minecraft/entity/LivingEntity;)V",
             at = @At(
                     value = "INVOKE",
@@ -21,5 +23,6 @@ public class InventoryScreenMixin {
         for (int i = 0; i < 4; i++) {
             args.set(i, (int) (((int) args.get(i)) * InventoryScale.INSTANCE.getScale()));
         }
-    }
+    }*/
+
 }

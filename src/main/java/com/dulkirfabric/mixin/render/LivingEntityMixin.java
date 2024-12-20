@@ -27,6 +27,9 @@ public class LivingEntityMixin implements GlowingEntityInterface {
     private boolean shouldGlow_DulkirMod;
     @Unique
     private Color glowColor_DulkirMod;
+
+    // Note: if someone is trying to copy this, don't! You need to make your own render type for this
+    // probably, swapping buffers like I did here is absolutely terrible for performance (-80% fps)
     @Unique
     private boolean shouldESP_DulkirMod;
 
