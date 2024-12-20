@@ -10,12 +10,9 @@ import com.dulkirfabric.util.Utils.getInterpolatedPos
 import com.dulkirfabric.util.Utils.getSkullTexture
 import com.dulkirfabric.util.render.WorldRenderUtils
 import meteordevelopment.orbit.EventHandler
-import net.minecraft.block.entity.SkullBlockEntity
-import net.minecraft.client.texture.PlayerSkinProvider
 import net.minecraft.entity.EquipmentSlot
 import net.minecraft.entity.decoration.ArmorStandEntity
 import net.minecraft.item.Items
-import net.minecraft.nbt.NbtHelper
 import net.minecraft.util.math.Box
 import java.awt.Color
 
@@ -23,7 +20,7 @@ object Vampire {
 
     private const val char = "҉"
     private const val ichorTexture =
-        "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYzAzNDA5MjNhNmRlNDgyNWExNzY4MTNkMTMzNTAzZWZmMTg2ZGIwODk2ZTMyYjY3MDQ5MjhjMmEyYmY2ODQyMiJ9fX0="
+        "ewogICJ0aW1lc3RhbXAiIDogMTYxNTg4ODAwMDU1MywKICAicHJvZmlsZUlkIiA6ICI5ZDIyZGRhOTVmZGI0MjFmOGZhNjAzNTI1YThkZmE4ZCIsCiAgInByb2ZpbGVOYW1lIiA6ICJTYWZlRHJpZnQ0OCIsCiAgInNpZ25hdHVyZVJlcXVpcmVkIiA6IHRydWUsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS9jMDM0MDkyM2E2ZGU0ODI1YTE3NjgxM2QxMzM1MDNlZmYxODZkYjA4OTZlMzJiNjcwNDkyOGMyYTJiZjY4NDIyIgogICAgfQogIH0KfQ="
     private val box = Box(-.4, .1, -.4, .4, -1.9, .4)
     private var inT5 = false
     private val ichorBox = Box(- .5, 1.0, -.5, .5, 2.0, .5,)
