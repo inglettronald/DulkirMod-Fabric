@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(StatusEffectsDisplay.class)
-public class AbstractInventoryScreenMixin {
+public class StatusEffectsDisplayMixin {
 
     @Inject(
             method = "drawStatusEffects(Lnet/minecraft/client/gui/DrawContext;II)V",
@@ -21,4 +21,5 @@ public class AbstractInventoryScreenMixin {
             ci.cancel();
         }
     }
+
 }

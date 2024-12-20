@@ -9,7 +9,7 @@
     "io.KeyboardMixin",
     "io.MouseMixin",
     "io.SoundSystemMixin",
-    "render.AbstractInventoryScreenMixin",
+    "render.StatusEffectsDisplayMixin",
     "render.DrawContextMixin",
     "render.GameMenuScreenMixin",
     "render.GameRendererMixin",
