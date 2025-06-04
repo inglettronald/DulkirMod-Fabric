@@ -18,7 +18,7 @@ public class MinecraftClientMixin {
     )
     public void outlineCheck(Entity entity, CallbackInfoReturnable<Boolean> cir) {
         if (entity instanceof GlowingEntityInterface gEntity) {
-            if (gEntity.shouldDulkirEntityGlow()) {
+            if (gEntity.dulkir$shouldEntityGlow()) {
                 cir.setReturnValue(true);
             }
         }

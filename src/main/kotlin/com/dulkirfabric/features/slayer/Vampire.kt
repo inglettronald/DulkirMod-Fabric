@@ -37,7 +37,7 @@ object Vampire {
             if (!it.isCustomNameVisible) return@forEach
             val name = it.customName?.string ?: return@forEach
             if (name.contains(char) && name.contains("Bloodfiend")) {
-                val pos = it.getInterpolatedPos(mc.renderTickCounter.getTickDelta(true))
+                val pos = it.getInterpolatedPos(mc.renderTickCounter.getTickProgress(true))
                 WorldRenderUtils.drawWireFrame(
                     event.context,
                     box.offset(pos.x, pos.y, pos.z),
@@ -62,7 +62,7 @@ object Vampire {
             if (item !== Items.PLAYER_HEAD) return@forEach
             val textureId = getSkullTexture(itemStack) ?: return@forEach
             if (textureId != ichorTexture) return@forEach
-            val pos = it.getInterpolatedPos(mc.renderTickCounter.getTickDelta(true))
+            val pos = it.getInterpolatedPos(mc.renderTickCounter.getTickProgress(true))
             WorldRenderUtils.drawWireFrame(
                 event.context,
                 ichorBox.offset(pos.x, pos.y, pos.z),

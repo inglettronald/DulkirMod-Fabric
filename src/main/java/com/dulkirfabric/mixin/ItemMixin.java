@@ -18,8 +18,9 @@ public class ItemMixin {
             cancellable = true
     )
     public void shouldDisplayDurabilityBar(ItemStack stack, CallbackInfoReturnable<Boolean> cir) {
-        if (DulkirConfig.ConfigVars.getConfigOptions().getDuraCooldown())
+        if (DulkirConfig.ConfigVars.getConfigOptions().getDuraCooldown()) {
             CooldownDisplays.INSTANCE.shouldDisplay(stack, cir);
+        }
     }
 
     @Inject(
@@ -28,8 +29,9 @@ public class ItemMixin {
             cancellable = true
     )
     public void calculateItemHealth(ItemStack stack, CallbackInfoReturnable<Integer> cir) {
-        if (DulkirConfig.ConfigVars.getConfigOptions().getDuraCooldown())
+        if (DulkirConfig.ConfigVars.getConfigOptions().getDuraCooldown()) {
             CooldownDisplays.INSTANCE.calcDurability(stack, cir);
+        }
     }
 
 }

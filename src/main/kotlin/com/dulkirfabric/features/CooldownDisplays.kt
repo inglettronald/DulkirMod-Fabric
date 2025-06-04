@@ -10,6 +10,7 @@ import meteordevelopment.orbit.EventHandler
 import net.minecraft.client.sound.Sound
 import net.minecraft.item.ItemStack
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable
+import kotlin.jvm.optionals.getOrNull
 import kotlin.math.round
 
 object CooldownDisplays {
@@ -91,7 +92,7 @@ object CooldownDisplays {
 
     private fun fetchCooldownItem(stack: ItemStack): TrackedCooldown? {
         val tag = Utils.getNbt(stack) ?: return null
-        val id = tag.getCompound("ExtraAttributes").get("id") ?: return null
+        val id = tag.getCompound("ExtraAttributes").getOrNull()?.get("id") ?: return null
         val idStr = id.toString().trim('"')
         trackedCooldowns.forEach {
             if (idStr matches it.value.itemID)

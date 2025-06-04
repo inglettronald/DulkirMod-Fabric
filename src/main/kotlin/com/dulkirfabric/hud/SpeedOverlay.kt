@@ -42,7 +42,7 @@ object SpeedOverlay {
     @EventHandler
     fun onTick(event: ClientTickEvent) {
         val player = mc.player ?: return
-        val last = Vec3d(player.prevX, player.prevY, player.prevZ)
+        val last = Vec3d(player.lastX, player.lastY, player.lastZ)
         val now = player.pos ?: return
         tickMomentum = last.distanceTo(now) * 20
     }

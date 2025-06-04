@@ -3,9 +3,9 @@ package com.dulkirfabric.util.render
 import java.awt.Color
 
 interface GlowingEntityInterface {
-    fun setDulkirEntityGlow(shouldGlow: Boolean = false, glowColor: Color)
+    fun `dulkir$setEntityGlow`(shouldGlow: Boolean = false, glowColor: Color)
 
-    fun shouldDulkirEntityGlow() : Boolean
+    fun `dulkir$shouldEntityGlow`() : Boolean
 
-    fun getDulkirEntityGlowColor() : Color?
+    fun `dulkir$getGlowColor`() : Color?
 }

@@ -39,7 +39,7 @@ object Utils {
         )
     }
     fun Entity.getInterpolatedPos(tickDelta: Float): Vec3d {
-        val prevPos = Vec3d(this.prevX, this.prevY, this.prevZ)
+        val prevPos = Vec3d(this.lastX, this.lastY, this.lastZ)
         return lerp(prevPos, this.pos, tickDelta)
     }
 

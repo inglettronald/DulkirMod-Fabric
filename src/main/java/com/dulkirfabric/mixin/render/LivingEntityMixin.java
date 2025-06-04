@@ -24,30 +24,25 @@ public class LivingEntityMixin implements GlowingEntityInterface {
     private int animationTicks;
 
     @Unique
-    private boolean shouldGlow_DulkirMod;
+    private boolean dulkir$shouldGlow;
     @Unique
-    private Color glowColor_DulkirMod;
-
-    // Note: if someone is trying to copy this, don't! You need to make your own render type for this
-    // probably, swapping buffers like I did here is absolutely terrible for performance (-80% fps)
-    @Unique
-    private boolean shouldESP_DulkirMod;
+    private Color dulkir$glowColor;
 
     @Override
-    public void setDulkirEntityGlow(boolean shouldGlow, @NotNull Color glowColor) {
-        this.shouldGlow_DulkirMod = shouldGlow;
-        this.glowColor_DulkirMod = glowColor;
+    public void dulkir$setEntityGlow(boolean shouldGlow, @NotNull Color glowColor) {
+        this.dulkir$shouldGlow = shouldGlow;
+        this.dulkir$glowColor = glowColor;
     }
 
     @Override
-    public boolean shouldDulkirEntityGlow() {
-        return shouldGlow_DulkirMod;
+    public boolean dulkir$shouldEntityGlow() {
+        return dulkir$shouldGlow;
     }
 
     @Nullable
     @Override
-    public Color getDulkirEntityGlowColor() {
-        return glowColor_DulkirMod;
+    public Color dulkir$getGlowColor() {
+        return dulkir$glowColor;
     }
 
     @Inject(
@@ -58,8 +53,10 @@ public class LivingEntityMixin implements GlowingEntityInterface {
                     shift = At.Shift.AFTER
             )
     )
-    public void onWhatever(CallbackInfo ci) {
-        if (DulkirConfig.ConfigVars.getConfigOptions().getAnimationPreset().getSwingDuration() == 6) return;
+    public void modifySwingPos(CallbackInfo ci) {
+        if (DulkirConfig.ConfigVars.getConfigOptions().getAnimationPreset().getSwingDuration() == 6) {
+            return;
+        }
         if (animationTicks > DulkirConfig.ConfigVars.getConfigOptions().getAnimationPreset().getSwingDuration()) {
             animationTicks = 0;
         }

@@ -31,7 +31,7 @@ object TooltipImpl {
 
     fun calculatePos(v: Vector2ic, tw: Int, th: Int, sw: Int, sh: Int): Vector2ic {
         // calculate the position of the tooltip based on the scroll amount
-        val partialTicks = MinecraftClient.getInstance().renderTickCounter.getTickDelta(true)
+        val partialTicks = MinecraftClient.getInstance().renderTickCounter.getTickProgress(true)
         var newVec = v
         frameX = newVec.x() + prevTickX + ((tickHorizontal - prevTickX) * partialTicks).toInt()
         frameY = newVec.y() + prevTickY + ((tickVertical - prevTickY) * partialTicks).toInt()

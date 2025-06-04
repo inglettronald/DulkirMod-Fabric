@@ -26,6 +26,7 @@ import java.util.List;
 
 @Mixin(DrawContext.class)
 public class DrawContextMixin {
+
     @Shadow @Final private MatrixStack matrices;
 
     @WrapOperation(
@@ -44,10 +45,22 @@ public class DrawContextMixin {
         }
         float scale = InventoryScale.INSTANCE.getScale();
         float tooltipScale = DulkirConfig.ConfigVars.getConfigOptions().getTooltipScale();
-        Vector2ic v = operation.call(positionerInstance, (int) (sw / scale), (int) (sh / scale),
-                mx , my, (int) (tw * tooltipScale), (int) (th * tooltipScale));
-        return TooltipImpl.INSTANCE.calculatePos(v, (int) (tw * tooltipScale),
-                (int) (th * tooltipScale), (int) (sw / scale), (int) (sh / scale));
+        Vector2ic v = operation.call(
+                positionerInstance,
+                (int) (sw / scale),
+                (int) (sh / scale),
+                mx ,
+                my,
+                (int) (tw * tooltipScale),
+                (int) (th * tooltipScale)
+        );
+        return TooltipImpl.INSTANCE.calculatePos(
+                v,
+                (int) (tw * tooltipScale),
+                (int) (th * tooltipScale),
+                (int) (sw / scale),
+                (int) (sh / scale)
+        );
     }
 
     @Inject(

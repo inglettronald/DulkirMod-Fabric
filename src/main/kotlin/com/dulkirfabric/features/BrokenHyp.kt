@@ -12,6 +12,7 @@ import net.minecraft.text.Style
 import net.minecraft.text.Text
 import net.minecraft.util.Formatting
 import java.time.Duration
+import kotlin.jvm.optionals.getOrNull
 
 
 object BrokenHyp {
@@ -31,10 +32,10 @@ object BrokenHyp {
 
         // get info about held item
         val tag = Utils.getNbt(stack) ?: return
-        id = tag.getCompound("ExtraAttributes")?.getString("id") ?: ""
+        id = tag.getCompound("ExtraAttributes").getOrNull()?.getString("id")?.getOrNull() ?: ""
 
-        kill = tag.getCompound("ExtraAttributes")?.getInt("stats_book") ?: -1
-        championXp = tag.getCompound("ExtraAttributes")?.getDouble("champion_combat_xp") ?: -1.0
+        kill = tag.getCompound("ExtraAttributes").getOrNull()?.getInt("stats_book")?.getOrNull() ?: -1
+        championXp = tag.getCompound("ExtraAttributes").getOrNull()?.getDouble("champion_combat_xp")?.getOrNull() ?: -1.0
 
         // check if a wither blade, then check if same id
         if (!(id matches "(HYPERION|ASTRAEA|SCYLLA|VALKYRIE)".toRegex())) {

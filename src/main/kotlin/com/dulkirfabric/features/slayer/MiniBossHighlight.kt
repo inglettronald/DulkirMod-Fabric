@@ -60,7 +60,7 @@ object MiniBossHighlight {
             val result = miniBosses.find { mini -> name.contains(mini.name) } ?: return@forEach
             WorldRenderUtils.drawWireFrame(
                     event.context,
-                    result.box.offset(it.getInterpolatedPos(event.context.tickCounter().getTickDelta(true))),
+                    result.box.offset(it.getInterpolatedPos(event.context.tickCounter().getTickProgress(true))),
                     Color(0, 255, 0),
                     8f
             )

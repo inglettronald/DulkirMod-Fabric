@@ -55,6 +55,7 @@ public abstract class ScreenMixin {
     )
     public void onResizeAfterViewportSizeSet(MinecraftClient client, int width, int height, CallbackInfo ci) {
         this.width = (int) ceil(width / InventoryScale.INSTANCE.getScale());
-        this.height = (int) ceil(height /  InventoryScale.INSTANCE.getScale());
+        this.height = (int) ceil(height / InventoryScale.INSTANCE.getScale());
     }
+
 }

@@ -22,6 +22,7 @@ import net.minecraft.text.*;
 import net.minecraft.util.Formatting;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -32,7 +33,8 @@ import java.util.function.Supplier;
 @Mixin(GameMenuScreen.class)
 public abstract class GameMenuScreenMixin extends ScreenMixin {
 
-	private final Text buttonText = MutableText.of(new PlainTextContent.Literal("Dulkir"))
+	@Unique
+	private final Text dulkir$buttonText = MutableText.of(new PlainTextContent.Literal("Dulkir"))
 			.formatted(Formatting.BOLD, Formatting.YELLOW);
 
 	@Shadow
@@ -49,7 +51,7 @@ public abstract class GameMenuScreenMixin extends ScreenMixin {
 			locals = LocalCapture.CAPTURE_FAILEXCEPTION
 	)
 	private void initWidget(CallbackInfo ci, GridWidget gridWidget, GridWidget.Adder adder) {
-		adder.add(this.createButton(buttonText, new DulkirConfig()::getScreen));
+		adder.add(this.createButton(dulkir$buttonText, new DulkirConfig()::getScreen));
 	}
 
 }

@@ -54,7 +54,7 @@ object AotvHighlight {
         // Find the targeted block with a range of 60.9
         val entity = mc.cameraEntity
         if (mc.player == null) return
-        val blockHit = raycast(entity!!, 60.9, mc.renderTickCounter.getTickDelta(true))
+        val blockHit = raycast(entity!!, 60.9, mc.renderTickCounter.getTickProgress(true))
         if (blockHit.type != HitResult.Type.BLOCK) return
         val pos: BlockPos = (blockHit as BlockHitResult).blockPos
         if (!isValidTeleportLocation(pos)) return

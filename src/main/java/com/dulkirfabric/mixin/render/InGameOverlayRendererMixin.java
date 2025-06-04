@@ -18,7 +18,9 @@ public class InGameOverlayRendererMixin {
             cancellable = true
     )
     private static void onFireOverlay(MatrixStack matrices, VertexConsumerProvider vertexConsumers, CallbackInfo ci) {
-        if (DulkirConfig.ConfigVars.getConfigOptions().getHideFireOverlay())
+        if (DulkirConfig.ConfigVars.getConfigOptions().getHideFireOverlay()) {
             ci.cancel();
+        }
     }
+
 }

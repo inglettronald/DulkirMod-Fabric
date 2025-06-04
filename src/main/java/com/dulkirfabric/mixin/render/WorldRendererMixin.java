@@ -20,8 +20,8 @@ public class WorldRendererMixin {
     )
     public int getGlowColor(int existing, @Local Entity entity) {
         if (entity instanceof GlowingEntityInterface dEntity) {
-            if (dEntity.getDulkirEntityGlowColor() != null) {
-                return dEntity.getDulkirEntityGlowColor().getRGB();
+            if (dEntity.dulkir$getGlowColor() != null) {
+                return dEntity.dulkir$getGlowColor().getRGB();
             }
         }
         return existing;

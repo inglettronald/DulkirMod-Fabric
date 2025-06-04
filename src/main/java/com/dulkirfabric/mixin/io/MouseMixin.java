@@ -10,69 +10,25 @@ import org.spongepowered.asm.mixin.injection.At;
 public class MouseMixin {
 
     @ModifyExpressionValue(
-            method = "onMouseButton",
+            method = "scaleX",
             at = @At(
                     value = "INVOKE",
                     target = "Lnet/minecraft/client/util/Window;getScaledWidth()I"
             )
     )
-    public int onMouseButtonWidth(int originalScaledWidth) {
+    private static int modifyWidth(int originalScaledWidth) {
         return (int) (originalScaledWidth / InventoryScale.INSTANCE.getScale());
     }
 
     @ModifyExpressionValue(
-            method = "onMouseButton",
+            method = "scaleY",
             at = @At(
                     value = "INVOKE",
                     target = "Lnet/minecraft/client/util/Window;getScaledHeight()I"
             )
     )
-    public int onMouseButtonHeight(int originalScaledHeight) {
+    private static int modifyHeight(int originalScaledHeight) {
         return (int) (originalScaledHeight / InventoryScale.INSTANCE.getScale());
-    }
-
-    @ModifyExpressionValue(
-            method = "onMouseScroll",
-            at = @At(
-                    value = "INVOKE",
-                    target = "Lnet/minecraft/client/util/Window;getScaledWidth()I"
-            )
-    )
-    public int onMouseScrollWidth(int originalScaledWidth) {
-        return (int) (originalScaledWidth / InventoryScale.INSTANCE.getScale());
-    }
-
-    @ModifyExpressionValue(
-            method = "onMouseScroll",
-            at = @At(
-                    value = "INVOKE",
-                    target = "Lnet/minecraft/client/util/Window;getScaledHeight()I"
-            )
-    )
-    public int onMouseScrollHeight(int originalScaledHeight) {
-        return (int) (originalScaledHeight / InventoryScale.INSTANCE.getScale());
-    }
-
-    @ModifyExpressionValue(
-            method = "tick",
-            at = @At(
-                    value = "INVOKE",
-                    target = "Lnet/minecraft/client/util/Window;getScaledHeight()I"
-            )
-    )
-    public int onTickHeight(int originalScaledHeight) {
-        return (int) (originalScaledHeight / InventoryScale.INSTANCE.getScale());
-    }
-
-    @ModifyExpressionValue(
-            method = "tick",
-            at = @At(
-                    value = "INVOKE",
-                    target = "Lnet/minecraft/client/util/Window;getScaledWidth()I"
-            )
-    )
-    public int onTickWidth(int originalScaledWidth) {
-        return (int) (originalScaledWidth / InventoryScale.INSTANCE.getScale());
     }
 
 }

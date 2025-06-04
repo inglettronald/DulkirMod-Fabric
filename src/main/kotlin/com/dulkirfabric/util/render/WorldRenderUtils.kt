@@ -4,7 +4,6 @@ import com.mojang.blaze3d.systems.RenderSystem
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.font.TextRenderer
-import net.minecraft.client.gl.ShaderProgramKeys
 import net.minecraft.client.render.*
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.text.Style
@@ -48,11 +47,6 @@ object WorldRenderUtils {
                 .color(0xFFFFFFFF.toInt())
     }
 
-    /**
-     * Draws a box in world space, given the coordinates of the box, thickness of the lines, and color.
-     * TODO: write a more custom rendering function so we don't have to do this ugly translation of
-     * Minecraft's screen space rendering logic to a world space rendering function.
-     */
     fun drawWireFrame(
         context: WorldRenderContext,
         box: Box,
@@ -62,119 +56,82 @@ object WorldRenderUtils {
     ) {
         val matrices = context.matrixStack() ?: return
         matrices.push()
-        val prevShader = RenderSystem.getShader()
-        RenderSystem.setShader(ShaderProgramKeys.RENDERTYPE_LINES)
-        RenderSystem.disableBlend()
-        RenderSystem.disableCull()
-        // RenderSystem.defaultBlendFunc()
-        RenderSystem.setShaderColor(color.red / 255f, color.green / 255f, color.blue / 255f, color.alpha / 255f)
-        if (!depthTest) {
-            RenderSystem.disableDepthTest()
-            RenderSystem.depthMask(false)
+        val layer = if (depthTest) {
+            DulkirRenderLayer.DULKIR_LINES
         } else {
-            RenderSystem.enableDepthTest()
+            DulkirRenderLayer.DULKIR_LINES_ESP
         }
+        RenderSystem.setShaderColor(color.red / 255f, color.green / 255f, color.blue / 255f, color.alpha / 255f)
+
         matrices.translate(-context.camera().pos.x, -context.camera().pos.y, -context.camera().pos.z)
-        val tess = RenderSystem.renderThreadTesselator()
-        val buf = tess.begin(VertexFormat.DrawMode.LINES, VertexFormats.LINES)
+        val buf = RenderUtil.getBufferFor(layer);
         val me = matrices.peek()
 
         buf.color(255, 255, 255, 255)
 
-        // X Axis aligned lines
+        // bottom
         line(me, buf, box.minX, box.minY, box.minZ, box.maxX, box.minY, box.minZ, thickness)
-        line(me, buf, box.minX, box.maxY, box.minZ, box.maxX, box.maxY, box.minZ, thickness)
-        line(me, buf, box.minX, box.minY, box.maxZ, box.maxX, box.minY, box.maxZ, thickness)
-        line(me, buf, box.minX, box.maxY, box.maxZ, box.maxX, box.maxY, box.maxZ, thickness)
-
-        // Y Axis aligned lines
-        line(me, buf, box.minX, box.minY, box.minZ, box.minX, box.maxY, box.minZ, thickness)
-        line(me, buf, box.maxX, box.minY, box.minZ, box.maxX, box.maxY, box.minZ, thickness)
-        line(me, buf, box.minX, box.minY, box.maxZ, box.minX, box.maxY, box.maxZ, thickness)
-        line(me, buf, box.maxX, box.minY, box.maxZ, box.maxX, box.maxY, box.maxZ, thickness)
-
-        // Z Axis aligned lines
-        line(me, buf, box.minX, box.minY, box.minZ, box.minX, box.minY, box.maxZ, thickness)
         line(me, buf, box.maxX, box.minY, box.minZ, box.maxX, box.minY, box.maxZ, thickness)
-        line(me, buf, box.minX, box.maxY, box.minZ, box.minX, box.maxY, box.maxZ, thickness)
+        line(me, buf, box.maxX, box.minY, box.maxZ, box.minX, box.minY, box.maxZ, thickness)
+        line(me, buf, box.minX, box.minY, box.maxZ, box.minX, box.minY, box.minZ, thickness)
+
+        line(me, buf, box.minX, box.minY, box.minZ, box.minX, box.maxY, box.minZ, thickness)
+
+        // top
+        line(me, buf, box.minX, box.maxY, box.minZ, box.maxX, box.maxY, box.minZ, thickness)
         line(me, buf, box.maxX, box.maxY, box.minZ, box.maxX, box.maxY, box.maxZ, thickness)
+        line(me, buf, box.maxX, box.maxY, box.maxZ, box.minX, box.maxY, box.maxZ, thickness)
+        line(me, buf, box.minX, box.maxY, box.maxZ, box.minX, box.maxY, box.minZ, thickness)
 
-        BufferRenderer.drawWithGlobalProgram(buf.end())
+        // some redraws (blame strips) and getting the rest of the vertical columns
+        line(me, buf, box.minX, box.maxY, box.minZ, box.maxX, box.maxY, box.minZ, thickness)
+        line(me, buf, box.maxX, box.maxY, box.minZ, box.maxX, box.minY, box.minZ, thickness)
+        line(me, buf, box.maxX, box.minY, box.minZ, box.maxX, box.minY, box.maxZ, thickness)
+        line(me, buf, box.maxX, box.minY, box.maxZ, box.maxX, box.maxY, box.maxZ, thickness)
+        line(me, buf, box.maxX, box.maxY, box.maxZ, box.minX, box.maxY, box.maxZ, thickness)
+        line(me, buf, box.minX, box.maxY, box.maxZ, box.minX, box.minY, box.maxZ, thickness)
 
-        RenderSystem.depthMask(true)
-        RenderSystem.enableDepthTest()
-        RenderSystem.enableBlend()
-        RenderSystem.setShaderColor(
-            1f, 1f, 1f, 1f
-        )
-        RenderSystem.setShader(prevShader)
-        RenderSystem.enableCull()
+        layer.draw(buf.end())
+
         matrices.pop()
+        RenderSystem.setShaderColor(1F, 1F, 1F, 1F)
     }
 
-    /**
-     * This draw line function is intended to be used for drawing very few lines, as it's not the most efficient.
-     * For drawing many lines in a series, save them to an array and use the drawLineArray function.
-     */
     fun drawLine(context: WorldRenderContext, startPos: Vec3d, endPos: Vec3d, color: Color, thickness: Float, depthTest: Boolean = true) {
         val matrices = context.matrixStack() ?: return
         matrices.push()
-        val prevShader = RenderSystem.getShader()
-        RenderSystem.setShader(ShaderProgramKeys.RENDERTYPE_LINES)
-        RenderSystem.disableBlend()
-        RenderSystem.disableCull()
         // RenderSystem.defaultBlendFunc()
         RenderSystem.setShaderColor(color.red / 255f, color.green / 255f, color.blue / 255f, color.alpha / 255f)
-        if (!depthTest) {
-            RenderSystem.disableDepthTest()
-            RenderSystem.depthMask(false)
+        val layer = if (depthTest) {
+            DulkirRenderLayer.DULKIR_LINES
         } else {
-            RenderSystem.enableDepthTest()
+            DulkirRenderLayer.DULKIR_LINES_ESP
         }
         matrices.translate(-context.camera().pos.x, -context.camera().pos.y, -context.camera().pos.z)
-        val tess = RenderSystem.renderThreadTesselator()
-        val buf = tess.begin(VertexFormat.DrawMode.LINES, VertexFormats.LINES)
+        val buf = RenderUtil.getBufferFor(layer)
         val me = matrices.peek()
 
         buf.color(255, 255, 255, 255)
 
         line(me, buf, startPos.x.toFloat(), startPos.y.toFloat(), startPos.z.toFloat(), endPos.x.toFloat(), endPos.y.toFloat(), endPos.z.toFloat(), thickness)
 
-        BufferRenderer.drawWithGlobalProgram(buf.end())
+        layer.draw(buf.end())
 
-        RenderSystem.depthMask(true)
-        RenderSystem.enableDepthTest()
-        RenderSystem.enableBlend()
-        RenderSystem.setShaderColor(
-            1f, 1f, 1f, 1f
-        )
-        RenderSystem.setShader(prevShader)
-        RenderSystem.enableCull()
         matrices.pop()
+        RenderSystem.setShaderColor(1F, 1F, 1F, 1F)
     }
 
-    /**
-     * This function is intended to be used for drawing many lines in a series, as it's more efficient than the
-     * drawLine function being called many times in series.
-     */
     fun drawLineArray(context: WorldRenderContext, posArr: List<Vec3d>, color: Color, thickness: Float, depthTest: Boolean = true) {
         val matrices = context.matrixStack() ?: return
         matrices.push()
-        val prevShader = RenderSystem.getShader()
-        RenderSystem.setShader(ShaderProgramKeys.RENDERTYPE_LINES)
-        RenderSystem.disableBlend()
-        RenderSystem.disableCull()
-        // RenderSystem.defaultBlendFunc()
         RenderSystem.setShaderColor(color.red / 255f, color.green / 255f, color.blue / 255f, color.alpha / 255f)
-        if (!depthTest) {
-            RenderSystem.disableDepthTest()
-            RenderSystem.depthMask(false)
+        val layer = if (depthTest) {
+            DulkirRenderLayer.DULKIR_LINES
         } else {
-            RenderSystem.enableDepthTest()
+            DulkirRenderLayer.DULKIR_LINES_ESP
         }
         matrices.translate(-context.camera().pos.x, -context.camera().pos.y, -context.camera().pos.z)
-        val tess = RenderSystem.renderThreadTesselator()
-        val buf = tess.begin(VertexFormat.DrawMode.LINES, VertexFormats.LINES)
+        val buf = RenderUtil.getBufferFor(layer)
         val me = matrices.peek()
 
         buf.color(255, 255, 255, 255)
@@ -185,17 +142,10 @@ object WorldRenderUtils {
             line(me, buf, startPos.x.toFloat(), startPos.y.toFloat(), startPos.z.toFloat(), endPos.x.toFloat(), endPos.y.toFloat(), endPos.z.toFloat(), thickness)
         }
 
-        BufferRenderer.drawWithGlobalProgram(buf.end())
+        layer.draw(buf.end())
 
-        RenderSystem.depthMask(true)
-        RenderSystem.enableDepthTest()
-        RenderSystem.enableBlend()
-        RenderSystem.setShaderColor(
-            1f, 1f, 1f, 1f
-        )
-        RenderSystem.setShader(prevShader)
-        RenderSystem.enableCull()
         matrices.pop()
+        RenderSystem.setShaderColor(1F, 1F, 1F, 1F)
     }
 
     /**
@@ -211,13 +161,13 @@ object WorldRenderUtils {
         depthTest: Boolean = true,
         scale: Float = 1f
     ) {
-        if (!depthTest) {
-            RenderSystem.disableDepthTest()
+        val layer = if (depthTest) {
+            DulkirRenderLayer.DULKIR_TEXT
+        } else {
+            DulkirRenderLayer.DULKIR_TEXT_ESP
         }
-        RenderSystem.enableBlend()
-        RenderSystem.defaultBlendFunc()
-        RenderSystem.disableCull()
 
+        // Minecraft vertex consumer because we still hook into their renderer and do immediate text rendering
         val vertexConsumer = context.worldRenderer().bufferBuilders.entityVertexConsumers
         val matrices = context.matrixStack() ?: return
         matrices.push()
@@ -231,7 +181,7 @@ object WorldRenderUtils {
         val matrix4f = matrices.peek().positionMatrix
         val textRenderer = MinecraftClient.getInstance().textRenderer
         val j: Int = (.25 * 255.0f).toInt() shl 24
-        val buf = vertexConsumer.getBuffer(RenderLayer.getTextBackgroundSeeThrough())
+        val buf = RenderUtil.getBufferFor(layer)
         buf.vertex(matrix4f, -1.0f - textRenderer.getWidth(text) / 2, -1.0f, 0.0f)
             .color(j)
             .light(LightmapTextureManager.MAX_BLOCK_LIGHT_COORDINATE)
@@ -252,13 +202,10 @@ object WorldRenderUtils {
             TextRenderer.TextLayerType.SEE_THROUGH,
             0, LightmapTextureManager.MAX_LIGHT_COORDINATE
         )
-
+        layer.draw(buf.end())
         vertexConsumer.drawCurrentLayer()
         matrices.pop()
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F)
-        RenderSystem.enableDepthTest()
-        RenderSystem.enableCull()
-        RenderSystem.disableBlend()
     }
 
     fun renderWaypoint(
@@ -267,10 +214,7 @@ object WorldRenderUtils {
         pos: Vec3d,
     )
     {
-        RenderSystem.disableDepthTest()
-        RenderSystem.enableBlend()
-        RenderSystem.defaultBlendFunc()
-        RenderSystem.disableCull()
+        val layer = DulkirRenderLayer.DULKIR_TEXT_ESP;
         val d: Double = pos.distanceTo(MinecraftClient.getInstance().player?.pos)
         val distText = Text.literal(d.toInt().toString() + "m").setStyle(Style.EMPTY.withColor(Formatting.YELLOW))
         val matrices = context.matrixStack() ?: return
@@ -302,7 +246,7 @@ object WorldRenderUtils {
         val matrix4f = matrices.peek().positionMatrix
         val textRenderer = MinecraftClient.getInstance().textRenderer
         val j: Int = (.25 * 255.0f).toInt() shl 24
-        val buf = vertexConsumer.getBuffer(RenderLayer.getTextBackgroundSeeThrough())
+        val buf = RenderUtil.getBufferFor(layer)
         buf.vertex(matrix4f, -1.0f - textRenderer.getWidth(text) / 2, -1.0f, 0.0f)
             .color(j)
             .light(LightmapTextureManager.MAX_BLOCK_LIGHT_COORDINATE)
@@ -329,12 +273,10 @@ object WorldRenderUtils {
             TextRenderer.TextLayerType.SEE_THROUGH,
             0, LightmapTextureManager.MAX_LIGHT_COORDINATE
         )
+        layer.draw(buf.end())
         vertexConsumer.drawCurrentLayer()
         matrices.pop()
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F)
-        RenderSystem.enableDepthTest()
-        RenderSystem.enableCull()
-        RenderSystem.disableBlend()
     }
 
     /**
@@ -351,25 +293,19 @@ object WorldRenderUtils {
         color: Color,
         depthTest: Boolean
     ) {
-        if (!depthTest) {
-            RenderSystem.disableDepthTest()
-            //RenderSystem.depthMask(false)
+        val layer = if (depthTest) {
+            DulkirRenderLayer.DULKIR_TRIANGLE_STRIP
         } else {
-            RenderSystem.enableDepthTest()
+            DulkirRenderLayer.DULKIR_TRIANGLE_STRIP_ESP
         }
-        RenderSystem.setShader(ShaderProgramKeys.POSITION_COLOR)
-        RenderSystem.enableBlend()
-        RenderSystem.defaultBlendFunc()
 
         val matrices = context.matrixStack() ?: return
-        val tes = Tessellator.getInstance()
-        val buf = tes.begin(VertexFormat.DrawMode.TRIANGLE_STRIP, VertexFormats.POSITION_COLOR)
+        val buf = RenderUtil.getBufferFor(layer)
         matrices.push()
         matrices.translate(x - context.camera().pos.x, y - context.camera().pos.y, z - context.camera().pos.z)
         VertexRendering.drawFilledBox(matrices, buf, 0.0, 0.0, 0.0, width, height, depth,
             color.red / 255f, color.green / 255f, color.blue / 255f, color.alpha / 255f)
-        BufferRenderer.drawWithGlobalProgram(buf.end())
-        RenderSystem.enableDepthTest()
+        layer.draw(buf.end())
         matrices.pop()
     }
 }

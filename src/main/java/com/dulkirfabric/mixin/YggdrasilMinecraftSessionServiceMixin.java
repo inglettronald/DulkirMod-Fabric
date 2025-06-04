@@ -24,4 +24,5 @@ public class YggdrasilMinecraftSessionServiceMixin {
         }
         return original;
     }
+
 }

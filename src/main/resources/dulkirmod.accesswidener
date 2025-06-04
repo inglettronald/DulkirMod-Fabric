@@ -3,3 +3,4 @@ accessible field net/minecraft/client/render/WorldRenderer bufferBuilders Lnet/m
 accessible method net/minecraft/client/gui/hud/PlayerListHud collectPlayerEntries ()Ljava/util/List;
 accessible field net/minecraft/client/gui/hud/ChatHud messages Ljava/util/List;
 accessible method net/minecraft/client/gui/hud/ChatHud refresh ()V
+accessible method net/minecraft/client/render/RenderLayer$MultiPhaseParameters$Builder <init> ()V
