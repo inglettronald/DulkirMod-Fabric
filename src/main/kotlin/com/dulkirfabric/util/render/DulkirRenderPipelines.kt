@@ -1,6 +1,7 @@
 package com.dulkirfabric.util.render
 
 import com.mojang.blaze3d.pipeline.RenderPipeline
+import com.mojang.blaze3d.platform.DepthTestFunction
 import com.mojang.blaze3d.vertex.VertexFormat.DrawMode
 import net.minecraft.client.gl.RenderPipelines
 import net.minecraft.client.render.VertexFormats
@@ -16,6 +17,7 @@ object DulkirRenderPipelines {
             .withCull(false)
             .withoutBlend()
             .withDepthWrite(true)
+            .withDepthTestFunction(DepthTestFunction.LEQUAL_DEPTH_TEST)
             .build()
     )
 
@@ -29,6 +31,7 @@ object DulkirRenderPipelines {
             .withCull(false)
             .withoutBlend()
             .withDepthWrite(false)
+            .withDepthTestFunction(DepthTestFunction.NO_DEPTH_TEST)
             .build()
     )
 
@@ -47,6 +50,7 @@ object DulkirRenderPipelines {
             .withoutBlend()
             .withCull(false)
             .withDepthWrite(true)
+            .withDepthTestFunction(DepthTestFunction.LEQUAL_DEPTH_TEST)
             .build()
     )
 
@@ -65,6 +69,7 @@ object DulkirRenderPipelines {
             .withoutBlend()
             .withCull(false)
             .withDepthWrite(false)
+            .withDepthTestFunction(DepthTestFunction.NO_DEPTH_TEST)
             .build()
     )
 
@@ -74,6 +79,7 @@ object DulkirRenderPipelines {
             .withCull(false)
             .withVertexFormat(VertexFormats.POSITION_COLOR, DrawMode.TRIANGLE_STRIP)
             .withDepthWrite(true)
+            .withDepthTestFunction(DepthTestFunction.LEQUAL_DEPTH_TEST)
             .withoutBlend()
             .build()
     );
@@ -84,6 +90,7 @@ object DulkirRenderPipelines {
             .withCull(false)
             .withVertexFormat(VertexFormats.POSITION_COLOR, DrawMode.TRIANGLE_STRIP)
             .withDepthWrite(false)
+            .withDepthTestFunction(DepthTestFunction.NO_DEPTH_TEST)
             .withoutBlend()
             .build()
     );
