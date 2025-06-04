@@ -11,8 +11,6 @@ object DulkirRenderPipelines {
     val DULKIR_LINES: RenderPipeline = RenderPipelines.register(
         RenderPipeline.builder(*arrayOf<RenderPipeline.Snippet?>(RenderPipelines.RENDERTYPE_LINES_SNIPPET))
             .withLocation("pipeline/line_strip")
-            /*.withVertexShader("core/position_color_normal")*/
-            /*.withFragmentShader("core/position_color_normal")*/
             .withVertexFormat(VertexFormats.POSITION_COLOR_NORMAL, DrawMode.LINE_STRIP)
             .withCull(false)
             .withoutBlend()
@@ -24,8 +22,6 @@ object DulkirRenderPipelines {
     val DULKIR_LINES_ESP: RenderPipeline = RenderPipelines.register(
         RenderPipeline.builder(*arrayOf<RenderPipeline.Snippet?>(RenderPipelines.RENDERTYPE_LINES_SNIPPET))
             .withLocation("pipeline/line_strip")
-            /*.withVertexShader("core/position_color_normal")*/
-            /*.withFragmentShader("core/position_color_normal")*/
             .withShaderDefine("shad")
             .withVertexFormat(VertexFormats.POSITION_COLOR_NORMAL, DrawMode.LINE_STRIP)
             .withCull(false)
