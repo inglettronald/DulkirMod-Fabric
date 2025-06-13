@@ -158,7 +158,6 @@ object Registrations {
         }
         HudLayerRegistrationCallback.EVENT.register { it ->
             it.attachLayerBefore(
-
                 IdentifiedLayer.CHAT,
                 IdentifiedLayer.of(Identifier.of("dulkir_hud"),
                     object : LayeredDrawer.Layer {

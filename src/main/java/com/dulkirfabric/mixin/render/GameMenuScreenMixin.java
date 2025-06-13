@@ -51,7 +51,9 @@ public abstract class GameMenuScreenMixin extends ScreenMixin {
 			locals = LocalCapture.CAPTURE_FAILEXCEPTION
 	)
 	private void initWidget(CallbackInfo ci, GridWidget gridWidget, GridWidget.Adder adder) {
-		adder.add(this.createButton(dulkir$buttonText, new DulkirConfig()::getScreen));
+		if (DulkirConfig.ConfigVars.getConfigOptions().getShowPauseMenuButton()) {
+			adder.add(this.createButton(dulkir$buttonText, new DulkirConfig()::getScreen));
+		}
 	}
 
 }

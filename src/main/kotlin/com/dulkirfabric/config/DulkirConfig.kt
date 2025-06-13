@@ -21,7 +21,6 @@ import com.dulkirfabric.util.render.AnimationPreset
 import com.dulkirfabric.util.render.HudElement
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.UseSerializers
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import me.shedaniel.clothconfig2.api.ConfigBuilder
 import moe.nea.jarvis.api.Point
@@ -51,6 +50,13 @@ class DulkirConfig {
         builder.setSavingRunnable(::saveConfig)
         val entryBuilder = builder.entryBuilder()
         val general = builder.getOrCreateCategory(Text.literal("General"))
+        general.addEntry(
+            entryBuilder.mkToggle(
+                Text.literal("Show Pause Menu Button"),
+                configOptions::showPauseMenuButton,
+                Text.literal("Provides a fast way to get to the config gui")
+            )
+        )
         general.addEntry(
             entryBuilder.mkToggle(
                 Text.literal("Inventory Scale Toggle"),
@@ -427,7 +433,8 @@ class DulkirConfig {
         var speedHud: Boolean = false,
         var speedBpsHud: Boolean = false,
         var pitchYawDisplay: Boolean = false,
-        var hideScoreboardNumbers: Boolean = false
+        var hideScoreboardNumbers: Boolean = false,
+        var showPauseMenuButton: Boolean = false
     )
 
     @Serializable
