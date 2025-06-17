@@ -9,7 +9,6 @@
     "io.KeyboardMixin",
     "io.MouseMixin",
     "io.SoundSystemMixin",
-    "render.StatusEffectsDisplayMixin",
     "render.DrawContextMixin",
     "render.GameMenuScreenMixin",
     "render.GameRendererMixin",
@@ -23,6 +22,7 @@
     "render.ParticleManagerMixin",
     "render.PerspectiveMixin",
     "render.ScreenMixin",
+    "render.StatusEffectsDisplayMixin",
     "render.WorldRendererMixin"
   ],
   "mixins": [

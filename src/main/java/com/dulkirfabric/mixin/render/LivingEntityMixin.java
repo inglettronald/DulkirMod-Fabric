@@ -2,8 +2,9 @@ package com.dulkirfabric.mixin.render;
 
 import com.dulkirfabric.config.DulkirConfig;
 import com.dulkirfabric.util.render.GlowingEntityInterface;
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.*;
 import net.minecraft.util.Hand;
+import net.minecraft.world.World;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
@@ -16,17 +17,21 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.awt.*;
 
 @Mixin(LivingEntity.class)
-public class LivingEntityMixin implements GlowingEntityInterface {
+public abstract class LivingEntityMixin extends Entity implements Attackable, GlowingEntityInterface {
 
     @Shadow
     public float handSwingProgress;
-    @Unique
-    private int animationTicks;
 
+    @Unique
+    private int dulkir$animationTicks;
     @Unique
     private boolean dulkir$shouldGlow;
     @Unique
     private Color dulkir$glowColor;
+
+    public LivingEntityMixin(EntityType<?> type, World world) {
+        super(type, world);
+    }
 
     @Override
     public void dulkir$setEntityGlow(boolean shouldGlow, @NotNull Color glowColor) {
@@ -46,33 +51,34 @@ public class LivingEntityMixin implements GlowingEntityInterface {
     }
 
     @Inject(
-            method = "tickMovement",
+            method = "tickHandSwing",
             at = @At(
-                    value = "INVOKE",
-                    target = "Lnet/minecraft/entity/LivingEntity;tickNewAi()V",
-                    shift = At.Shift.AFTER
+                    value = "TAIL"
             )
     )
-    public void modifySwingPos(CallbackInfo ci) {
-        if (DulkirConfig.ConfigVars.getConfigOptions().getAnimationPreset().getSwingDuration() == 6) {
+    private void dulkir$modifySwingPos(CallbackInfo ci) {
+        int swingDuration = DulkirConfig.ConfigVars.getConfigOptions().getAnimationPreset().getSwingDuration();
+        if (swingDuration == 6) {
             return;
         }
-        if (animationTicks > DulkirConfig.ConfigVars.getConfigOptions().getAnimationPreset().getSwingDuration()) {
-            animationTicks = 0;
+        if (dulkir$animationTicks > swingDuration) {
+            dulkir$animationTicks = 0;
         }
-        if (animationTicks == 0) {
+        if (dulkir$animationTicks == 0) {
             handSwingProgress = 1F;
         } else {
-            handSwingProgress = (animationTicks - 1F) /
-                    DulkirConfig.ConfigVars.getConfigOptions().getAnimationPreset().getSwingDuration();
-            animationTicks++;
+            handSwingProgress = (dulkir$animationTicks - 1F) / swingDuration;
+            dulkir$animationTicks++;
         }
     }
 
-    @Inject(method = "swingHand(Lnet/minecraft/util/Hand;Z)V", at = @At("HEAD"))
-    public void onSwing(Hand hand, boolean fromServerPlayer, CallbackInfo ci) {
-        if (animationTicks == 0) {
-            animationTicks = 1;
+    @Inject(
+            method = "swingHand(Lnet/minecraft/util/Hand;Z)V",
+            at = @At("HEAD")
+    )
+    public void dulkir$onSwing(Hand hand, boolean fromServerPlayer, CallbackInfo ci) {
+        if (dulkir$animationTicks == 0) {
+            dulkir$animationTicks = 1;
         }
     }
 }
