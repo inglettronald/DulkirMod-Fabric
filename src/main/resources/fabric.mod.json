@@ -18,11 +18,8 @@
 	"icon": "assets/dulkirmod-fabric/icon.png",
 	"environment": "client",
 	"entrypoints": {
-		"main": [
-			{
-				"value": "com.dulkirfabric.DulkirModFabric",
-				"adapter": "kotlin"
-			}
+		"client": [
+			"com.dulkirfabric.DulkirModFabric::onInitializeClient"
 		],
 		"jarvis": [
 			"com.dulkirfabric.util.JarvisIntegrationPlugin"

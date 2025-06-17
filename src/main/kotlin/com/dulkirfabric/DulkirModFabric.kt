@@ -16,22 +16,23 @@ package com.dulkirfabric
 import com.dulkirfabric.config.DulkirConfig
 import com.llamalad7.mixinextras.MixinExtrasBootstrap
 import meteordevelopment.orbit.EventBus
-import net.fabricmc.api.ModInitializer
 import net.minecraft.client.MinecraftClient
 import org.slf4j.LoggerFactory
+import org.spongepowered.asm.service.ServiceNotAvailableError
 import java.lang.invoke.MethodHandles
 
 
-object DulkirModFabric : ModInitializer {
+object DulkirModFabric {
     private val logger = LoggerFactory.getLogger("dulkirmod-fabric")
 	@JvmField
 	val EVENT_BUS = EventBus()
 	@JvmField
 	val mc: MinecraftClient = MinecraftClient.getInstance()
 
-	override fun onInitialize() {
-		logger.info("Initializing DulkirMod...")
 
+	@JvmStatic
+	fun onInitializeClient() {
+		logger.info("Initializing DulkirMod...")
 
 		// Orbit stuff
 		EVENT_BUS.registerLambdaFactory("com.dulkirfabric") { lookupInMethod, klass ->
@@ -39,13 +40,18 @@ object DulkirModFabric : ModInitializer {
 		}
 
 		// Mixin Extras
-		MixinExtrasBootstrap.init()
+		try {
+			MixinExtrasBootstrap.init()
+		} catch (ignored: ServiceNotAvailableError) {
+			println("MixinExtras init failure, user might be on lunar?")
+		}
 
 		Registrations.registerEventListeners()
 		Registrations.registerCommands()
 		Registrations.registerEvents()
 
 		DulkirConfig.loadConfig()
+
 	}
 
 }
