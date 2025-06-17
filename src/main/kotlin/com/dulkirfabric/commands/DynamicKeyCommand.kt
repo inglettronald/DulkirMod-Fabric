@@ -9,7 +9,9 @@ import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
 import net.minecraft.command.CommandRegistryAccess
 
 object DynamicKeyCommand {
+
     var command = ""
+
     fun register(dispatcher: CommandDispatcher<FabricClientCommandSource>, registryAccess: CommandRegistryAccess) {
         dispatcher.register(
             LiteralArgumentBuilder.literal<FabricClientCommandSource>("dk")

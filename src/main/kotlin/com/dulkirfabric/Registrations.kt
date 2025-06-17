@@ -51,22 +51,10 @@ object Registrations {
     private var tickCount: Int = 0
 
     fun registerCommands() {
+        println("Dulkirmod: registering commands")
         val cre = ClientCommandRegistrationCallback.EVENT
         cre.register(ConfigCommand::register)
-        cre.register(JoinDungeonCommands.F1Command::register)
-        cre.register(JoinDungeonCommands.F2Command::register)
-        cre.register(JoinDungeonCommands.F3Command::register)
-        cre.register(JoinDungeonCommands.F4Command::register)
-        cre.register(JoinDungeonCommands.F5Command::register)
-        cre.register(JoinDungeonCommands.F6Command::register)
-        cre.register(JoinDungeonCommands.F7Command::register)
-        cre.register(JoinDungeonCommands.M1Command::register)
-        cre.register(JoinDungeonCommands.M2Command::register)
-        cre.register(JoinDungeonCommands.M3Command::register)
-        cre.register(JoinDungeonCommands.M4Command::register)
-        cre.register(JoinDungeonCommands.M5Command::register)
-        cre.register(JoinDungeonCommands.M6Command::register)
-        cre.register(JoinDungeonCommands.M7Command::register)
+        JoinDungeonCommands.objects.forEach { it -> cre.register(it::register) }
         cre.register(DynamicKeyCommand::register)
         cre.register(AnimationCommand::register)
         if (FabricLoader.getInstance().isDevelopmentEnvironment)
@@ -174,9 +162,6 @@ object Registrations {
                 )
             )
         }
-        /*HudRenderCallback.EVENT.register { context, renderTickCounter ->
-            HudRenderEvent(context, renderTickCounter.getTickProgress(true)).post()
-        }*/
 
     }
 }
