@@ -80,7 +80,7 @@ object Registrations {
         EVENT_BUS.subscribe(SpeedOverlay)
         EVENT_BUS.subscribe(ActionBarUtil)
         EVENT_BUS.subscribe(ActionBarHudReplacements)
-        EVENT_BUS.subscribe(AotvHighlight)
+        EVENT_BUS.subscribe(EtherwarpHighlight)
         EVENT_BUS.subscribe(MiniBossHighlight)
         EVENT_BUS.subscribe(ScoreBoardUtils)
         EVENT_BUS.subscribe(HudRenderUtil)

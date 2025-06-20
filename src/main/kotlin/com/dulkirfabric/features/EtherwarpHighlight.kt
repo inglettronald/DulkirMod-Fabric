@@ -7,66 +7,77 @@ import com.dulkirfabric.events.LongUpdateEvent
 import com.dulkirfabric.events.WorldRenderLastEvent
 import com.dulkirfabric.util.TextUtils
 import com.dulkirfabric.util.Utils
+import com.dulkirfabric.util.Utils.getBlockAt
 import com.dulkirfabric.util.render.WorldRenderUtils
-import com.mojang.serialization.MapDecoder
 import meteordevelopment.orbit.EventHandler
-import net.minecraft.client.MinecraftClient
-import net.minecraft.client.util.InputUtil
-import net.minecraft.component.ComponentType
-import net.minecraft.component.DataComponentTypes
+import net.minecraft.block.AbstractPressurePlateBlock
+import net.minecraft.block.BlockState
 import net.minecraft.entity.Entity
+import net.minecraft.item.ItemStack
 import net.minecraft.util.hit.BlockHitResult
 import net.minecraft.util.hit.HitResult
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Vec3d
 import net.minecraft.world.RaycastContext
-import org.lwjgl.glfw.GLFW
 import java.awt.Color
 
-object AotvHighlight {
-    private var heldItemID = ""
+object EtherwarpHighlight {
+    private var holdingEtherwarp = false
 
     @EventHandler
     fun onTick(event: ClientTickEvent) {
-        heldItemID = getHeldItemID()
+        holdingEtherwarp = mc.player?.mainHandStack?.isEtherwarp() ?: false
     }
 
-    fun getHeldItemID(): String {
-        val stack = mc.player?.mainHandStack ?: return ""
-        val tag = Utils.getNbt(stack) ?: return ""
-        val id = tag.get("id") ?: return ""
-        return id.toString().trim('"')
+    private fun ItemStack.isEtherwarp(): Boolean {
+        val tag = Utils.getNbt(this) ?: return false
+        if (tag.getBoolean("ethermerge", false)) return true
+        val id = tag.getString("id")
+        return id.isPresent && id.get() == "ETHERWARP_CONDUIT"
     }
 
-    @EventHandler
+    /*@EventHandler
     fun onLong(event: LongUpdateEvent) {
-        //println(heldItemID)
-    }
+        //println(heldItemID)º
+    }*/
 
     @EventHandler
     fun onWorldRenderLast(event: WorldRenderLastEvent) {
         if (!DulkirConfig.configOptions.showEtherwarpPreview) return
-        // check that holding aotv
-        if (heldItemID != "ASPECT_OF_THE_VOID") return
-        val handle = MinecraftClient.getInstance().window.handle
-        if (!InputUtil.isKeyPressed(handle, GLFW.GLFW_KEY_LEFT_SHIFT) || mc.currentScreen != null) return
+        // check that holding etherwarp
+        if (!holdingEtherwarp) return
+        val player = mc.player ?: return
+        if (!player.isSneaking) return
 
         // Find the targeted block with a range of 60.9
         val entity = mc.cameraEntity
-        if (mc.player == null) return
         val blockHit = raycast(entity!!, 60.9, mc.renderTickCounter.getTickProgress(true))
         if (blockHit.type != HitResult.Type.BLOCK) return
         val pos: BlockPos = (blockHit as BlockHitResult).blockPos
-        if (!isValidTeleportLocation(pos)) return
+        val isValid = isValidTeleportLocation(pos)
+        val color = if (isValid) DulkirConfig.configOptions.etherwarpPreviewColor
+        else DulkirConfig.configOptions.etherwarpInvalidPreviewColor
 
         // if found display box
-        WorldRenderUtils.drawBox(event.context, pos.x.toDouble(), pos.y.toDouble(), pos.z.toDouble(), 1.0, 1.0, 1.0,
-            Color(DulkirConfig.configOptions.etherwarpPreviewColor, true), false)
+        WorldRenderUtils.drawBox(
+            event.context, pos.x.toDouble(), pos.y.toDouble(), pos.z.toDouble(), 1.0, 1.0, 1.0,
+            Color(color, true), false
+        )
     }
 
     private fun isValidTeleportLocation(pos: BlockPos): Boolean {
-        // TODO: Implement this (LOTS OF CASES, seems annoying)
-        return true
+        return !pos.isValidFeet() && pos.up().isValidFeet() && pos.up(2).isValidFeet()
+    }
+
+    @Suppress("DEPRECATION")
+    private fun BlockPos.isValidFeet(): Boolean = getBlockAt().let { it.overrideValidFeet() ?: !it.isSolid }
+
+    // Add blocks that dont follow the logic of isSolid for etherwarp to here
+    private fun BlockState.overrideValidFeet(): Boolean? {
+        return when (block) {
+            is AbstractPressurePlateBlock -> false
+            else -> null
+        }
     }
 
     private fun raycast(entity: Entity, maxDistance: Double, tickDelta: Float): HitResult {
