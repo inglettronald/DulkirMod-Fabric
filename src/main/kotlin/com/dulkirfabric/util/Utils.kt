@@ -1,5 +1,6 @@
 package com.dulkirfabric.util
 
+import com.dulkirfabric.DulkirModFabric.mc
 import com.dulkirfabric.events.PlaySoundEvent
 import com.dulkirfabric.events.SlayerBossEvents
 import com.dulkirfabric.events.WorldLoadEvent
@@ -11,6 +12,7 @@ import net.minecraft.entity.Entity
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NbtCompound
 import net.minecraft.nbt.NbtHelper
+import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Vec3d
 
 object Utils {
@@ -42,6 +44,8 @@ object Utils {
         val prevPos = Vec3d(this.lastX, this.lastY, this.lastZ)
         return lerp(prevPos, this.pos, tickDelta)
     }
+
+    fun BlockPos.getBlockAt() = mc.world!!.getBlockState(this)
 
     @EventHandler
     fun detectSlayerEvents(event: ChatEvents.AllowChat) {
