@@ -179,11 +179,20 @@ class DulkirConfig {
         )
         general.addEntry(
             entryBuilder.startAlphaColorField(
-                Text.literal("Etherwarp Preview Color"),
+                Text.literal("Etherwarp Valid Preview Color"),
                 configOptions.etherwarpPreviewColor
             )
                 .setDefaultValue(0x99FFFFFF.toInt())
                 .setSaveConsumer { newValue -> configOptions.etherwarpPreviewColor = newValue }
+                .build()
+        )
+        general.addEntry(
+            entryBuilder.startAlphaColorField(
+                Text.literal("Etherwarp Invalid Preview Color"),
+                0x99FF0000.toInt()
+            )
+                .setDefaultValue(0x99FF0000.toInt())
+                .setSaveConsumer { newValue -> configOptions.etherwarpInvalidPreviewColor = newValue }
                 .build()
         )
         general.addEntry(
@@ -412,6 +421,7 @@ class DulkirConfig {
         var hideHeldItemTooltip: Boolean = false,
         var showEtherwarpPreview: Boolean = true,
         var etherwarpPreviewColor: Int = 0x99FFFFFF.toInt(),
+        var etherwarpInvalidPreviewColor: Int = 0x99FF0000.toInt(),
         var announceMinis: Boolean = false,
         var boxMinis: Boolean = false,
         var attunementDisplay: Boolean = false,
