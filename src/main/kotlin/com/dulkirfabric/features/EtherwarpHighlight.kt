@@ -98,8 +98,4 @@ object EtherwarpHighlight {
             )
     }
 
-    private fun err(): Boolean {
-        TextUtils.info("§6Error in getting block info for AOTV highlight, please report.")
-        return true
-    }
 }

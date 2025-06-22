@@ -144,6 +144,7 @@ object Registrations {
         ServerWorldEvents.LOAD.register { server, world ->
             WorldLoadEvent(server, world).post()
         }
+
         HudLayerRegistrationCallback.EVENT.register { it ->
             it.attachLayerBefore(
                 IdentifiedLayer.CHAT,

@@ -1,7 +1,9 @@
 package com.dulkirfabric.features
 
+import com.dulkirfabric.DulkirModFabric
 import com.dulkirfabric.commands.DynamicKeyCommand
 import com.dulkirfabric.config.DulkirConfig
+import com.dulkirfabric.events.MousePressEvent
 import com.dulkirfabric.events.WorldKeyPressEvent
 import com.dulkirfabric.util.TextUtils
 import com.dulkirfabric.util.Utils
@@ -13,15 +15,26 @@ object KeyShortCutImpl {
 
     @EventHandler
     fun onKeyPress(event: WorldKeyPressEvent) {
+        handle(event.key)
+    }
+
+    @EventHandler
+    fun onMouse(event: MousePressEvent) {
+        val screen = DulkirModFabric.mc.currentScreen
+        if (screen != null) return
+        handle(event.code)
+    }
+
+    fun handle(code: Int) {
         if (DulkirConfig.configOptions.macrosSkyBlockOnly && !Utils.isInSkyblock()) return
         DulkirConfig.configOptions.macrosList.forEach {
-            if (it.keyBinding.code == event.key) {
+            if (it.keyBinding.code == code) {
                 // Spam Prevention
-                if (event.key == prevCode && System.currentTimeMillis() - lastCommandHandle < 1000)
+                if (code == prevCode && System.currentTimeMillis() - lastCommandHandle < 1000)
                     return
 
                 lastCommandHandle = System.currentTimeMillis()
-                prevCode = event.key
+                prevCode = code
 
                 // This conditional allows for these shortcuts to work for commands or normal messages
                 // You have to do it this way because the messages are handled differently on the client
@@ -34,11 +47,11 @@ object KeyShortCutImpl {
             }
         }
 
-        if (DulkirConfig.configOptions.dynamicKey.code == event.key) {
-            if (event.key == prevCode && System.currentTimeMillis() - lastCommandHandle < 1000)
+        if (DulkirConfig.configOptions.dynamicKey.code == code) {
+            if (code == prevCode && System.currentTimeMillis() - lastCommandHandle < 1000)
                 return
             lastCommandHandle = System.currentTimeMillis()
-            prevCode = event.key
+            prevCode = code
             TextUtils.sendCommand(DynamicKeyCommand.command.trimStart('/'))
         }
     }
