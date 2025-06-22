@@ -2,7 +2,9 @@ package com.dulkirfabric.features.filters
 
 import com.dulkirfabric.DulkirModFabric.mc
 import com.dulkirfabric.config.DulkirConfig
+import com.dulkirfabric.events.ClientTickEvent
 import com.dulkirfabric.events.WorldRenderLastEvent
+import com.dulkirfabric.util.TextUtils
 import meteordevelopment.orbit.EventHandler
 import net.minecraft.entity.decoration.ArmorStandEntity
 import net.minecraft.text.Text
@@ -10,12 +12,12 @@ import net.minecraft.text.Text
 object DamageNumbers {
 
     private val nonCritFormat = """^(\d{1,3}(,\d{3})*|\d+)$""".toRegex()
-    private val trimPattern = "[✧,❤]".toRegex()
+    private val trimPattern = "\\D".toRegex()
     private val critColorList = listOf(
         "§e", "§f", "§c", "§6"
     )
     @EventHandler
-    fun worldLast(event: WorldRenderLastEvent) {
+    fun worldLast(event: ClientTickEvent) {
         val ents = mc.world?.entities ?: return
         ents.forEach {
             if (it !is ArmorStandEntity) return@forEach
@@ -33,8 +35,14 @@ object DamageNumbers {
                     return@forEach
                 }
                 if (!DulkirConfig.configOptions.truncateDamage) return@forEach
-                val critAmount =  name.replace(trimPattern, "").toInt()
-                it.customName = Text.literal(truncate(critAmount).applyDulkirCritColors())
+                val s = name.replace(trimPattern, "")
+                try {
+                    val critAmount = s.toInt()
+                    it.customName = Text.literal(truncate(critAmount).applyDulkirCritColors())
+                } catch (e: NumberFormatException) {
+                    TextUtils.info("Error in Damage Truncation: $s", true)
+                    TextUtils.info("Please report this on my discord!", true)
+                }
             }
         }
     }

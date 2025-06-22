@@ -51,7 +51,6 @@ object Registrations {
     private var tickCount: Int = 0
 
     fun registerCommands() {
-        println("Dulkirmod: registering commands")
         val cre = ClientCommandRegistrationCallback.EVENT
         cre.register(ConfigCommand::register)
         JoinDungeonCommands.objects.forEach { it -> cre.register(it::register) }
