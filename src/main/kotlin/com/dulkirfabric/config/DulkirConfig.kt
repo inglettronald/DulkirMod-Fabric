@@ -189,16 +189,16 @@ class DulkirConfig {
                 Text.literal("Etherwarp Valid Preview Color"),
                 configOptions.etherwarpPreviewColor
             )
-                .setDefaultValue(0x99FFFFFF.toInt())
+                .setDefaultValue(0x8800FF00.toInt())
                 .setSaveConsumer { newValue -> configOptions.etherwarpPreviewColor = newValue }
                 .build()
         )
         general.addEntry(
             entryBuilder.startAlphaColorField(
                 Text.literal("Etherwarp Invalid Preview Color"),
-                0x99FF0000.toInt()
+                configOptions.etherwarpInvalidPreviewColor
             )
-                .setDefaultValue(0x99FF0000.toInt())
+                .setDefaultValue(0x88FF0000.toInt())
                 .setSaveConsumer { newValue -> configOptions.etherwarpInvalidPreviewColor = newValue }
                 .build()
         )
