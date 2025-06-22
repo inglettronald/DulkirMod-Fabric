@@ -39,6 +39,9 @@ public class DrawContextMixin {
     )
     public Vector2ic drawTooltip(TooltipPositioner positionerInstance, int sw, int sh, int mx, int my, int tw,
                                  int th, Operation<Vector2ic> operation) {
+        if (!DulkirConfig.ConfigVars.getConfigOptions().getToolTipFeatures()) {
+            return operation.call(positionerInstance, sw, sh, mx, my, tw, th);
+        }
         Screen screen = MinecraftClient.getInstance().currentScreen;
         if (!(screen instanceof HandledScreen)) {
             return operation.call(positionerInstance, sw, sh, mx, my, tw, th);
@@ -74,6 +77,9 @@ public class DrawContextMixin {
     )
     public void onPush(TextRenderer textRenderer, List<TooltipComponent> components, int x, int y,
                        TooltipPositioner positioner, Identifier texture, CallbackInfo ci) {
+        if (!DulkirConfig.ConfigVars.getConfigOptions().getToolTipFeatures()) {
+            return;
+        }
         if (MinecraftClient.getInstance().currentScreen instanceof HandledScreen) {
             TooltipImpl.INSTANCE.applyScale(matrices);
         }

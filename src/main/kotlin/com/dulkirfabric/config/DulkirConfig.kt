@@ -73,6 +73,13 @@ class DulkirConfig {
                 .build()
         )
         general.addEntry(
+            entryBuilder.mkToggle(
+                Text.literal("Scrollable/Scalable Tooltips"),
+                configOptions::toolTipFeatures,
+                Text.literal("Feature to help viewing large/long item lore.")
+            )
+        )
+        general.addEntry(
             entryBuilder.startFloatField(Text.literal("Tooltip Scale"), configOptions.tooltipScale)
                 .setTooltip(Text.literal("Default Value for Scaling a particular tooltip without scroll input"))
                 .setSaveConsumer { newValue -> configOptions.tooltipScale = newValue }
@@ -401,6 +408,7 @@ class DulkirConfig {
         var blockOutlineColor: Int = 0xFFFFFF,
         var abiPhoneDND: Boolean = false,
         var abiPhoneCallerID: Boolean = false,
+        var toolTipFeatures: Boolean = false,
         var tooltipScale: Float = 1f,
         var statusEffectHidden: Boolean = false,
         var inactiveEffigyDisplay: Boolean = false,

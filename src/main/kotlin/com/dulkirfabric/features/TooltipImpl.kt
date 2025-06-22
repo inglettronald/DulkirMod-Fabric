@@ -53,6 +53,7 @@ object TooltipImpl {
 
     @EventHandler
     fun onTick(event: ClientTickEvent) {
+        if (!DulkirConfig.configOptions.toolTipFeatures) return
         // flushes the buffer to a scroll amount this tick, will be interpolated in calculatePos
         prevTickX = tickHorizontal
         prevTickY = tickVertical
@@ -64,6 +65,7 @@ object TooltipImpl {
 
     @EventHandler
     fun onScroll(event: MouseScrollEvent) {
+        if (!DulkirConfig.configOptions.toolTipFeatures) return
         // TODO: ignore input in config screen
         if (event.verticalScrollAmount == 0.0) return
         val handle = MinecraftClient.getInstance().window.handle
@@ -78,6 +80,7 @@ object TooltipImpl {
 
     @EventHandler
     fun onChange(event: TooltipRenderChangeEvent) {
+        if (!DulkirConfig.configOptions.toolTipFeatures) return
         scaleBuffer = DulkirConfig.configOptions.tooltipScale
         horizontalBuffer = 0.0
         verticalBuffer = 0.0
