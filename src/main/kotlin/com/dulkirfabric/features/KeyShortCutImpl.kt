@@ -22,6 +22,7 @@ object KeyShortCutImpl {
     fun onMouse(event: MousePressEvent) {
         val screen = DulkirModFabric.mc.currentScreen
         if (screen != null) return
+        if (event.code == 0) return // todo hackfix for keybinding issue
         handle(event.code)
     }
 
