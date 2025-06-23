@@ -158,14 +158,10 @@ object WorldRenderUtils {
         text: Text,
         context: WorldRenderContext,
         pos: Vec3d,
-        depthTest: Boolean = true,
+        depthTest: Boolean = true, // TODO
         scale: Float = 1f
     ) {
-        val layer = if (depthTest) {
-            DulkirRenderLayer.DULKIR_TEXT
-        } else {
-            DulkirRenderLayer.DULKIR_TEXT_ESP
-        }
+        val layer = DulkirRenderLayer.DULKIR_QUADS_ESP
 
         // Minecraft vertex consumer because we still hook into their renderer and do immediate text rendering
         val vertexConsumer = context.worldRenderer().bufferBuilders.entityVertexConsumers
@@ -196,16 +192,15 @@ object WorldRenderUtils {
             .light(LightmapTextureManager.MAX_BLOCK_LIGHT_COORDINATE)
 
         matrices.translate(0F, 0F, 0.01F)
-
+        layer.draw(buf.end())
+        RenderSystem.setShaderColor(1F, 1F, 1F, 1F)
         textRenderer.draw(
             text, -textRenderer.getWidth(text).toFloat() / 2, 0f, 0xFFFFFF, false, matrix4f, vertexConsumer,
             TextRenderer.TextLayerType.SEE_THROUGH,
             0, LightmapTextureManager.MAX_LIGHT_COORDINATE
         )
-        layer.draw(buf.end())
         vertexConsumer.drawCurrentLayer()
         matrices.pop()
-        RenderSystem.setShaderColor(1F, 1F, 1F, 1F)
     }
 
     fun renderWaypoint(
@@ -214,7 +209,7 @@ object WorldRenderUtils {
         pos: Vec3d,
     )
     {
-        val layer = DulkirRenderLayer.DULKIR_TEXT_ESP;
+        val layer = DulkirRenderLayer.DULKIR_QUADS_ESP
         val d: Double = pos.distanceTo(MinecraftClient.getInstance().player?.pos)
         val distText = Text.literal(d.toInt().toString() + "m").setStyle(Style.EMPTY.withColor(Formatting.YELLOW))
         val matrices = context.matrixStack() ?: return
@@ -261,7 +256,9 @@ object WorldRenderUtils {
             .light(LightmapTextureManager.MAX_BLOCK_LIGHT_COORDINATE)
 
         matrices.translate(0F, 0F, 0.01F)
+        layer.draw(buf.end())
 
+        RenderSystem.setShaderColor(1F, 1F, 1F, 1F)
         textRenderer.draw(
             text, -textRenderer.getWidth(text).toFloat() / 2, 0f, 0xFFFFFF, false, matrix4f, vertexConsumer,
             TextRenderer.TextLayerType.SEE_THROUGH,
@@ -273,10 +270,9 @@ object WorldRenderUtils {
             TextRenderer.TextLayerType.SEE_THROUGH,
             0, LightmapTextureManager.MAX_LIGHT_COORDINATE
         )
-        layer.draw(buf.end())
-        vertexConsumer.drawCurrentLayer()
+        vertexConsumer.draw()
+
         matrices.pop()
-        RenderSystem.setShaderColor(1F, 1F, 1F, 1F)
     }
 
     /**

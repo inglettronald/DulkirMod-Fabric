@@ -92,5 +92,16 @@ object DulkirRenderPipelines {
             .build()
     );
 
+    val DULKIR_QUADS_ESP: RenderPipeline = RenderPipelines.register(
+        RenderPipeline.builder(*arrayOf<RenderPipeline.Snippet?>(RenderPipelines.POSITION_COLOR_SNIPPET))
+            .withLocation("pipeline/debug_quads")
+            .withCull(false)
+            .withVertexFormat(VertexFormats.POSITION_COLOR, DrawMode.QUADS)
+            .withDepthWrite(false)
+            .withDepthTestFunction(DepthTestFunction.NO_DEPTH_TEST)
+            .withBlend(BlendFunction.TRANSLUCENT)
+            .build()
+    );
+
 
 }

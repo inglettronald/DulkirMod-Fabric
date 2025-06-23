@@ -58,6 +58,15 @@ object DulkirRenderLayer {
         RenderLayer.MultiPhaseParameters.Builder().build(false)
     )
 
+    val DULKIR_QUADS_ESP: MultiPhase = RenderLayer.of(
+        "dulkir_quads",
+        1536,
+        false,
+        true,
+        DulkirRenderPipelines.DULKIR_QUADS_ESP,
+        RenderLayer.MultiPhaseParameters.Builder().build(false)
+    )
+
     val LAYERS: Set<RenderLayer> = setOf(
         DULKIR_LINES,
         DULKIR_LINES_ESP,
