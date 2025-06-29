@@ -2,7 +2,12 @@ package com.dulkirfabric.mixin.render;
 
 import com.dulkirfabric.config.DulkirConfig;
 import com.dulkirfabric.util.render.GlowingEntityInterface;
-import net.minecraft.entity.*;
+import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import net.minecraft.entity.Attackable;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.Hand;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.NotNull;
@@ -50,13 +55,14 @@ public abstract class LivingEntityMixin extends Entity implements Attackable, Gl
         return dulkir$glowColor;
     }
 
-    @Inject(
-            method = "tickHandSwing",
-            at = @At(
-                    value = "TAIL"
-            )
+    /**
+     * Using a wrapMethod because another mod tries to cancel this
+     */
+    @WrapMethod(
+            method = "tickHandSwing"
     )
-    private void dulkir$modifySwingPos(CallbackInfo ci) {
+    private void dulkir$modifySwingPos(Operation<Void> original) {
+        original.call();
         int swingDuration = DulkirConfig.ConfigVars.getConfigOptions().getAnimationPreset().getSwingDuration();
         if (swingDuration == 6) {
             return;
