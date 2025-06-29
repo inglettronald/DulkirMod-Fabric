@@ -8,7 +8,8 @@ import net.minecraft.text.Style
 import net.minecraft.text.Text
 
 object BridgeBotFormatter {
-    private val bridgeRegex: Regex = "^(§2Guild|§3Officer) > (?:\\S+ )?([\\w§]{3,18})(?: §[a-z0-9][[A-Z]+])?§f: ([^>]+)(?: >| »|:) (.+)".toRegex()
+    private val bridgeRegex: Regex =
+        "^(?:§r|)(§2Guild|§3Officer) > (?:\\S+ )?([\\w§]{3,18})(?: §[a-z0-9]\\[[\\w]+])?§f: ([^»>:]+)( » | > |: ).+".toRegex()
 
     @EventHandler
     fun onChat(event: ChatEvents.ModifyChat) {
