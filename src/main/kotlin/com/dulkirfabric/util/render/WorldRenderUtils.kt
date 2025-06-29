@@ -173,7 +173,7 @@ object WorldRenderUtils {
             pos.z - context.camera().pos.z
         )
         matrices.multiply(context.camera().rotation)
-        matrices.scale(-.025f * scale, -.025f * scale, -1F)
+        matrices.scale(.025f * scale, -.025f * scale, 1F)
         val matrix4f = matrices.peek().positionMatrix
         val textRenderer = MinecraftClient.getInstance().textRenderer
         val j: Int = (.25 * 255.0f).toInt() shl 24
@@ -234,9 +234,9 @@ object WorldRenderUtils {
         matrices.multiply(context.camera().rotation)
         val scale = max(d.toFloat() / 7f, 1f)
         if (magnitude < 20) {
-            matrices.scale(-.025f * scale, -.025f * scale, -1F)
+            matrices.scale(.025f * scale, -.025f * scale, 1F)
         } else {
-            matrices.scale(-.025f * 20 / 7f, -.025f * 20 / 7f, -.1F)
+            matrices.scale(.025f * 20 / 7f, -.025f * 20 / 7f, .1F)
         }
         val matrix4f = matrices.peek().positionMatrix
         val textRenderer = MinecraftClient.getInstance().textRenderer
