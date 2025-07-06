@@ -5,10 +5,9 @@ import com.dulkirfabric.config.DulkirConfig
 import com.dulkirfabric.events.ClientTickEvent
 import com.dulkirfabric.events.HudRenderEvent
 import com.dulkirfabric.util.TablistUtils
+import com.dulkirfabric.util.Utils
 import meteordevelopment.orbit.EventHandler
 import moe.nea.jarvis.api.Point
-import net.fabricmc.loader.impl.lib.sat4j.core.Vec
-import net.minecraft.text.Style
 import net.minecraft.text.Text
 import net.minecraft.util.math.Vec3d
 
@@ -23,6 +22,7 @@ object SpeedOverlay {
 
     @EventHandler
     fun onHudRender(event: HudRenderEvent) {
+        if (!Utils.isInSkyblock()) return
         val context = event.context
         val matrices = context.matrices
         if (DulkirConfig.configOptions.speedHud) {
