@@ -31,6 +31,7 @@ object Demonlord {
 
     @EventHandler
     fun attunementHighlight(event: WorldRenderLastEvent) {
+        if (!DulkirConfig.configOptions.attunementDisplay) return
         if (TablistUtils.persistentInfo.area != "Crimson Isle") return
         val ents = mc.world?.entities ?: return
         ents.forEach { ent ->
