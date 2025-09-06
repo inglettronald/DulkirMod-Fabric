@@ -24,7 +24,7 @@ object VisitorAlert {
 
     @EventHandler
     private fun onLong(event: LongUpdateEvent) {
-        if (TablistUtils.persistentInfo.area != "Garden") return
+        if (!DulkirConfig.configOptions.visitorAlert || TablistUtils.persistentInfo.area != "Garden") return
         if (TablistUtils.persistentInfo.nextVisitorTime == "Queue Full!") {
             if (DulkirConfig.configOptions.persistentVisitorAlert) {
                 HudRenderUtil.drawTitle(
