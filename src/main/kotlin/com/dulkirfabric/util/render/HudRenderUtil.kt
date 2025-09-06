@@ -17,11 +17,11 @@ object HudRenderUtil {
         val tr = mc.textRenderer
         val w = tr.getWidth(content)
         val sf: Float = mc.window.scaledWidth / w.toFloat() / 3
-        matrices.push()
-        matrices.translate(mc.window.scaledWidth / 3f, mc.window.scaledHeight / 2f, 0f)
-        matrices.scale(sf, sf, 1f)
+        matrices.pushMatrix()
+        matrices.translate(mc.window.scaledWidth / 3f, mc.window.scaledHeight / 2f)
+        matrices.scale(sf, sf)
         context.drawText(tr, content, 0, -tr.fontHeight / 2, -1, true)
-        matrices.pop()
+        matrices.popMatrix()
     }
 
     fun drawTitle(content: Text, duration: Duration) {

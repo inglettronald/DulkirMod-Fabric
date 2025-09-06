@@ -7,15 +7,15 @@ import com.dulkirfabric.events.HudRenderEvent
 import com.dulkirfabric.util.TablistUtils
 import com.dulkirfabric.util.Utils
 import meteordevelopment.orbit.EventHandler
-import moe.nea.jarvis.api.Point
 import net.minecraft.text.Text
 import net.minecraft.util.math.Vec3d
+import org.joml.Vector2i
 
 object SpeedOverlay {
-    private val speedHud = DulkirConfig.hudElement("SpeedHud", Text.literal("Speed"), 24 + 4, 11,
-        Point(0.028240898890913812, 0.9857798862704453), 1.6367052f)
-    private val bpsOverlay = DulkirConfig.hudElement("MovementHud", Text.literal("Speed (BPS)"), 69, 11,
-        Point(0.020240898890, 0.9857798862704453), 1.5052f)
+    private val speedHud = DulkirConfig.registerHud("SpeedHud", Text.literal("Speed"), 24 + 4, 11,
+        Vector2i(0,0), 1.6367052f)
+    private val bpsOverlay = DulkirConfig.registerHud("MovementHud", Text.literal("Speed (BPS)"), 69, 11,
+        Vector2i(0,0), 1.5052f)
 
 
     private var tickMomentum = 0.0
@@ -26,16 +26,16 @@ object SpeedOverlay {
         val context = event.context
         val matrices = context.matrices
         if (DulkirConfig.configOptions.speedHud) {
-            matrices.push()
+            matrices.pushMatrix()
             speedHud.applyTransformations(matrices)
             context.drawText(mc.textRenderer, Text.literal(TablistUtils.persistentInfo.speed),0, 1, -1, true)
-            matrices.pop()
+            matrices.popMatrix()
         }
         if (DulkirConfig.configOptions.speedBpsHud) {
-            matrices.push()
+            matrices.pushMatrix()
             bpsOverlay.applyTransformations(matrices)
             context.drawText(mc.textRenderer, Text.literal("${"%.2f".format(tickMomentum)} BPS (speed)"),0, 1, -1, true)
-            matrices.pop()
+            matrices.popMatrix()
         }
     }
 

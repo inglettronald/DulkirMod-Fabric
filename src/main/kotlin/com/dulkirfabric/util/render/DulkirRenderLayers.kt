@@ -1,46 +1,46 @@
 package com.dulkirfabric.util.render
 
-import net.minecraft.client.gl.RenderPipelines
 import net.minecraft.client.render.RenderLayer
 import net.minecraft.client.render.RenderLayer.MultiPhase
 import net.minecraft.client.render.RenderPhase
 
-object DulkirRenderLayer {
-    val DULKIR_LINES: RenderLayer = RenderLayer.of(
+object DulkirRenderLayers {
+
+    val DULKIR_LINES: MultiPhase = RenderLayer.of(
         "dulkir-lines",
-        1536,
+        RenderLayer.DEFAULT_BUFFER_SIZE,
         DulkirRenderPipelines.DULKIR_LINES,
         RenderLayer.MultiPhaseParameters.Builder()
             .layering(RenderPhase.VIEW_OFFSET_Z_LAYERING)
             .build(false)
     )
 
-    val DULKIR_LINES_ESP: RenderLayer = RenderLayer.of(
+    val DULKIR_LINES_ESP: MultiPhase = RenderLayer.of(
         "dulkir-lines-esp",
-        1536,
+        RenderLayer.DEFAULT_BUFFER_SIZE,
         DulkirRenderPipelines.DULKIR_LINES_ESP,
         RenderLayer.MultiPhaseParameters.Builder().build(false)
     )
 
-    val DULKIR_TEXT: RenderLayer = RenderLayer.of(
+    val DULKIR_TEXT: MultiPhase = RenderLayer.of(
         "dulkir-text",
-        1536,
+        RenderLayer.DEFAULT_BUFFER_SIZE,
         DulkirRenderPipelines.DULKIR_TEXT,
         RenderLayer.MultiPhaseParameters.Builder()
             .layering(RenderPhase.VIEW_OFFSET_Z_LAYERING)
             .build(false)
     )
 
-    val DULKIR_TEXT_ESP: RenderLayer = RenderLayer.of(
+    val DULKIR_TEXT_ESP: MultiPhase = RenderLayer.of(
         "dulkir_text_esp",
-        1536,
+        RenderLayer.DEFAULT_BUFFER_SIZE,
         DulkirRenderPipelines.DULKIR_TEXT_ESP,
         RenderLayer.MultiPhaseParameters.Builder().build(false)
     )
 
     val DULKIR_TRIANGLE_STRIP: MultiPhase = RenderLayer.of(
         "dulkir_triangle_strip",
-        1536,
+        RenderLayer.DEFAULT_BUFFER_SIZE,
         false,
         true,
         DulkirRenderPipelines.DULKIR_TRIANGLE_STRIP,
@@ -51,7 +51,7 @@ object DulkirRenderLayer {
 
     val DULKIR_TRIANGLE_STRIP_ESP: MultiPhase = RenderLayer.of(
         "dulkir_triangle_strip",
-        1536,
+        RenderLayer.DEFAULT_BUFFER_SIZE,
         false,
         true,
         DulkirRenderPipelines.DULKIR_TRIANGLE_STRIP_ESP,
@@ -60,7 +60,7 @@ object DulkirRenderLayer {
 
     val DULKIR_QUADS_ESP: MultiPhase = RenderLayer.of(
         "dulkir_quads",
-        1536,
+        RenderLayer.DEFAULT_BUFFER_SIZE,
         false,
         true,
         DulkirRenderPipelines.DULKIR_QUADS_ESP,

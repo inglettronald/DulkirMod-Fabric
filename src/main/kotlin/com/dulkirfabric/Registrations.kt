@@ -23,22 +23,21 @@ import com.dulkirfabric.util.ActionBarUtil
 import com.dulkirfabric.util.ScoreBoardUtils
 import com.dulkirfabric.util.TablistUtils
 import com.dulkirfabric.util.Utils
-import com.dulkirfabric.util.render.DulkirRenderLayer
+import com.dulkirfabric.util.render.DulkirRenderLayers
 import com.dulkirfabric.util.render.HudRenderUtil
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityEvents
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents
 import net.fabricmc.fabric.api.client.message.v1.ClientSendMessageEvents
-import net.fabricmc.fabric.api.client.rendering.v1.HudLayerRegistrationCallback
-import net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents
+import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElement
+import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents
 import net.fabricmc.fabric.api.client.screen.v1.ScreenMouseEvents
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents
 import net.fabricmc.loader.api.FabricLoader
 import net.minecraft.client.gui.DrawContext
-import net.minecraft.client.gui.LayeredDrawer
 import net.minecraft.client.render.RenderTickCounter
 import net.minecraft.util.Identifier
 
@@ -120,9 +119,9 @@ object Registrations {
         }
 
         WorldRenderEvents.LAST.register { context ->
-            DulkirRenderLayer.LAYERS.forEach { it -> it.startDrawing() }
+            DulkirRenderLayers.LAYERS.forEach { it -> it.startDrawing() }
             WorldRenderLastEvent(context).post()
-            DulkirRenderLayer.LAYERS.forEach { it -> it.endDrawing() }
+            DulkirRenderLayers.LAYERS.forEach { it -> it.endDrawing() }
         }
 
         ScreenEvents.BEFORE_INIT.register(
@@ -144,24 +143,19 @@ object Registrations {
             WorldLoadEvent(server, world).post()
         }
 
-        HudLayerRegistrationCallback.EVENT.register { it ->
-            it.attachLayerBefore(
-                IdentifiedLayer.CHAT,
-                IdentifiedLayer.of(Identifier.of("dulkir_hud"),
-                    object : LayeredDrawer.Layer {
-                        override fun render(
-                            context: DrawContext?,
-                            tickCounter: RenderTickCounter?
-                        ) {
-                            if (context == null || tickCounter == null) {
-                                return;
-                            }
-                            HudRenderEvent(context, tickCounter.getTickProgress(true)).post()
-                        }
-                    }
-                )
-            )
+        val id = Identifier.of("dulkir_hud");
+        val element = object : HudElement {
+            override fun render(
+                context: DrawContext?,
+                tickCounter: RenderTickCounter?
+            ) {
+                if (context == null || tickCounter == null) {
+                    return;
+                }
+                HudRenderEvent(context, tickCounter.getTickProgress(true)).post()
+            }
         }
+        HudElementRegistry.addLast(id, element)
 
     }
 }

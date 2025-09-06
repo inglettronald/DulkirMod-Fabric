@@ -6,11 +6,11 @@ import net.minecraft.client.util.BufferAllocator
 
 object RenderUtil {
 
-    fun getBufferFor(layer: RenderLayer): BufferBuilder {
+    fun getBufferFor(multiphase: RenderLayer.MultiPhase): BufferBuilder {
         return BufferBuilder(
-            BufferAllocator(layer.expectedBufferSize),
-            layer.pipeline.vertexFormatMode,
-            layer.pipeline.vertexFormat
+            BufferAllocator(multiphase.expectedBufferSize),
+            multiphase.drawMode,
+            multiphase.vertexFormat
         )
     }
 

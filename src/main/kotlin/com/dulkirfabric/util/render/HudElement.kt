@@ -1,58 +1,69 @@
 package com.dulkirfabric.util.render
 
+import com.dulkirfabric.hud.JarvisIntegration
 import kotlinx.serialization.Serializable
 import moe.nea.jarvis.api.JarvisHud
-import moe.nea.jarvis.api.JarvisScalable
 import net.minecraft.text.Text
+import net.minecraft.util.Identifier
+import org.joml.Matrix3x2f
+import org.joml.Vector2i
+import org.joml.Vector2ic
 
-class HudElement (var positioning: Positioning,
-                  val key: String,
+class HudElement (var meta: HudMeta,
+                  val identifier: Identifier,
                   private val label: Text,
                   private val width: Int,
                   private val height: Int
-    ): JarvisHud, JarvisScalable {
+    ): JarvisHud, JarvisHud.Scalable {
 
-    @Serializable
-    data class Positioning(
-        var x: Double,
-        var y: Double,
-        var scale: Float
-    )
-
-    override fun getX(): Double {
-        return positioning.x
+    override fun getHudId(): net.minecraft.class_2960 {
+        return this.identifier;
     }
 
-    override fun setX(newX: Double) {
-        positioning.x = newX
+    override fun getPosition(): Vector2ic {
+        return this.meta.position
     }
 
-    override fun getY(): Double {
-        return positioning.y
+    override fun setPosition(position: Vector2ic?) {
+        this.meta.position = position ?: Vector2i(0, 0)
     }
 
-    override fun setY(newY: Double) {
-        positioning.y = newY
+    override fun isEnabled(): Boolean {
+        return true
     }
 
-    override fun getLabel(): Text {
-        return label
+    override fun isVisible(): Boolean {
+        return true
     }
 
-    override fun getWidth(): Int {
-        return width
+    override fun getUnscaledWidth(): Int {
+        return this.width
     }
 
-    override fun getHeight(): Int {
-        return height
+    override fun getUnscaledHeight(): Int {
+        return this.height
+    }
+
+    override fun getLabel(): net.minecraft.class_2561 {
+        return this.label
     }
 
     override fun getScale(): Float {
-        return positioning.scale
+        return this.meta.scale
     }
 
-    override fun setScale(newScale: Float) {
-        positioning.scale = newScale
+    override fun setScale(scale: Float) {
+        this.meta.scale = scale
+    }
+
+    @Serializable
+    data class HudMeta(
+        var position: Vector2ic,
+        var scale: Float
+    )
+
+    fun applyTransformations(matrices: Matrix3x2f?) {
+        applyTransformations(JarvisIntegration.jarvis, matrices)
     }
 
 }

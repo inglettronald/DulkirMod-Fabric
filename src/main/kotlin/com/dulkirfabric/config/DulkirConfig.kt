@@ -23,7 +23,6 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.UseSerializers
 import kotlinx.serialization.json.Json
 import me.shedaniel.clothconfig2.api.ConfigBuilder
-import moe.nea.jarvis.api.Point
 import net.minecraft.client.gui.screen.Screen
 import net.minecraft.client.util.InputUtil.Key
 import net.minecraft.client.util.InputUtil.UNKNOWN_KEY
@@ -33,6 +32,7 @@ import net.minecraft.text.Text
 import net.minecraft.text.TextColor
 import net.minecraft.util.Formatting
 import net.minecraft.util.Identifier
+import org.joml.Vector2i
 import java.io.File
 
 class DulkirConfig {
@@ -423,7 +423,7 @@ class DulkirConfig {
         var bridgeFormatter: Boolean = false,
         var bridgeBotName: String = "Dilkur",
         var bridgeNameColor: Int = Formatting.GOLD.colorValue!!,
-        val positions: MutableMap<String, HudElement.Positioning> = mutableMapOf(),
+        val positions: MutableMap<String, HudElement.HudMeta> = mutableMapOf(),
         var hudifyActionBar: Boolean = false,
         var showEHP: Boolean = false,
         var hideHeldItemTooltip: Boolean = false,
@@ -474,17 +474,17 @@ class DulkirConfig {
 
         var configOptions = ConfigOptions()
 
-        val huds = mutableListOf<Triple<HudElement, Point, Float>>()
+        val huds = mutableListOf<Triple<HudElement, Vector2i, Float>>()
 
-        fun hudElement(
+        fun registerHud(
             id: String, label: Text, width: Int, height: Int,
-            defaultPosition: Point, scale: Float = 1f
+            defaultPosition: Vector2i, scale: Float = 1f
         ): HudElement {
             val element = HudElement(
                 configOptions.positions.getOrPut(
                     id
-                ) { HudElement.Positioning(defaultPosition.x(), defaultPosition.y(), scale) },
-                id,
+                ) { HudElement.HudMeta(defaultPosition, scale) },
+                Identifier.of("dulkir:${id}"),
                 label, width, height,
             )
             huds.add(Triple(element, defaultPosition, scale))
@@ -519,9 +519,9 @@ class DulkirConfig {
                 configOptions = json.decodeFromString<ConfigOptions>(configFile.readText())
             }
             huds.forEach { (element, defaultPosition, scale) ->
-                element.positioning = configOptions.positions.getOrPut(
-                    element.key
-                ) { HudElement.Positioning(defaultPosition.x(), defaultPosition.y(), scale) }
+                element.meta = configOptions.positions.getOrPut(
+                    element.identifier.path
+                ) { HudElement.HudMeta(defaultPosition, scale) }
             }
         }
     }

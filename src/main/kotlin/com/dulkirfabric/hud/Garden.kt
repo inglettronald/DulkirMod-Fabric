@@ -5,18 +5,18 @@ import com.dulkirfabric.config.DulkirConfig
 import com.dulkirfabric.events.HudRenderEvent
 import com.dulkirfabric.util.TablistUtils.persistentInfo
 import meteordevelopment.orbit.EventHandler
-import moe.nea.jarvis.api.Point
 import net.minecraft.text.Style
 import net.minecraft.text.Text
 import net.minecraft.util.Formatting
+import org.joml.Vector2i
 
 object Garden {
-    private val visitorHud = DulkirConfig.hudElement("visitors", Text.literal("Visitors"), 100, 21,
-        Point(0.4056462738575835, 0.055456899963360104),1.101687f)
-    private val composterHud = DulkirConfig.hudElement("composter", Text.literal("Composter"), 100, 21,
-        Point(0.027783937063393563, 0.10514400299398007),0.9619154f)
-    private val pitchYawHud = DulkirConfig.hudElement("pitch/yaw", Text.literal("Pitch/Yaw"), 100, 21,
-        Point(0.027783937063393563, 0.15514400299398007),0.9619154f)
+    private val visitorHud = DulkirConfig.registerHud("visitors", Text.literal("Visitors"), 100, 21,
+        Vector2i(0, 0), 1.101687f)
+    private val composterHud = DulkirConfig.registerHud("composter", Text.literal("Composter"), 100, 21,
+        Vector2i(0, 0), 0.9619154f)
+    private val pitchYawHud = DulkirConfig.registerHud("pitch/yaw", Text.literal("Pitch/Yaw"), 100, 21,
+        Vector2i(0, 0), 0.9619154f)
 
     @EventHandler
     fun onHudRender(event: HudRenderEvent) {
@@ -24,7 +24,7 @@ object Garden {
         val context = event.context
         val matrices = context.matrices
         if (DulkirConfig.configOptions.visitorHud) {
-            matrices.push()
+            matrices.pushMatrix()
             visitorHud.applyTransformations(matrices)
 
             val visitorText = Text.literal("Visitors: ")
@@ -37,10 +37,10 @@ object Garden {
                 .append(Text.literal(persistentInfo.nextVisitorTime)
                     .setStyle(Style.EMPTY.withColor(Formatting.GRAY)))
             context.drawText(mc.textRenderer, nextVisitor,3, 11, -1, true)
-            matrices.pop()
+            matrices.popMatrix()
         }
         if (DulkirConfig.configOptions.showComposterInfo) {
-            matrices.push()
+            matrices.pushMatrix()
             composterHud.applyTransformations(matrices)
 
             val composterText = Text.literal("Composter Time: ")
@@ -48,7 +48,7 @@ object Garden {
                 .append(Text.literal(persistentInfo.compostTime)
                     .setStyle(Style.EMPTY.withColor(Formatting.GRAY)))
             context.drawText(mc.textRenderer, composterText,0, 1, -1, true)
-            matrices.pop()
+            matrices.popMatrix()
         }
         var yaw = mc.player?.yaw ?: return
         val pitch = mc.player?.pitch ?: return
@@ -60,7 +60,7 @@ object Garden {
         }
 
         if (DulkirConfig.configOptions.pitchYawDisplay) {
-            matrices.push()
+            matrices.pushMatrix()
             pitchYawHud.applyTransformations(matrices)
 
             val yawText = Text.literal("Yaw: ")
@@ -73,7 +73,7 @@ object Garden {
                 .append(Text.literal("%.2f".format(pitch))
                     .setStyle(Style.EMPTY.withColor(Formatting.GRAY)))
             context.drawText(mc.textRenderer, pitchText,0, 13, -1, true)
-            matrices.pop()
+            matrices.popMatrix()
         }
     }
 }

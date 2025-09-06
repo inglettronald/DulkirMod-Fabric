@@ -28,6 +28,7 @@ object DulkirModFabric {
 	val EVENT_BUS = EventBus()
 	@JvmField
 	val mc: MinecraftClient = MinecraftClient.getInstance()
+	val modId = "dulkir"
 
 
 	@JvmStatic
