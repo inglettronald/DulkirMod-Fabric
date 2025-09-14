@@ -9,6 +9,7 @@ import meteordevelopment.orbit.EventHandler
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.util.InputUtil
 import net.minecraft.client.util.math.MatrixStack
+import org.joml.Matrix3x2fStack
 import org.joml.Vector2i
 import org.joml.Vector2ic
 import org.lwjgl.glfw.GLFW
@@ -46,9 +47,9 @@ object TooltipImpl {
         return Vector2i(0,0)
     }
 
-    fun applyScale(matrices: MatrixStack) {
-        matrices.translate(frameX.toFloat(), frameY.toFloat(), 0f)
-        matrices.scale(frameScale, frameScale, 1f)
+    fun applyScale(matrices: Matrix3x2fStack) {
+        matrices.translate(frameX.toFloat(), frameY.toFloat())
+        matrices.scale(frameScale, frameScale)
     }
 
     @EventHandler

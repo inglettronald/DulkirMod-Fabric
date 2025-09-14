@@ -10,13 +10,13 @@ import net.minecraft.text.Text
 import org.joml.Vector2i
 
 object ActionBarHudReplacements {
-    private val hpHud = DulkirConfig.registerHud("hpHud", Text.literal("Health"), 50, 11,
+    private val hpHud = DulkirConfig.registerHud("hp_hud", Text.literal("Health"), 50, 11,
         Vector2i(0, 0), 1.2286775f)
-    private val defHud = DulkirConfig.registerHud("defHud", Text.literal("Def"), 50, 25,
+    private val defHud = DulkirConfig.registerHud("def_hud", Text.literal("Def"), 50, 25,
         Vector2i(0, 0), 1.189786f)
-    private val stackHud = DulkirConfig.registerHud("stackHud", Text.literal("Stacks"), 50, 11,
+    private val stackHud = DulkirConfig.registerHud("stack_hud", Text.literal("Stacks"), 50, 11,
         Vector2i(0, 0), 1.2318832f)
-    private val manaHud = DulkirConfig.registerHud("manaHud", Text.literal("Mana"), 50, 11,
+    private val manaHud = DulkirConfig.registerHud("mana_hud", Text.literal("Mana"), 50, 11,
         Vector2i(0, 0), 1.2286775f)
 
     @EventHandler

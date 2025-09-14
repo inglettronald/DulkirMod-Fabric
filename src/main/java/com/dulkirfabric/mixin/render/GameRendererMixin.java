@@ -52,8 +52,8 @@ public class GameRendererMixin {
             )
     )
     public void onScreenRenderPre(RenderTickCounter tickCounter, boolean tick, CallbackInfo ci, @Local DrawContext drawContext) {
-        drawContext.getMatrices().push();
-        drawContext.getMatrices().scale(InventoryScale.INSTANCE.getScale(), InventoryScale.INSTANCE.getScale(), 1f);
+        drawContext.getMatrices().pushMatrix();
+        drawContext.getMatrices().scale(InventoryScale.INSTANCE.getScale(), InventoryScale.INSTANCE.getScale());
     }
 
 
@@ -68,6 +68,6 @@ public class GameRendererMixin {
             )
     )
     public void onScreenRenderPost(RenderTickCounter tickCounter, boolean tick, CallbackInfo ci, @Local DrawContext drawContext) {
-       drawContext.getMatrices().pop();
+       drawContext.getMatrices().popMatrix();
     }
 }

@@ -12,11 +12,11 @@ import net.minecraft.util.math.Vec3d
 import org.joml.Vector2i
 
 object SpeedOverlay {
-    private val speedHud = DulkirConfig.registerHud("SpeedHud", Text.literal("Speed"), 24 + 4, 11,
-        Vector2i(0,0), 1.6367052f)
-    private val bpsOverlay = DulkirConfig.registerHud("MovementHud", Text.literal("Speed (BPS)"), 69, 11,
-        Vector2i(0,0), 1.5052f)
 
+    private val speedHud = DulkirConfig.registerHud("speed_hud", Text.literal("Speed"), 24 + 4, 11,
+        Vector2i(0,0), 1.6367052f)
+    private val bpsOverlay = DulkirConfig.registerHud("movement_hud", Text.literal("Speed (BPS)"), 69, 11,
+        Vector2i(0,0), 1.5052f)
 
     private var tickMomentum = 0.0
 

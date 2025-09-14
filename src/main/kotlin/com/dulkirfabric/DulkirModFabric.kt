@@ -14,6 +14,7 @@
 package com.dulkirfabric
 
 import com.dulkirfabric.config.DulkirConfig
+import com.dulkirfabric.hud.JarvisIntegration
 import com.llamalad7.mixinextras.MixinExtrasBootstrap
 import meteordevelopment.orbit.EventBus
 import net.minecraft.client.MinecraftClient
@@ -29,7 +30,6 @@ object DulkirModFabric {
 	@JvmField
 	val mc: MinecraftClient = MinecraftClient.getInstance()
 	val modId = "dulkir"
-
 
 	@JvmStatic
 	fun onInitializeClient() {

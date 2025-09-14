@@ -14,6 +14,8 @@ import net.minecraft.client.gui.tooltip.TooltipComponent;
 import net.minecraft.client.gui.tooltip.TooltipPositioner;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
+import org.joml.Matrix3x2f;
+import org.joml.Matrix3x2fStack;
 import org.joml.Vector2ic;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -27,14 +29,13 @@ import java.util.List;
 @Mixin(DrawContext.class)
 public class DrawContextMixin {
 
-    @Shadow @Final private MatrixStack matrices;
+    @Shadow @Final private Matrix3x2fStack matrices;
 
     @WrapOperation(
-            method = "drawTooltip(Lnet/minecraft/client/font/TextRenderer;Ljava/util/List;" +
-                    "IILnet/minecraft/client/gui/tooltip/TooltipPositioner;Lnet/minecraft/util/Identifier;)V",
+            method = "drawTooltipImmediately",
             at = @At(
-                    target = "Lnet/minecraft/client/gui/tooltip/TooltipPositioner;getPosition(IIIIII)Lorg/joml/Vector2ic;",
-                    value = "INVOKE"
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/client/gui/tooltip/TooltipPositioner;getPosition(IIIIII)Lorg/joml/Vector2ic;"
             )
     )
     public Vector2ic drawTooltip(TooltipPositioner positionerInstance, int sw, int sh, int mx, int my, int tw,
@@ -67,11 +68,10 @@ public class DrawContextMixin {
     }
 
     @Inject(
-            method = "drawTooltip(Lnet/minecraft/client/font/TextRenderer;Ljava/util/List;II" +
-                    "Lnet/minecraft/client/gui/tooltip/TooltipPositioner;Lnet/minecraft/util/Identifier;)V",
+            method = "drawTooltipImmediately",
             at = @At(
-                    target = "Lnet/minecraft/client/util/math/MatrixStack;push()V",
                     value = "INVOKE",
+                    target = "Lorg/joml/Matrix3x2fStack;pushMatrix()Lorg/joml/Matrix3x2fStack;",
                     shift = At.Shift.AFTER
             )
     )

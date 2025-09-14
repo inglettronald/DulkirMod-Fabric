@@ -16,7 +16,7 @@ class HudElement (var meta: HudMeta,
                   private val height: Int
     ): JarvisHud, JarvisHud.Scalable {
 
-    override fun getHudId(): net.minecraft.class_2960 {
+    override fun getHudId(): Identifier {
         return this.identifier;
     }
 
@@ -44,7 +44,7 @@ class HudElement (var meta: HudMeta,
         return this.height
     }
 
-    override fun getLabel(): net.minecraft.class_2561 {
+    override fun getLabel(): Text {
         return this.label
     }
 
@@ -58,8 +58,8 @@ class HudElement (var meta: HudMeta,
 
     @Serializable
     data class HudMeta(
-        var position: Vector2ic,
-        var scale: Float
+        var position: Vector2ic = Vector2i(0, 0),
+        var scale: Float = 1f
     )
 
     fun applyTransformations(matrices: Matrix3x2f?) {

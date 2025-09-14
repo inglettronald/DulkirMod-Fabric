@@ -1,20 +1,13 @@
 package com.dulkirfabric.mixin.render;
 
 import com.dulkirfabric.features.InventoryScale;
-import com.llamalad7.mixinextras.sugar.Local;
-import net.minecraft.block.entity.BannerPattern;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ingame.LoomScreen;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtList;
-import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.client.texture.Sprite;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 @Mixin(LoomScreen.class)
 public class LoomScreenMixin {
@@ -23,13 +16,12 @@ public class LoomScreenMixin {
             method = "drawBanner",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/client/util/math/MatrixStack;push()V",
+                    target = "Lorg/joml/Matrix3x2fStack;pushMatrix()Lorg/joml/Matrix3x2fStack;",
                     shift = At.Shift.AFTER
             )
     )
-    public void onCreateMatrix(DrawContext context, RegistryEntry<BannerPattern> pattern,
-                               int x, int y, CallbackInfo ci, @Local MatrixStack matrixStack) {
-        matrixStack.scale(InventoryScale.INSTANCE.getScale(), InventoryScale.INSTANCE.getScale(), 1F);
+    public void onCreateMatrix(DrawContext context, int x, int y, Sprite sprite, CallbackInfo ci) {
+        context.getMatrices().scale(InventoryScale.INSTANCE.getScale(), InventoryScale.INSTANCE.getScale());
     }
 
 }

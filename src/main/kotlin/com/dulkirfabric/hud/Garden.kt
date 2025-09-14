@@ -15,7 +15,7 @@ object Garden {
         Vector2i(0, 0), 1.101687f)
     private val composterHud = DulkirConfig.registerHud("composter", Text.literal("Composter"), 100, 21,
         Vector2i(0, 0), 0.9619154f)
-    private val pitchYawHud = DulkirConfig.registerHud("pitch/yaw", Text.literal("Pitch/Yaw"), 100, 21,
+    private val pitchYawHud = DulkirConfig.registerHud("pitch_yaw", Text.literal("Pitch/Yaw"), 100, 21,
         Vector2i(0, 0), 0.9619154f)
 
     @EventHandler

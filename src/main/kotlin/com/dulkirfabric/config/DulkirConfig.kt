@@ -13,6 +13,7 @@
 @file:UseSerializers(com.dulkirfabric.config.serializations.KeySerializer::class)
 package com.dulkirfabric.config
 
+import com.dulkirfabric.DulkirModFabric
 import com.dulkirfabric.DulkirModFabric.mc
 import com.dulkirfabric.config.ConfigHelper.mkKeyField
 import com.dulkirfabric.config.ConfigHelper.mkStringField
@@ -484,7 +485,7 @@ class DulkirConfig {
                 configOptions.positions.getOrPut(
                     id
                 ) { HudElement.HudMeta(defaultPosition, scale) },
-                Identifier.of("dulkir:${id}"),
+                Identifier.of(DulkirModFabric.modId, id),
                 label, width, height,
             )
             huds.add(Triple(element, defaultPosition, scale))

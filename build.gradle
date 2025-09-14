@@ -46,7 +46,7 @@ dependencies {
 	include "meteordevelopment:orbit:${project.orbit_version}"
 	modApi "me.shedaniel.cloth:cloth-config-fabric:${project.clothConfig_version}"
 	include "me.shedaniel.cloth:cloth-config-fabric:${project.clothConfig_version}"
-	modImplementation("moe.nea.jarvis:jarvis-api:${project.jarvis_version}")
+	modImplementation("moe.nea.jarvis:jarvis-fabric:${project.jarvis_version}")
 	include("moe.nea.jarvis:jarvis-fabric:${project.jarvis_version}")
 	modLocalRuntime("moe.nea.jarvis:jarvis-fabric:${project.jarvis_version}")
     modImplementation "maven.modrinth:modmenu:${project.modMenu_version}"
