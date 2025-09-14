@@ -51,8 +51,5 @@
 		"Puzzle": "https://www.midnightdust.eu/",
 		"Starlight": "https://www.curseforge.com/minecraft/mc-mods/starlight"
 	},
-	"accessWidener" : "dulkirmod.accesswidener",
-	"jarvis": [
-		"src.main.kotlin.com.dulkirfabric.hud.JarvisIntegration.kt"
-	]
+	"accessWidener" : "dulkirmod.accesswidener"
 }

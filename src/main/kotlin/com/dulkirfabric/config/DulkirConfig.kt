@@ -484,8 +484,8 @@ class DulkirConfig {
             val element = HudElement(
                 configOptions.positions.getOrPut(
                     id
-                ) { HudElement.HudMeta(defaultPosition, scale) },
-                Identifier.of(DulkirModFabric.modId, id),
+                ) { HudElement.HudMeta(defaultPosition.x, defaultPosition.y, scale) },
+                Identifier.of(DulkirModFabric.MOD_ID, id),
                 label, width, height,
             )
             huds.add(Triple(element, defaultPosition, scale))
@@ -522,7 +522,7 @@ class DulkirConfig {
             huds.forEach { (element, defaultPosition, scale) ->
                 element.meta = configOptions.positions.getOrPut(
                     element.identifier.path
-                ) { HudElement.HudMeta(defaultPosition, scale) }
+                ) { HudElement.HudMeta(defaultPosition.x, defaultPosition.y, scale) }
             }
         }
     }

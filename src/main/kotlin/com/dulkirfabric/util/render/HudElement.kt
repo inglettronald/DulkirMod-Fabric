@@ -1,6 +1,6 @@
 package com.dulkirfabric.util.render
 
-import com.dulkirfabric.hud.JarvisIntegration
+import com.dulkirfabric.util.JarvisIntegrationPlugin
 import kotlinx.serialization.Serializable
 import moe.nea.jarvis.api.JarvisHud
 import net.minecraft.text.Text
@@ -21,11 +21,12 @@ class HudElement (var meta: HudMeta,
     }
 
     override fun getPosition(): Vector2ic {
-        return this.meta.position
+        return Vector2i(this.meta.xPos, this.meta.yPos)
     }
 
-    override fun setPosition(position: Vector2ic?) {
-        this.meta.position = position ?: Vector2i(0, 0)
+    override fun setPosition(position: Vector2ic) {
+        this.meta.xPos = position.x()
+        this.meta.yPos = position.y()
     }
 
     override fun isEnabled(): Boolean {
@@ -58,12 +59,13 @@ class HudElement (var meta: HudMeta,
 
     @Serializable
     data class HudMeta(
-        var position: Vector2ic = Vector2i(0, 0),
+        var xPos: Int = 1,
+        var yPos: Int = 1,
         var scale: Float = 1f
     )
 
     fun applyTransformations(matrices: Matrix3x2f?) {
-        applyTransformations(JarvisIntegration.jarvis, matrices)
+        applyTransformations(JarvisIntegrationPlugin.jarvis, matrices)
     }
 
 }
