@@ -118,11 +118,12 @@ object Registrations {
             ModifyCommandEvent(command).also { it.post() }.command
         }
 
-        WorldRenderEvents.LAST.register { context ->
+        // TODO
+        /*WorldRenderEvents.LAST.register { context ->
             DulkirRenderLayers.LAYERS.forEach { it -> it.startDrawing() }
             WorldRenderLastEvent(context).post()
             DulkirRenderLayers.LAYERS.forEach { it -> it.endDrawing() }
-        }
+        }*/
 
         ScreenEvents.BEFORE_INIT.register(
             ScreenEvents.BeforeInit { client, screen, scaledWidth, scaledHeight ->
@@ -133,9 +134,10 @@ object Registrations {
             }
         )
 
-        WorldRenderEvents.BLOCK_OUTLINE.register { worldRenderContext, blockOutlineContext ->
+        // TODO
+        /*WorldRenderEvents.BLOCK_OUTLINE.register { worldRenderContext, blockOutlineContext ->
             !BlockOutlineEvent(worldRenderContext, blockOutlineContext).post()
-        }
+        }*/
         ClientEntityEvents.ENTITY_LOAD.register { entity, world ->
             EntityLoadEvent(entity, world).post()
         }
