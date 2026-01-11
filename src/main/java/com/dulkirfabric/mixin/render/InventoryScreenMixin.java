@@ -9,6 +9,7 @@ import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.world.entity.LivingEntity;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.Inject;
 
 @Mixin(InventoryScreen.class)
 public class InventoryScreenMixin {
@@ -24,19 +25,27 @@ public class InventoryScreenMixin {
                                           float f, float mouseX, float mouseY, LivingEntity entity,
                                           Operation<Void> original) {
         float newX, newY;
+        float scale = InventoryScale.INSTANCE.getScale();
         if (DulkirModFabric.mc.screen instanceof CreativeModeInventoryScreen) {
-            newX = mouseX / InventoryScale.INSTANCE.getScale();
-            newY = mouseY / InventoryScale.INSTANCE.getScale();
+            newX = mouseX / scale;
+            newY = mouseY / scale;
         } else {
-            newX = mouseX * InventoryScale.INSTANCE.getScale();
-            newY = mouseY * InventoryScale.INSTANCE.getScale();
+            newX = mouseX * scale;
+            newY = mouseY * scale;
         }
+        guiGraphics.pose().pushMatrix();
+        guiGraphics.pose().scale(1 / scale, 1 / scale);
         original.call(
-                guiGraphics, x1, y1, x2, y2, size, f,
+                guiGraphics,
+                (int) (x1 * scale), (int) (y1 * scale),
+                (int) (x2 * scale), (int) (y2 * scale),
+                (int) (size * scale),
+                f,
                 newX,
                 newY,
                 entity
         );
+        guiGraphics.pose().popMatrix();
     }
 
 }

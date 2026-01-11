@@ -8,7 +8,7 @@ import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import org.spongepowered.asm.mixin.Mixin;
 
 @Mixin(AbstractContainerScreen.class)
-public class HandledScreenMixin {
+public class AbstractContainerScreenMixin {
 
     // To fix item render pos
     @WrapMethod(
@@ -25,7 +25,7 @@ public class HandledScreenMixin {
     }
 
     // To fix tooltip render pos
-    @WrapMethod(
+    /*@WrapMethod(
             method = "renderTooltip"
     )
     private void dulkir$modifyTooltipPos(GuiGraphics graphics, int x, int y, Operation<Void> original) {
@@ -34,6 +34,6 @@ public class HandledScreenMixin {
                 (int) Math.floor(x * InventoryScale.INSTANCE.getScale()),
                 (int) Math.floor(y * InventoryScale.INSTANCE.getScale())
         );
-    }
+    }*/
 
 }

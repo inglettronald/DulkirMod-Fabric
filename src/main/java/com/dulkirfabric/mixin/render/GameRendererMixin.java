@@ -34,8 +34,8 @@ public class GameRendererMixin {
         original.call(
                 instance,
                 guiGraphics,
-                (int) (mouseX / InventoryScale.INSTANCE.getScale()),
-                (int) (mouseY / InventoryScale.INSTANCE.getScale()),
+                mouseX,
+                mouseY,
                 f
         );
         guiGraphics.pose().popMatrix();
