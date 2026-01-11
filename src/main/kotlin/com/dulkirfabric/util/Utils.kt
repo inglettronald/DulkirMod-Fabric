@@ -8,6 +8,7 @@ import com.dulkirfabric.events.chat.ChatEvents
 import meteordevelopment.orbit.EventHandler
 import net.minecraft.block.entity.SkullBlockEntity
 import net.minecraft.component.DataComponentTypes
+import net.minecraft.component.type.ProfileComponent
 import net.minecraft.entity.Entity
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NbtCompound
@@ -78,10 +79,9 @@ object Utils {
     }
 
     fun getSkullTexture(itemStack: ItemStack): String? {
-        return itemStack.components?.get(DataComponentTypes.PROFILE)?.properties?.get("textures")?.first()?.value
+        return itemStack.components?.get(DataComponentTypes.PROFILE)?.gameProfile?.properties?.get("textures")?.first()?.value
     }
 
-    // TODO: Don't use the NBT in favor of a better option
     fun getNbt(itemStack: ItemStack): NbtCompound? {
         return itemStack.components?.get(DataComponentTypes.CUSTOM_DATA)?.nbt
     }

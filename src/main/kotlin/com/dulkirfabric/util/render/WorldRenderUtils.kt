@@ -1,7 +1,7 @@
 package com.dulkirfabric.util.render
 
 import com.mojang.blaze3d.systems.RenderSystem
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext
+import net.fabricmc.fabric.api.client.rendering.v1.world.WorldRenderContext
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.font.TextRenderer
 import net.minecraft.client.render.*
@@ -54,15 +54,15 @@ object WorldRenderUtils {
         thickness: Float,
         depthTest: Boolean = true
     ) {
-        val matrices = context.matrixStack() ?: return
+        val matrices = context.matrices() ?: return
         matrices.push()
         val layer = if (depthTest) {
             DulkirRenderLayers.DULKIR_LINES
         } else {
             DulkirRenderLayers.DULKIR_LINES_ESP
         }
-
-        matrices.translate(-context.camera().pos.x, -context.camera().pos.y, -context.camera().pos.z)
+        val camera = context.gameRenderer().camera;
+        matrices.translate(-camera.pos.x, -camera.pos.y, -camera.pos.z)
         val buf = RenderUtil.getBufferFor(layer);
         val me = matrices.peek()
 
@@ -96,14 +96,15 @@ object WorldRenderUtils {
     }
 
     fun drawLine(context: WorldRenderContext, startPos: Vec3d, endPos: Vec3d, color: Color, thickness: Float, depthTest: Boolean = true) {
-        val matrices = context.matrixStack() ?: return
+        val matrices = context.matrices() ?: return
         matrices.push()
         val layer = if (depthTest) {
             DulkirRenderLayers.DULKIR_LINES
         } else {
             DulkirRenderLayers.DULKIR_LINES_ESP
         }
-        matrices.translate(-context.camera().pos.x, -context.camera().pos.y, -context.camera().pos.z)
+        val camera = context.gameRenderer().camera;
+        matrices.translate(-camera.pos.x, -camera.pos.y, -camera.pos.z)
         val buf = RenderUtil.getBufferFor(layer)
         val me = matrices.peek()
 
@@ -117,14 +118,15 @@ object WorldRenderUtils {
     }
 
     fun drawLineArray(context: WorldRenderContext, posArr: List<Vec3d>, color: Color, thickness: Float, depthTest: Boolean = true) {
-        val matrices = context.matrixStack() ?: return
+        val matrices = context.matrices() ?: return
         matrices.push()
         val layer = if (depthTest) {
             DulkirRenderLayers.DULKIR_LINES
         } else {
             DulkirRenderLayers.DULKIR_LINES_ESP
         }
-        matrices.translate(-context.camera().pos.x, -context.camera().pos.y, -context.camera().pos.z)
+        val camera = context.gameRenderer().camera;
+        matrices.translate(-camera.pos.x, -camera.pos.y, -camera.pos.z)
         val buf = RenderUtil.getBufferFor(layer)
         val me = matrices.peek()
 
@@ -158,14 +160,15 @@ object WorldRenderUtils {
 
         // Minecraft vertex consumer because we still hook into their renderer and do immediate text rendering
         val vertexConsumer = context.worldRenderer().bufferBuilders.entityVertexConsumers
-        val matrices = context.matrixStack() ?: return
+        val matrices = context.matrices() ?: return
         matrices.push()
+        val camera = context.gameRenderer().camera;
         matrices.translate(
-            pos.x - context.camera().pos.x,
-            pos.y - context.camera().pos.y,
-            pos.z - context.camera().pos.z
+            pos.x - camera.pos.x,
+            pos.y - camera.pos.y,
+            pos.z - camera.pos.z
         )
-        matrices.multiply(context.camera().rotation)
+        matrices.multiply(camera.rotation)
         matrices.scale(.025f * scale, -.025f * scale, 1F)
         val matrix4f = matrices.peek().positionMatrix
         val textRenderer = MinecraftClient.getInstance().textRenderer
@@ -204,26 +207,27 @@ object WorldRenderUtils {
         val layer = DulkirRenderLayers.DULKIR_QUADS_ESP
         val d: Double = pos.distanceTo(MinecraftClient.getInstance().player?.pos)
         val distText = Text.literal(d.toInt().toString() + "m").setStyle(Style.EMPTY.withColor(Formatting.YELLOW))
-        val matrices = context.matrixStack() ?: return
+        val matrices = context.matrices() ?: return
         val vertexConsumer = context.worldRenderer().bufferBuilders.entityVertexConsumers
         matrices.push()
-        val magnitude = sqrt((pos.x - context.camera().pos.x).pow(2) +
-            (pos.y - context.camera().pos.y).pow(2) +
-                (pos.z - context.camera().pos.z).pow(2))
+        val camera = context.gameRenderer().camera
+        val magnitude = sqrt((pos.x - camera.pos.x).pow(2) +
+            (pos.y - camera.pos.y).pow(2) +
+                (pos.z - camera.pos.z).pow(2))
         if (magnitude < 20) {
             matrices.translate(
-                pos.x - context.camera().pos.x,
-                pos.y - context.camera().pos.y,
-                pos.z - context.camera().pos.z
+                pos.x - camera.pos.x,
+                pos.y - camera.pos.y,
+                pos.z - camera.pos.z
             )
         } else {
             matrices.translate(
-                (pos.x - context.camera().pos.x) / magnitude * 20,
-                (pos.y - context.camera().pos.y) / magnitude * 20,
-                (pos.z - context.camera().pos.z) / magnitude * 20
+                (pos.x - camera.pos.x) / magnitude * 20,
+                (pos.y - camera.pos.y) / magnitude * 20,
+                (pos.z - camera.pos.z) / magnitude * 20
             )
         }
-        matrices.multiply(context.camera().rotation)
+        matrices.multiply(camera.rotation)
         val scale = max(d.toFloat() / 7f, 1f)
         if (magnitude < 20) {
             matrices.scale(.025f * scale, -.025f * scale, 1F)
@@ -286,10 +290,11 @@ object WorldRenderUtils {
             DulkirRenderLayers.DULKIR_TRIANGLE_STRIP_ESP
         }
 
-        val matrices = context.matrixStack() ?: return
+        val matrices = context.matrices() ?: return
         val buf = RenderUtil.getBufferFor(layer)
         matrices.push()
-        matrices.translate(x - context.camera().pos.x, y - context.camera().pos.y, z - context.camera().pos.z)
+        val camera = context.gameRenderer().camera;
+        matrices.translate(x - camera.pos.x, y - camera.pos.y, z - camera.pos.z)
         VertexRendering.drawFilledBox(matrices, buf, 0.0, 0.0, 0.0, width, height, depth,
             color.red / 255f, color.green / 255f, color.blue / 255f, color.alpha / 255f)
         layer.draw(buf.end())

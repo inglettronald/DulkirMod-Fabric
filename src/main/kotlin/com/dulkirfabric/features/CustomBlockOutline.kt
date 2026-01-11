@@ -17,7 +17,7 @@ object CustomBlockOutline {
     @EventHandler
     fun onBlockOutline(event: BlockOutlineEvent) {
         if (!DulkirConfig.configOptions.customBlockOutlines) return
-        val blockPos = event.blockOutlineContext.blockPos()
+        val blockPos = event.blockOutlineContext.pos()
         val x = blockPos.x.toDouble()
         val y = blockPos.y.toDouble()
         val z = blockPos.z.toDouble()

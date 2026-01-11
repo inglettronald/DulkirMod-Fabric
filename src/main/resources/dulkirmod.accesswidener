@@ -4,3 +4,5 @@ accessible method net/minecraft/client/gui/hud/PlayerListHud collectPlayerEntrie
 accessible field net/minecraft/client/gui/hud/ChatHud messages Ljava/util/List;
 accessible method net/minecraft/client/gui/hud/ChatHud refresh ()V
 accessible method net/minecraft/client/render/RenderLayer$MultiPhaseParameters$Builder <init> ()V
+accessible field net/minecraft/entity/Entity pos Lnet/minecraft/util/math/Vec3d;
+accessible field net/minecraft/component/type/NbtComponent nbt Lnet/minecraft/nbt/NbtCompound;

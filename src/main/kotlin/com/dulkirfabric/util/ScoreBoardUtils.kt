@@ -21,7 +21,7 @@ object ScoreBoardUtils {
      * Gets Scoreboard lines, will return null if not in Skyblock.
      */
     fun getLines(): MutableList<String>? {
-        val scoreboard = DulkirModFabric.mc.player?.scoreboard ?: return null
+        val scoreboard = DulkirModFabric.mc.world?.scoreboard ?: return null
         // This returns null if we're not in skyblock curiously
         val sidebarObjective = scoreboard.getNullableObjective("SBScoreboard") ?: return null
         val scores = scoreboard.getScoreboardEntries(sidebarObjective)
@@ -40,7 +40,7 @@ object ScoreBoardUtils {
      * namely effigy display for now - but might be useful later? Who knows.
      */
     fun getLinesWithColor(): MutableList<String>? {
-        val scoreboard = DulkirModFabric.mc.player?.scoreboard ?: return null
+        val scoreboard = DulkirModFabric.mc.world?.scoreboard ?: return null
         // This returns null if we're not in skyblock curiously
         val sidebarObjective = scoreboard.getNullableObjective("SBScoreboard") ?: return null
         val scores = scoreboard.getScoreboardEntries(sidebarObjective)

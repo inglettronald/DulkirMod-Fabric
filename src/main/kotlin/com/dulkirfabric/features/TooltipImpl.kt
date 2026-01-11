@@ -8,7 +8,6 @@ import com.dulkirfabric.events.TooltipRenderChangeEvent
 import meteordevelopment.orbit.EventHandler
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.util.InputUtil
-import net.minecraft.client.util.math.MatrixStack
 import org.joml.Matrix3x2fStack
 import org.joml.Vector2i
 import org.joml.Vector2ic
@@ -69,10 +68,10 @@ object TooltipImpl {
         if (!DulkirConfig.configOptions.toolTipFeatures) return
         // TODO: ignore input in config screen
         if (event.verticalScrollAmount == 0.0) return
-        val handle = MinecraftClient.getInstance().window.handle
-        if (InputUtil.isKeyPressed(handle, GLFW.GLFW_KEY_LEFT_SHIFT)) {
+        val window = MinecraftClient.getInstance().window
+        if (InputUtil.isKeyPressed(window, GLFW.GLFW_KEY_LEFT_SHIFT)) {
             horizontalBuffer += (mc.window.width / 192) * event.verticalScrollAmount
-        } else if (InputUtil.isKeyPressed(handle, GLFW.GLFW_KEY_LEFT_CONTROL)) {
+        } else if (InputUtil.isKeyPressed(window, GLFW.GLFW_KEY_LEFT_CONTROL)) {
             scaleBuffer = max(.01f, scaleBuffer + .1f * event.verticalScrollAmount.toFloat())
         } else {
             verticalBuffer += (mc.window.height / 108) * event.verticalScrollAmount

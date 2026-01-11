@@ -12,10 +12,11 @@ object KeySerializer: KSerializer<InputUtil.Key> {
     override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("InputUtil.Key", PrimitiveKind.INT)
 
     override fun deserialize(decoder: Decoder): InputUtil.Key {
-        return InputUtil.fromKeyCode(decoder.decodeInt(), 0)
+        return InputUtil.Type.KEYSYM.createFromCode(decoder.decodeInt())
     }
 
     override fun serialize(encoder: Encoder, value: InputUtil.Key) {
         encoder.encodeInt(value.code)
     }
+
 }

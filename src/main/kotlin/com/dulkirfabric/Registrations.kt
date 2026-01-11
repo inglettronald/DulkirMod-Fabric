@@ -30,9 +30,9 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityEvents
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents
 import net.fabricmc.fabric.api.client.message.v1.ClientSendMessageEvents
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElement
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry
+import net.fabricmc.fabric.api.client.rendering.v1.world.WorldRenderEvents
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents
 import net.fabricmc.fabric.api.client.screen.v1.ScreenMouseEvents
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents
@@ -96,6 +96,7 @@ object Registrations {
             EVENT_BUS.subscribe(RenderTest)
     }
 
+    @Suppress("unused")
     fun registerEvents() {
         // Register Custom Tick event, so we can use it like 1.8.9 forge
         ClientTickEvents.START_CLIENT_TICK.register { _ ->
@@ -118,12 +119,11 @@ object Registrations {
             ModifyCommandEvent(command).also { it.post() }.command
         }
 
-        // TODO
-        /*WorldRenderEvents.LAST.register { context ->
-            DulkirRenderLayers.LAYERS.forEach { it -> it.startDrawing() }
+        WorldRenderEvents.END_MAIN.register { context ->
+            DulkirRenderLayers.LAYERS.forEach { it.startDrawing() }
             WorldRenderLastEvent(context).post()
-            DulkirRenderLayers.LAYERS.forEach { it -> it.endDrawing() }
-        }*/
+            DulkirRenderLayers.LAYERS.forEach { it.endDrawing() }
+        }
 
         ScreenEvents.BEFORE_INIT.register(
             ScreenEvents.BeforeInit { client, screen, scaledWidth, scaledHeight ->
@@ -134,10 +134,9 @@ object Registrations {
             }
         )
 
-        // TODO
-        /*WorldRenderEvents.BLOCK_OUTLINE.register { worldRenderContext, blockOutlineContext ->
+        WorldRenderEvents.BEFORE_BLOCK_OUTLINE.register { worldRenderContext, blockOutlineContext ->
             !BlockOutlineEvent(worldRenderContext, blockOutlineContext).post()
-        }*/
+        }
         ClientEntityEvents.ENTITY_LOAD.register { entity, world ->
             EntityLoadEvent(entity, world).post()
         }
