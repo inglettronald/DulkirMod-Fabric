@@ -14,45 +14,47 @@
 package com.dulkirfabric.mixin.render;
 
 import com.dulkirfabric.config.DulkirConfig;
-import net.minecraft.client.gui.screen.GameMenuScreen;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.gui.widget.GridWidget;
-import net.minecraft.text.*;
-import net.minecraft.util.Formatting;
+import com.llamalad7.mixinextras.sugar.Local;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.layouts.GridLayout;
+import net.minecraft.client.gui.screens.PauseScreen;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.Component;
+import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import java.util.function.Supplier;
 
-@Mixin(GameMenuScreen.class)
-public abstract class GameMenuScreenMixin extends ScreenMixin {
+@Mixin(PauseScreen.class)
+public abstract class PauseScreenMixin extends ScreenMixin {
 
-	@Unique
-	private final Text dulkir$buttonText = MutableText.of(new PlainTextContent.Literal("Dulkir"))
-			.formatted(Formatting.BOLD, Formatting.YELLOW);
+    @Shadow
+    protected abstract Button openScreenButton(Component component, Supplier<Screen> supplier);
 
-	@Shadow
-	protected abstract ButtonWidget createButton(Text text, Supplier<Screen> screenSupplier);
+    @Unique
+	private final Component dulkir$buttonText = Component.literal("Dulkir")
+            .withStyle(ChatFormatting.BOLD, ChatFormatting.YELLOW);
 
 	/**
 	 * Method to create the config entry point button inside the escape menu
 	 */
 	@Inject(
-			method = "initWidgets",
+			method = "createPauseMenu",
 			at = @At(
-					value = "FIELD",
-					target = "Lnet/minecraft/client/gui/screen/GameMenuScreen;OPTIONS_TEXT:Lnet/minecraft/text/Text;"),
-			locals = LocalCapture.CAPTURE_FAILEXCEPTION
+                    value = "FIELD",
+                    target = "Lnet/minecraft/client/gui/screens/PauseScreen;OPTIONS:Lnet/minecraft/network/chat/Component;",
+                    opcode = Opcodes.GETSTATIC
+            )
 	)
-	private void initWidget(CallbackInfo ci, GridWidget gridWidget, GridWidget.Adder adder) {
+	private void initWidget(CallbackInfo ci, @Local GridLayout.RowHelper adder) {
 		if (DulkirConfig.ConfigVars.getConfigOptions().getShowPauseMenuButton()) {
-			adder.add(this.createButton(dulkir$buttonText, new DulkirConfig()::getScreen));
+			adder.addChild(this.openScreenButton(dulkir$buttonText, new DulkirConfig()::getScreen));
 		}
 	}
 

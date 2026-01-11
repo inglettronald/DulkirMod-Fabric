@@ -1,20 +1,20 @@
 package com.dulkirfabric.config
 
+import com.mojang.blaze3d.platform.InputConstants
 import me.shedaniel.clothconfig2.api.AbstractConfigListEntry
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder
 import me.shedaniel.clothconfig2.gui.entries.MultiElementListEntry
 import me.shedaniel.clothconfig2.gui.entries.NestedListListEntry
-import net.minecraft.client.util.InputUtil
-import net.minecraft.text.Text
+import net.minecraft.network.chat.Component
 import java.util.*
 import kotlin.reflect.KMutableProperty0
 
 object ConfigHelper {
     fun <T> mkConfigList(
-        name: Text,
+        name: Component,
         property: KMutableProperty0<List<T>>,
         newT: () -> T,
-        elementName: Text,
+        elementName: Component,
         render: (T) -> List<AbstractConfigListEntry<*>>,
         canDelete: Boolean = true,
     ): NestedListListEntry<T, MultiElementListEntry<T>> {
@@ -25,7 +25,7 @@ object ConfigHelper {
             { Optional.empty() }, // tooltipSupplier
             { property.set(it) }, // saveConsumer
             { mutableListOf() }, // defaultValue
-            Text.literal("Reset"), // resetButtonKey
+            Component.literal("Reset"), // resetButtonKey
             canDelete,
             false,
             { value, entry -> // createNewCell
@@ -35,21 +35,21 @@ object ConfigHelper {
         )
     }
 
-    fun ConfigEntryBuilder.mkStringField(text: Text, prop: KMutableProperty0<String>) = startStrField(text, prop.get())
+    fun ConfigEntryBuilder.mkStringField(text: Component, prop: KMutableProperty0<String>) = startStrField(text, prop.get())
         .setSaveConsumer { prop.set(it) }
         .setDefaultValue("")
         .build()
-    fun ConfigEntryBuilder.mkIntField(text: Text, prop: KMutableProperty0<Int>) = startIntField(text, prop.get())
+    fun ConfigEntryBuilder.mkIntField(text: Component, prop: KMutableProperty0<Int>) = startIntField(text, prop.get())
         .setSaveConsumer { prop.set(it) }
         .setDefaultValue(0)
         .build()
 
-    fun ConfigEntryBuilder.mkKeyField(text: Text, prop: KMutableProperty0<InputUtil.Key>) = startKeyCodeField(text, prop.get())
+    fun ConfigEntryBuilder.mkKeyField(text: Component, prop: KMutableProperty0<InputConstants.Key>) = startKeyCodeField(text, prop.get())
         .setKeySaveConsumer { prop.set(it) }
-        .setDefaultValue(InputUtil.UNKNOWN_KEY)
+        .setDefaultValue(InputConstants.UNKNOWN)
         .build()
 
-    fun ConfigEntryBuilder.mkToggle(text: Text, prop: KMutableProperty0<Boolean>, tooltip: Text = Text.literal(""))
+    fun ConfigEntryBuilder.mkToggle(text: Component, prop: KMutableProperty0<Boolean>, tooltip: Component = Component.literal(""))
     = startBooleanToggle(text, prop.get())
         .setSaveConsumer { prop.set(it) }
         .setDefaultValue(false)

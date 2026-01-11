@@ -20,7 +20,7 @@ object KeyShortCutImpl {
 
     @EventHandler
     fun onMouse(event: MousePressEvent) {
-        val screen = DulkirModFabric.mc.currentScreen
+        val screen = DulkirModFabric.mc.screen
         if (screen != null) return
         if (event.code == 0) return // todo hackfix for keybinding issue
         handle(event.code)
@@ -29,7 +29,7 @@ object KeyShortCutImpl {
     fun handle(code: Int) {
         if (DulkirConfig.configOptions.macrosSkyBlockOnly && !Utils.isInSkyblock()) return
         DulkirConfig.configOptions.macrosList.forEach {
-            if (it.keyBinding.code == code) {
+            if (it.keyBinding.value == code) {
                 // Spam Prevention
                 if (code == prevCode && System.currentTimeMillis() - lastCommandHandle < 1000)
                     return
@@ -48,7 +48,7 @@ object KeyShortCutImpl {
             }
         }
 
-        if (DulkirConfig.configOptions.dynamicKey.code == code) {
+        if (DulkirConfig.configOptions.dynamicKey.value == code) {
             if (code == prevCode && System.currentTimeMillis() - lastCommandHandle < 1000)
                 return
             lastCommandHandle = System.currentTimeMillis()

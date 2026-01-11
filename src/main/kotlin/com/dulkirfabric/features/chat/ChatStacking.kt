@@ -1,14 +1,5 @@
 package com.dulkirfabric.features.chat
 
-import com.dulkirfabric.DulkirModFabric.mc
-import com.dulkirfabric.events.LongUpdateEvent
-import com.dulkirfabric.events.chat.ChatEvents
-import com.dulkirfabric.util.ScoreBoardUtils.formattedString
-import com.dulkirfabric.util.TextUtils
-import meteordevelopment.orbit.EventHandler
-import net.minecraft.text.MutableText
-import net.minecraft.text.Text
-
 // TODO: Fix - this tends to mess with other mod features and also doesn't work on player messages
 // and ALSO doesn't work on some multi-line messages sent by the server: For example, the double tap
 // to confirm drop message does not stack properly.

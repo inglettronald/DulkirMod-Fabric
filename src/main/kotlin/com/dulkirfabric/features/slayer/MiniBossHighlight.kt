@@ -9,23 +9,22 @@ import com.dulkirfabric.util.Utils.getInterpolatedPos
 import com.dulkirfabric.util.render.HudRenderUtil
 import com.dulkirfabric.util.render.WorldRenderUtils
 import meteordevelopment.orbit.EventHandler
-import net.minecraft.entity.decoration.ArmorStandEntity
-import net.minecraft.text.Style
-import net.minecraft.text.Text
-import net.minecraft.util.Formatting
-import net.minecraft.util.math.Box
+import net.minecraft.ChatFormatting
+import net.minecraft.network.chat.Component
+import net.minecraft.world.entity.decoration.ArmorStand
+import net.minecraft.world.phys.AABB
 import java.awt.Color
 import java.time.Duration
 
 
 object MiniBossHighlight {
-    data class MiniBoss(val name: String, val box: Box)
+    data class MiniBoss(val name: String, val box: AABB)
 
-    private val zombieBox = Box(-.4, .1, -.4, .4, -1.9, .4)
-    private val spiderBox = Box(-.7, -.3, -.7, .7, -1.2, .7)
-    private val wolfBox = Box(-.4, -0.0, -.4, .4, -.85, .4)
-    private val emanBox = Box(-.4, 0.0, -.4, .4, -2.9, .4)
-    private val blazeBox = Box(-.4, -.2, -.4, .4, -2.0, .4)
+    private val zombieBox = AABB(-.4, .1, -.4, .4, -1.9, .4)
+    private val spiderBox = AABB(-.7, -.3, -.7, .7, -1.2, .7)
+    private val wolfBox = AABB(-.4, -0.0, -.4, .4, -.85, .4)
+    private val emanBox = AABB(-.4, 0.0, -.4, .4, -2.9, .4)
+    private val blazeBox = AABB(-.4, -.2, -.4, .4, -2.0, .4)
 
     private val miniBosses = listOf(
         MiniBoss("Revenant Sycophant", zombieBox),
@@ -52,29 +51,29 @@ object MiniBossHighlight {
         if (!ScoreBoardUtils.hasActiveSlayerQuest) return
         if (!DulkirConfig.configOptions.boxMinis) return
 
-        val ents = mc.world?.entities ?: return
+        val ents = mc.level?.entitiesForRendering() ?: return
 
         ents.forEach {
-            if (it !is ArmorStandEntity) return@forEach
+            if (it !is ArmorStand) return@forEach
             val name = it.customName?.string ?: return@forEach
             val result = miniBosses.find { mini -> name.contains(mini.name) } ?: return@forEach
             WorldRenderUtils.drawWireFrame(
                     event.context,
-                    result.box.offset(it.getInterpolatedPos(mc.renderTickCounter.getTickProgress(true))),
+                    result.box.move(it.getInterpolatedPos(mc.deltaTracker.getGameTimeDeltaPartialTick(true))),
                     Color(0, 255, 0),
                     8f
             )
         }
     }
 
-    // TODO: fix
+    // TODO: fix, we can use chat messages now afaik?
     @EventHandler
     fun onSound(event: PlaySoundEvent) {
         if (!DulkirConfig.configOptions.announceMinis) return
-        if (event.sound.id.path != "entity.generic.explode") return
+        if (event.sound.location.path != "entity.generic.explode") return
         if (event.sound.pitch != 1.2857143f) return
         if (event.sound.volume != .6f) return
-        HudRenderUtil.drawTitle(Text.literal("MiniBoss Spawned").setStyle(Style.EMPTY.withColor(Formatting.RED)),
+        HudRenderUtil.drawTitle(Component.literal("MiniBoss Spawned").withStyle(ChatFormatting.RED),
             Duration.ofMillis(1000))
     }
 }

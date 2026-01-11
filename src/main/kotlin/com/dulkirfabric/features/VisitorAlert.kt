@@ -2,14 +2,12 @@ package com.dulkirfabric.features
 
 import com.dulkirfabric.config.DulkirConfig
 import com.dulkirfabric.events.AreaChangeEvent
-import com.dulkirfabric.events.HudRenderEvent
 import com.dulkirfabric.events.LongUpdateEvent
 import com.dulkirfabric.util.TablistUtils
 import com.dulkirfabric.util.render.HudRenderUtil
 import meteordevelopment.orbit.EventHandler
-import net.minecraft.text.Style
-import net.minecraft.text.Text
-import net.minecraft.util.Formatting
+import net.minecraft.ChatFormatting
+import net.minecraft.network.chat.Component
 import java.time.Duration
 
 object VisitorAlert {
@@ -28,12 +26,12 @@ object VisitorAlert {
         if (TablistUtils.persistentInfo.nextVisitorTime == "Queue Full!") {
             if (DulkirConfig.configOptions.persistentVisitorAlert) {
                 HudRenderUtil.drawTitle(
-                    Text.literal("Max Visitors").setStyle(Style.EMPTY.withColor(Formatting.GOLD)),
+                    Component.literal("Max Visitors").withStyle(ChatFormatting.GOLD),
                     Duration.ofSeconds(5)
                 )
             } else if (canAlert) {
                 HudRenderUtil.drawTitle(
-                    Text.literal("Max Visitors").setStyle(Style.EMPTY.withColor(Formatting.GOLD)),
+                    Component.literal("Max Visitors").withStyle(ChatFormatting.GOLD),
                     Duration.ofSeconds(5)
                 )
                 canAlert = false

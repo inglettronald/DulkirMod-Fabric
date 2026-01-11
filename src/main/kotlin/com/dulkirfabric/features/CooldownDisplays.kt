@@ -7,8 +7,7 @@ import com.dulkirfabric.util.SoundInfo
 import com.dulkirfabric.util.TrackedCooldown
 import com.dulkirfabric.util.Utils
 import meteordevelopment.orbit.EventHandler
-import net.minecraft.client.sound.Sound
-import net.minecraft.item.ItemStack
+import net.minecraft.world.item.ItemStack
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable
 import kotlin.jvm.optionals.getOrNull
 import kotlin.math.round
@@ -64,7 +63,7 @@ object CooldownDisplays {
     @EventHandler
     fun onSound(event: PlaySoundEvent) {
         if (!DulkirConfig.configOptions.duraCooldown) return
-        val path = event.sound.id.path
+        val path = event.sound.location.path
         val pitch = event.sound.pitch
         val volume = event.sound.volume
 

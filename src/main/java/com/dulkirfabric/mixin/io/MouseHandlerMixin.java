@@ -5,18 +5,19 @@ import com.dulkirfabric.features.InventoryScale;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
-import net.minecraft.client.Mouse;
+import net.minecraft.client.MouseHandler;
+import net.minecraft.client.input.MouseButtonInfo;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
-@Mixin(Mouse.class)
-public class MouseMixin {
+@Mixin(MouseHandler.class)
+public class MouseHandlerMixin {
 
     @ModifyExpressionValue(
-            method = "scaleX",
+            method = "getScaledXPos(Lcom/mojang/blaze3d/platform/Window;D)D",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/client/util/Window;getScaledWidth()I"
+                    target = "Lcom/mojang/blaze3d/platform/Window;getGuiScaledWidth()I"
             )
     )
     private static int dulkir$modifyWidth(int originalScaledWidth) {
@@ -24,10 +25,10 @@ public class MouseMixin {
     }
 
     @ModifyExpressionValue(
-            method = "scaleY",
+            method = "getScaledYPos(Lcom/mojang/blaze3d/platform/Window;D)D",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/client/util/Window;getScaledHeight()I"
+                    target = "Lcom/mojang/blaze3d/platform/Window;getGuiScaledHeight()I"
             )
     )
     private static int dulkir$modifyHeight(int originalScaledHeight) {
@@ -35,13 +36,13 @@ public class MouseMixin {
     }
 
     @WrapMethod(
-            method = "onMouseButton"
+            method = "onButton"
     )
-    private void dulkir$onMouseButton(long window, int button, int action, int mods, Operation<Void> original) {
-        MousePressEvent event = new MousePressEvent(button);
+    private void dulkir$onMouseButton(long l, MouseButtonInfo mouseButtonInfo, int i, Operation<Void> original) {
+        MousePressEvent event = new MousePressEvent(mouseButtonInfo.button());
         event.post();
         if (!event.isCancelled()) {
-            original.call(window, button, action, mods);
+            original.call(l, mouseButtonInfo, i);
         }
     }
 

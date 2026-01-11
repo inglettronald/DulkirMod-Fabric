@@ -17,7 +17,7 @@ object AbiPhoneDND {
     fun onSound(event: PlaySoundEvent) {
         if (!DulkirConfig.configOptions.abiPhoneDND) return
         if (System.currentTimeMillis() - lastRing < 5000) {
-            if (event.sound.id.path == "block.note_block.pling" && event.sound.volume == 0.69f && event.sound.pitch == 1.6666666f) {
+            if (event.sound.location.path == "block.note_block.pling" && event.sound.volume == 0.69f && event.sound.pitch == 1.6666666f) {
                 event.cancel()
             }
         }

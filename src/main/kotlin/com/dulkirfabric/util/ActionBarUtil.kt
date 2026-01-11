@@ -5,7 +5,7 @@ import com.dulkirfabric.events.LongUpdateEvent
 import com.dulkirfabric.events.chat.OverlayReceivedEvent
 import com.dulkirfabric.util.ScoreBoardUtils.formattedString
 import meteordevelopment.orbit.EventHandler
-import net.minecraft.text.Text
+import net.minecraft.network.chat.Component
 import java.text.NumberFormat
 
 object ActionBarUtil {
@@ -50,7 +50,7 @@ object ActionBarUtil {
             sb.append(it)
         }
         if (!stackFlag) stacks = ""
-        event.setReturnValue(Text.literal(sb.toString()))
+        event.setReturnValue(Component.literal(sb.toString()))
     }
 
     @EventHandler

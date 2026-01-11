@@ -11,11 +11,11 @@ import com.dulkirfabric.util.TextUtils
 import com.dulkirfabric.util.Utils.getInterpolatedPos
 import com.dulkirfabric.util.render.WorldRenderUtils
 import meteordevelopment.orbit.EventHandler
-import net.minecraft.entity.Entity
-import net.minecraft.entity.decoration.ArmorStandEntity
-import net.minecraft.entity.projectile.SmallFireballEntity
-import net.minecraft.util.math.Box
-import net.minecraft.world.event.GameEvent
+import net.minecraft.world.entity.Entity
+import net.minecraft.world.entity.decoration.ArmorStand
+import net.minecraft.world.entity.projectile.SmallFireball
+import net.minecraft.world.level.gameevent.GameEvent
+import net.minecraft.world.phys.AABB
 import java.awt.Color
 
 object Demonlord {
@@ -25,7 +25,7 @@ object Demonlord {
         "AURIC ♨" to Color(206, 219, 57, 255),
         "SPIRIT ♨" to Color(255, 255, 255, 255)
     )
-    private val box = Box(-.5, -.4, -.5, .5, -1.9, .5)
+    private val box = AABB(-.5, -.4, -.5, .5, -1.9, .5)
     private var inBoss: Boolean = false
     private var lastSpawnTime: Long = 0
 
@@ -33,15 +33,15 @@ object Demonlord {
     fun attunementHighlight(event: WorldRenderLastEvent) {
         if (!DulkirConfig.configOptions.attunementDisplay) return
         if (TablistUtils.persistentInfo.area != "Crimson Isle") return
-        val ents = mc.world?.entities ?: return
+        val ents = mc.level?.entitiesForRendering() ?: return
         ents.forEach { ent ->
-            if (ent is ArmorStandEntity && ent.hasCustomName()) {
+            if (ent is ArmorStand && ent.hasCustomName()) {
                 val name = TextUtils.stripColorCodes(ent.customName?.string ?: return@forEach)
                 val color = phaseColors.firstOrNull { name.contains(it.first) }?.second ?: return@forEach
-                val pos = ent.getInterpolatedPos(mc.renderTickCounter.getTickProgress(true))
+                val pos = ent.getInterpolatedPos(mc.deltaTracker.getGameTimeDeltaPartialTick(true))
                 WorldRenderUtils.drawWireFrame(
                     event.context,
-                    box.offset(pos.x, pos.y, pos.z),
+                    box.move(pos.x, pos.y, pos.z),
                     color,
                     8f
                 )
@@ -78,9 +78,9 @@ object Demonlord {
     fun onEntityLoad(event: EntityLoadEvent) {
         if (!DulkirConfig.configOptions.cleanBlaze) return
         if (!inBoss) return
-        if (event.entity is SmallFireballEntity) {
+        if (event.entity is SmallFireball) {
             event.entity.remove(Entity.RemovalReason.KILLED)
-            event.entity.emitGameEvent(GameEvent.ENTITY_DIE)
+            event.entity.gameEvent(GameEvent.ENTITY_DIE)
         }
     }
 }

@@ -23,7 +23,7 @@ import com.dulkirfabric.util.ActionBarUtil
 import com.dulkirfabric.util.ScoreBoardUtils
 import com.dulkirfabric.util.TablistUtils
 import com.dulkirfabric.util.Utils
-import com.dulkirfabric.util.render.DulkirRenderLayers
+import com.dulkirfabric.util.render.DulkirRenderTypes
 import com.dulkirfabric.util.render.HudRenderUtil
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityEvents
@@ -37,9 +37,9 @@ import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents
 import net.fabricmc.fabric.api.client.screen.v1.ScreenMouseEvents
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents
 import net.fabricmc.loader.api.FabricLoader
-import net.minecraft.client.gui.DrawContext
-import net.minecraft.client.render.RenderTickCounter
-import net.minecraft.util.Identifier
+import net.minecraft.client.DeltaTracker
+import net.minecraft.client.gui.GuiGraphics
+import net.minecraft.resources.ResourceLocation
 
 
 /**
@@ -120,9 +120,9 @@ object Registrations {
         }
 
         WorldRenderEvents.END_MAIN.register { context ->
-            DulkirRenderLayers.LAYERS.forEach { it.startDrawing() }
+            DulkirRenderTypes.TYPES.forEach { it.setupRenderState() }
             WorldRenderLastEvent(context).post()
-            DulkirRenderLayers.LAYERS.forEach { it.endDrawing() }
+            DulkirRenderTypes.TYPES.forEach { it.clearRenderState() }
         }
 
         ScreenEvents.BEFORE_INIT.register(
@@ -144,16 +144,16 @@ object Registrations {
             WorldLoadEvent(server, world).post()
         }
 
-        val id = Identifier.of("dulkir_hud");
+        val id = ResourceLocation.parse("dulkir_hud");
         val element = object : HudElement {
             override fun render(
-                context: DrawContext?,
-                tickCounter: RenderTickCounter?
+                context: GuiGraphics?,
+                tickCounter: DeltaTracker?
             ) {
                 if (context == null || tickCounter == null) {
                     return;
                 }
-                HudRenderEvent(context, tickCounter.getTickProgress(true)).post()
+                HudRenderEvent(context, tickCounter.getGameTimeDeltaPartialTick(true)).post()
             }
         }
         HudElementRegistry.addLast(id, element)

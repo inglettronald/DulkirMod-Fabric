@@ -6,15 +6,12 @@ import com.dulkirfabric.events.SlayerBossEvents
 import com.dulkirfabric.events.WorldLoadEvent
 import com.dulkirfabric.events.chat.ChatEvents
 import meteordevelopment.orbit.EventHandler
-import net.minecraft.block.entity.SkullBlockEntity
-import net.minecraft.component.DataComponentTypes
-import net.minecraft.component.type.ProfileComponent
-import net.minecraft.entity.Entity
-import net.minecraft.item.ItemStack
-import net.minecraft.nbt.NbtCompound
-import net.minecraft.nbt.NbtHelper
-import net.minecraft.util.math.BlockPos
-import net.minecraft.util.math.Vec3d
+import net.minecraft.core.BlockPos
+import net.minecraft.core.component.DataComponents
+import net.minecraft.nbt.CompoundTag
+import net.minecraft.world.entity.Entity
+import net.minecraft.world.item.ItemStack
+import net.minecraft.world.phys.Vec3
 
 object Utils {
 
@@ -28,25 +25,26 @@ object Utils {
      * Prints relevant information about a sound that is being displayed
      */
     fun debugSound(event: PlaySoundEvent) {
-        if (event.sound.id.path == "entity.player.hurt") return
-        println("Path: ${event.sound.id.path}")
+        if (event.sound.location.path == "entity.player.hurt") return
+        println("Path: ${event.sound.location.path}")
         println("Pitch: ${event.sound.pitch}")
         println("Volume: ${event.sound.volume}")
     }
 
-    private fun lerp(prev: Vec3d, cur: Vec3d, tickDelta: Float): Vec3d {
-        return Vec3d(
+    private fun lerp(prev: Vec3, cur: Vec3, tickDelta: Float): Vec3 {
+        return Vec3(
             prev.x + (cur.x - prev.x) * tickDelta,
             prev.y + (cur.y - prev.y) * tickDelta,
             prev.z + (cur.z - prev.z) * tickDelta,
         )
     }
-    fun Entity.getInterpolatedPos(tickDelta: Float): Vec3d {
-        val prevPos = Vec3d(this.lastX, this.lastY, this.lastZ)
-        return lerp(prevPos, this.pos, tickDelta)
+
+    fun Entity.getInterpolatedPos(tickDelta: Float): Vec3 {
+        val prevPos = Vec3(this.xo, this.yo, this.zo)
+        return lerp(prevPos, this.position(), tickDelta)
     }
 
-    fun BlockPos.getBlockAt() = mc.world!!.getBlockState(this)
+    fun BlockPos.getBlockAt() = mc.level!!.getBlockState(this)
 
     @EventHandler
     fun detectSlayerEvents(event: ChatEvents.AllowChat) {
@@ -79,10 +77,10 @@ object Utils {
     }
 
     fun getSkullTexture(itemStack: ItemStack): String? {
-        return itemStack.components?.get(DataComponentTypes.PROFILE)?.gameProfile?.properties?.get("textures")?.first()?.value
+        return itemStack.components?.get(DataComponents.PROFILE)?.partialProfile?.properties?.get("textures")?.first()?.value
     }
 
-    fun getNbt(itemStack: ItemStack): NbtCompound? {
-        return itemStack.components?.get(DataComponentTypes.CUSTOM_DATA)?.nbt
+    fun getNbt(itemStack: ItemStack): CompoundTag? {
+        return itemStack.components?.get(DataComponents.CUSTOM_DATA)?.tag
     }
 }
