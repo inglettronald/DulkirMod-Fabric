@@ -1,6 +1,5 @@
 accessWidener   v2  named
 accessible method net/minecraft/client/gui/components/PlayerTabOverlay getPlayerInfos ()Ljava/util/List;
-accessible method net/minecraft/client/render/RenderLayer$MultiPhaseParameters$Builder <init> ()V
 accessible field net/minecraft/world/item/component/CustomData tag Lnet/minecraft/nbt/CompoundTag;
 accessible field net/minecraft/client/renderer/LevelRenderer renderBuffers Lnet/minecraft/client/renderer/RenderBuffers;
 accessible field net/minecraft/network/chat/TextColor name Ljava/lang/String;
