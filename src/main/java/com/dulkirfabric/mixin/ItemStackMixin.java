@@ -1,11 +1,11 @@
 package com.dulkirfabric.mixin;
 
 import com.dulkirfabric.util.render.ItemChangeHandler;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.tooltip.TooltipType;
-import net.minecraft.text.Text;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -20,11 +20,11 @@ public abstract class ItemStackMixin {
     @Shadow public abstract Item getItem();
 
     @Inject(
-            method = "getTooltip",
+            method = "getTooltipLines",
             at = @At("HEAD")
     )
-    private void onGetTooltip(Item.TooltipContext context, PlayerEntity player,
-                              TooltipType type, CallbackInfoReturnable<List<Text>> cir) {
+    private void onGetTooltip(Item.TooltipContext tooltipContext, Player player, TooltipFlag tooltipFlag,
+                              CallbackInfoReturnable<List<Component>> cir) {
         ItemChangeHandler.INSTANCE.handle(this.getItem().getName().getString());
     }
 

@@ -16,7 +16,7 @@ package com.dulkirfabric
 import com.dulkirfabric.config.DulkirConfig
 import com.llamalad7.mixinextras.MixinExtrasBootstrap
 import meteordevelopment.orbit.EventBus
-import net.minecraft.client.MinecraftClient
+import net.minecraft.client.Minecraft
 import org.slf4j.LoggerFactory
 import org.spongepowered.asm.service.ServiceNotAvailableError
 import java.lang.invoke.MethodHandles
@@ -27,7 +27,7 @@ object DulkirModFabric {
 	@JvmField
 	val EVENT_BUS = EventBus()
 	@JvmField
-	val mc: MinecraftClient = MinecraftClient.getInstance()
+	val mc: net.minecraft.client.Minecraft = Minecraft.getInstance()
 	val MOD_ID = "dulkirmod-fabric"
 
 	@JvmStatic

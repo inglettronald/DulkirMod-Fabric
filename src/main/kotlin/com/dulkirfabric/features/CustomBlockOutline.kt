@@ -5,7 +5,7 @@ import com.dulkirfabric.events.BlockOutlineEvent
 import com.dulkirfabric.util.ColorUtil
 import com.dulkirfabric.util.render.WorldRenderUtils
 import meteordevelopment.orbit.EventHandler
-import net.minecraft.util.math.Box
+import net.minecraft.world.phys.AABB
 
 object CustomBlockOutline {
 
@@ -17,14 +17,14 @@ object CustomBlockOutline {
     @EventHandler
     fun onBlockOutline(event: BlockOutlineEvent) {
         if (!DulkirConfig.configOptions.customBlockOutlines) return
-        val blockPos = event.blockOutlineContext.blockPos()
+        val blockPos = event.blockOutlineContext.pos()
         val x = blockPos.x.toDouble()
         val y = blockPos.y.toDouble()
         val z = blockPos.z.toDouble()
         val color = ColorUtil.toRGB(DulkirConfig.configOptions.blockOutlineColor)
 
         WorldRenderUtils.drawWireFrame(
-            event.worldRenderContext, Box(x, y, z, x + 1, y + 1, z + 1),
+            event.worldRenderContext, AABB(x, y, z, x + 1, y + 1, z + 1),
             color, 3f * DulkirConfig.configOptions.blockOutlineThickness, true
         )
         event.isCancelled = true

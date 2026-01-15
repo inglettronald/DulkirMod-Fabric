@@ -1,9 +1,9 @@
 package com.dulkirfabric.events
 
 import com.dulkirfabric.events.base.Event
-import net.minecraft.client.gui.DrawContext
+import net.minecraft.client.gui.GuiGraphics
 
 data class HudRenderEvent(
-    val context: DrawContext,
+    val context: GuiGraphics,
     val delta: Float
 ): Event()

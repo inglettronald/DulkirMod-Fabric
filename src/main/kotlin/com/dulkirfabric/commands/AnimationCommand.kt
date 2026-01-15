@@ -8,11 +8,11 @@ import com.google.gson.Gson
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.builder.LiteralArgumentBuilder
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
-import net.minecraft.command.CommandRegistryAccess
+import net.minecraft.commands.CommandBuildContext
 import java.util.*
 
 object AnimationCommand {
-    fun register(dispatcher: CommandDispatcher<FabricClientCommandSource>, registryAccess: CommandRegistryAccess) {
+    fun register(dispatcher: CommandDispatcher<FabricClientCommandSource>, buildContext: CommandBuildContext) {
         dispatcher.register(
             LiteralArgumentBuilder.literal<FabricClientCommandSource>("animations")
                 .executes {
@@ -48,7 +48,7 @@ object AnimationCommand {
 
     private fun applyPresetFromClipboard() {
         val gson = Gson()
-        val base64 = mc.keyboard.clipboard
+        val base64 = mc.keyboardHandler.clipboard
         try {
             val jsonString = String(Base64.getDecoder().decode(base64))
             val import = gson.fromJson(jsonString, AnimationPreset::class.java)
@@ -74,7 +74,7 @@ object AnimationCommand {
         val jsonString = gson.toJson(DulkirConfig.configOptions.animationPreset)
         val s = Base64.getEncoder().encodeToString(jsonString.toByteArray())
         // set clipboard
-        mc.keyboard.clipboard = s
+        mc.keyboardHandler.clipboard = s
         TextUtils.info("§6Animation config has been copied to clipboard")
     }
 }

@@ -3,11 +3,10 @@ package com.dulkirfabric.features.filters
 import com.dulkirfabric.DulkirModFabric.mc
 import com.dulkirfabric.config.DulkirConfig
 import com.dulkirfabric.events.ClientTickEvent
-import com.dulkirfabric.events.WorldRenderLastEvent
 import com.dulkirfabric.util.TextUtils
 import meteordevelopment.orbit.EventHandler
-import net.minecraft.entity.decoration.ArmorStandEntity
-import net.minecraft.text.Text
+import net.minecraft.network.chat.Component
+import net.minecraft.world.entity.decoration.ArmorStand
 
 object DamageNumbers {
 
@@ -18,9 +17,10 @@ object DamageNumbers {
     )
     @EventHandler
     fun worldLast(event: ClientTickEvent) {
-        val ents = mc.world?.entities ?: return
+        // TODO: this is terrible
+        val ents = mc.level?.entitiesForRendering() ?: return
         ents.forEach {
-            if (it !is ArmorStandEntity) return@forEach
+            if (it !is ArmorStand) return@forEach
             if (!it.isMarker) return@forEach
             if (!it.hasCustomName()) return@forEach
             if (!it.isCustomNameVisible) return@forEach
@@ -38,7 +38,7 @@ object DamageNumbers {
                 val s = name.replace(trimPattern, "")
                 try {
                     val critAmount = s.toInt()
-                    it.customName = Text.literal(truncate(critAmount).applyDulkirCritColors())
+                    it.customName = Component.literal(truncate(critAmount).applyDulkirCritColors())
                 } catch (e: NumberFormatException) {
                     TextUtils.info("Error in Damage Truncation: $s", true)
                     TextUtils.info("Please report this on my discord!", true)

@@ -7,10 +7,9 @@ import com.dulkirfabric.util.TablistUtils
 import com.dulkirfabric.util.Utils
 import com.dulkirfabric.util.render.HudRenderUtil
 import meteordevelopment.orbit.EventHandler
-import net.minecraft.item.ItemStack
-import net.minecraft.text.Style
-import net.minecraft.text.Text
-import net.minecraft.util.Formatting
+import net.minecraft.ChatFormatting
+import net.minecraft.network.chat.Component
+import net.minecraft.world.item.ItemStack
 import java.time.Duration
 import kotlin.jvm.optionals.getOrNull
 
@@ -28,7 +27,7 @@ object BrokenHyp {
     @EventHandler
     fun onLong(event: LongUpdateEvent) {
         if (!DulkirConfig.configOptions.brokenHypNotif) return
-        val stack: ItemStack = mc.player?.mainHandStack ?: return
+        val stack: ItemStack = mc.player?.mainHandItem ?: return
 
         // get info about held item
         val tag = Utils.getNbt(stack) ?: return
@@ -56,7 +55,7 @@ object BrokenHyp {
 
         // If this section of the code is reached, then we have the same item, and we can check for updated stats
         if (oldKill != kill && oldChampionXp == championXp && TablistUtils.persistentInfo.area != "Private Island") {
-            HudRenderUtil.drawTitle(Text.literal("Hype Broken").setStyle(Style.EMPTY.withColor(Formatting.RED)),
+            HudRenderUtil.drawTitle(Component.literal("Hype Broken").withStyle(ChatFormatting.RED),
                 Duration.ofSeconds(2))
         }
         // update item regardless of whether it is bugged or not

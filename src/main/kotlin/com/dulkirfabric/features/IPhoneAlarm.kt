@@ -6,8 +6,8 @@ import com.dulkirfabric.events.ClientTickEvent
 import com.dulkirfabric.util.SoundUtil
 import com.dulkirfabric.util.TimeMark
 import meteordevelopment.orbit.EventHandler
-import net.minecraft.client.sound.SoundInstance
-import net.minecraft.util.math.BlockPos
+import net.minecraft.client.resources.sounds.SoundInstance
+import net.minecraft.core.BlockPos
 import java.time.Duration
 
 object IPhoneAlarm {
@@ -20,7 +20,7 @@ object IPhoneAlarm {
         if (DulkirConfig.configOptions.alarmTimeout <= 0) return
         val p = mc.player ?: return
         val lastPosition = this.lastPosition
-        this.lastPosition = p.blockPos
+        this.lastPosition = p.blockPosition()
         if (lastPosition != this.lastPosition) {
             lastMoved = TimeMark.now()
             SoundUtil.stop(soundInstances)

@@ -1,7 +1,7 @@
 package com.dulkirfabric.util
 
 import com.dulkirfabric.DulkirModFabric.mc
-import net.minecraft.text.Text
+import net.minecraft.network.chat.Component
 
 object TextUtils {
     const val CHAT_PREFIX = "§f<§3DulkirMod§f>§r"
@@ -10,7 +10,7 @@ object TextUtils {
         if (mc.player == null) return
 
         val textPrefix = if (prefix) "${CHAT_PREFIX} " else ""
-        mc.inGameHud.chatHud.addMessage(Text.literal("$textPrefix$text§r"))
+        mc.gui.chat.addMessage(Component.literal("$textPrefix$text§r"))
     }
 
     fun toggledMessage(message: String, state: Boolean) {
@@ -18,7 +18,7 @@ object TextUtils {
         info("§9Toggled $message §8[$stateText§8]§r")
     }
 
-    val Text.unformattedString
+    val Component.unformattedString
         get() = string.replace("§.".toRegex(), "")
 
     fun sendPartyChatMessage(message: String) {
@@ -26,11 +26,11 @@ object TextUtils {
     }
 
     fun sendMessage(message: String) {
-        mc.player?.networkHandler?.sendChatMessage(message)
+        mc.player?.connection?.sendChat(message)
     }
 
     fun sendCommand(command: String) {
-        mc.player?.networkHandler?.sendChatCommand(command)
+        mc.player?.connection?.sendCommand(command)
     }
 
     fun stripColorCodes(string: String): String {

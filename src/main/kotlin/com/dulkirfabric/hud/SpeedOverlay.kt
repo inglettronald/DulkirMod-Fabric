@@ -7,15 +7,15 @@ import com.dulkirfabric.events.HudRenderEvent
 import com.dulkirfabric.util.TablistUtils
 import com.dulkirfabric.util.Utils
 import meteordevelopment.orbit.EventHandler
-import net.minecraft.text.Text
-import net.minecraft.util.math.Vec3d
+import net.minecraft.network.chat.Component
+import net.minecraft.world.phys.Vec3
 import org.joml.Vector2i
 
 object SpeedOverlay {
 
-    private val speedHud = DulkirConfig.registerHud("speed_hud", Text.literal("Speed"), 24 + 4, 11,
+    private val speedHud = DulkirConfig.registerHud("speed_hud", Component.literal("Speed"), 24 + 4, 11,
         Vector2i(0,0), 1.6367052f)
-    private val bpsOverlay = DulkirConfig.registerHud("movement_hud", Text.literal("Speed (BPS)"), 69, 11,
+    private val bpsOverlay = DulkirConfig.registerHud("movement_hud", Component.literal("Speed (BPS)"), 69, 11,
         Vector2i(0,0), 1.5052f)
 
     private var tickMomentum = 0.0
@@ -24,26 +24,26 @@ object SpeedOverlay {
     fun onHudRender(event: HudRenderEvent) {
         if (!Utils.isInSkyblock()) return
         val context = event.context
-        val matrices = context.matrices
+        val pose = context.pose()
         if (DulkirConfig.configOptions.speedHud) {
-            matrices.pushMatrix()
-            speedHud.applyTransformations(matrices)
-            context.drawText(mc.textRenderer, Text.literal(TablistUtils.persistentInfo.speed),0, 1, -1, true)
-            matrices.popMatrix()
+            pose.pushMatrix()
+            speedHud.applyTransformations(pose)
+            context.drawString(mc.font, Component.literal(TablistUtils.persistentInfo.speed),0, 1, -1, true)
+            pose.popMatrix()
         }
         if (DulkirConfig.configOptions.speedBpsHud) {
-            matrices.pushMatrix()
-            bpsOverlay.applyTransformations(matrices)
-            context.drawText(mc.textRenderer, Text.literal("${"%.2f".format(tickMomentum)} BPS (speed)"),0, 1, -1, true)
-            matrices.popMatrix()
+            pose.pushMatrix()
+            bpsOverlay.applyTransformations(pose)
+            context.drawString(mc.font, Component.literal("${"%.2f".format(tickMomentum)} BPS (speed)"),0, 1, -1, true)
+            pose.popMatrix()
         }
     }
 
     @EventHandler
     fun onTick(event: ClientTickEvent) {
         val player = mc.player ?: return
-        val last = Vec3d(player.lastX, player.lastY, player.lastZ)
-        val now = player.pos ?: return
+        val last = Vec3(player.xo, player.yo, player.zo)
+        val now = player.position() ?: return
         tickMomentum = last.distanceTo(now) * 20
     }
 }

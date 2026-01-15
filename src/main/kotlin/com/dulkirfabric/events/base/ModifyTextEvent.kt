@@ -1,15 +1,15 @@
 package com.dulkirfabric.events.base
 
 import com.dulkirfabric.DulkirModFabric
-import net.minecraft.text.Text
+import net.minecraft.network.chat.Component
 
-abstract class ModifyTextEvent(original: Text) {
-    private var returnValue: Text = original
+abstract class ModifyTextEvent(original: Component) {
+    private var returnValue: Component = original
 
-    fun setReturnValue(new: Text) {
+    fun setReturnValue(new: Component) {
         returnValue = new
     }
-    fun post(): Text {
+    fun post(): Component {
         return DulkirModFabric.EVENT_BUS.post(this).returnValue
     }
 }

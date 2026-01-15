@@ -4,12 +4,12 @@ import com.dulkirfabric.config.DulkirConfig;
 import com.dulkirfabric.util.render.GlowingEntityInterface;
 import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
-import net.minecraft.entity.Attackable;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.util.Hand;
-import net.minecraft.world.World;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.Attackable;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
@@ -25,8 +25,7 @@ import java.awt.*;
 public abstract class LivingEntityMixin extends Entity implements Attackable, GlowingEntityInterface {
 
     @Shadow
-    public float handSwingProgress;
-
+    public float attackAnim;
     @Unique
     private int dulkir$animationTicks;
     @Unique
@@ -34,8 +33,8 @@ public abstract class LivingEntityMixin extends Entity implements Attackable, Gl
     @Unique
     private Color dulkir$glowColor;
 
-    public LivingEntityMixin(EntityType<?> type, World world) {
-        super(type, world);
+    public LivingEntityMixin(EntityType<?> type, Level level) {
+        super(type, level);
     }
 
     @Override
@@ -59,7 +58,7 @@ public abstract class LivingEntityMixin extends Entity implements Attackable, Gl
      * Using a wrapMethod because another mod tries to cancel this
      */
     @WrapMethod(
-            method = "tickHandSwing"
+            method = "updateSwingTime"
     )
     private void dulkir$modifySwingPos(Operation<Void> original) {
         original.call();
@@ -71,20 +70,21 @@ public abstract class LivingEntityMixin extends Entity implements Attackable, Gl
             dulkir$animationTicks = 0;
         }
         if (dulkir$animationTicks == 0) {
-            handSwingProgress = 1F;
+            this.attackAnim = 1F;
         } else {
-            handSwingProgress = (dulkir$animationTicks - 1F) / swingDuration;
+            this.attackAnim = (dulkir$animationTicks - 1F) / swingDuration;
             dulkir$animationTicks++;
         }
     }
 
     @Inject(
-            method = "swingHand(Lnet/minecraft/util/Hand;Z)V",
+            method = "swing(Lnet/minecraft/world/InteractionHand;)V",
             at = @At("HEAD")
     )
-    public void dulkir$onSwing(Hand hand, boolean fromServerPlayer, CallbackInfo ci) {
+    public void dulkir$onSwing(InteractionHand interactionHand, CallbackInfo ci) {
         if (dulkir$animationTicks == 0) {
             dulkir$animationTicks = 1;
         }
     }
+
 }

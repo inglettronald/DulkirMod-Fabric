@@ -1,37 +1,36 @@
 package com.dulkirfabric.util
 
-import net.minecraft.client.MinecraftClient
-import net.minecraft.client.sound.PositionedSoundInstance
-import net.minecraft.client.sound.SoundInstance
-import net.minecraft.sound.SoundCategory
-import net.minecraft.sound.SoundEvent
-import net.minecraft.util.Identifier
-import net.minecraft.util.math.BlockPos
-import net.minecraft.util.math.random.LocalRandom
+import net.minecraft.client.Minecraft
+import net.minecraft.client.resources.sounds.SimpleSoundInstance
+import net.minecraft.client.resources.sounds.SoundInstance
+import net.minecraft.core.BlockPos
+import net.minecraft.resources.ResourceLocation
+import net.minecraft.sounds.SoundEvent
+import net.minecraft.sounds.SoundSource
+import net.minecraft.world.level.levelgen.SingleThreadedRandomSource
 
 object SoundUtil {
-    val iphone = SoundEvent.of(Identifier.of("dulkirmod:iphone"))
-
+    val iphone = SoundEvent.createVariableRangeEvent(ResourceLocation.parse("dulkirmod:iphone"))
 
     fun stop(sounds: List<SoundInstance>) {
-        val m = MinecraftClient.getInstance().soundManager
+        val m = Minecraft.getInstance().soundManager
         sounds.forEach(m::stop)
     }
 
-    fun playSoundAtPlayer(event: SoundEvent): PositionedSoundInstance {
-        val instance = PositionedSoundInstance(
+    fun playSoundAtPlayer(event: SoundEvent): SimpleSoundInstance {
+        val instance = SimpleSoundInstance(
             event,
-            SoundCategory.MASTER,
+            SoundSource.MASTER,
             1F,
             1F,
-            LocalRandom(0L),
-            MinecraftClient.getInstance().player?.blockPos ?: BlockPos(0, 0, 0)
+            SingleThreadedRandomSource(0L),
+            Minecraft.getInstance().player?.blockPosition() ?: BlockPos(0, 0, 0)
         )
-        MinecraftClient.getInstance().soundManager.play(instance)
+        Minecraft.getInstance().soundManager.play(instance)
         return instance
     }
 
-    fun playIPhoneAlarm(): PositionedSoundInstance {
+    fun playIPhoneAlarm(): SimpleSoundInstance {
         return playSoundAtPlayer(iphone)
     }
 }

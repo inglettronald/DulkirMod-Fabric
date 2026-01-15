@@ -1,7 +1,7 @@
 package com.dulkirfabric.events
 
 import com.dulkirfabric.events.base.Event
-import net.minecraft.client.gui.screen.Screen
+import net.minecraft.client.gui.screens.Screen
 
 data class MouseScrollEvent(
     val screen: Screen,

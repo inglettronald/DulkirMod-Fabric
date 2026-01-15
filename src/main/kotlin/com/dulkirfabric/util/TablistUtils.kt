@@ -4,10 +4,10 @@ import com.dulkirfabric.DulkirModFabric.mc
 import com.dulkirfabric.events.AreaChangeEvent
 import com.dulkirfabric.events.LongUpdateEvent
 import meteordevelopment.orbit.EventHandler
-import net.minecraft.client.network.PlayerListEntry
+import net.minecraft.client.multiplayer.PlayerInfo
 
 object TablistUtils {
-    var tablist: List<PlayerListEntry>? = null
+    var tablist: List<PlayerInfo>? = null
     private val areaPattern = "Area: (.+)".toRegex()
     private val speedPattern = "^Speed: (.+)".toRegex()
     private val numVisitorPattern = "Visitors: \\((\\d)\\)".toRegex()
@@ -27,7 +27,7 @@ object TablistUtils {
     @EventHandler
     fun onLongUpdate(event: LongUpdateEvent) {
         if (mc.player == null) return
-        tablist = mc.inGameHud.playerListHud.collectPlayerEntries()
+        tablist = mc.gui.tabList.playerInfos
         updatePersistentData()
     }
 
@@ -39,7 +39,7 @@ object TablistUtils {
         var compostFlag = false
 
         tablist!!.forEach {
-            val str = it.displayName?.string?.trim() ?: return@forEach
+            val str = it.profile.name?.trim() ?: return@forEach
             areaPattern.find(str)?.let { result ->
                 if (persistentInfo.area != result.groupValues[1]) {
                     AreaChangeEvent(result.groupValues[1], persistentInfo.area).post()

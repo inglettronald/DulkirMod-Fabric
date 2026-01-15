@@ -5,10 +5,8 @@ import com.dulkirfabric.config.DulkirConfig
 import com.dulkirfabric.events.ClientTickEvent
 import com.dulkirfabric.events.MouseScrollEvent
 import com.dulkirfabric.events.TooltipRenderChangeEvent
+import com.mojang.blaze3d.platform.InputConstants
 import meteordevelopment.orbit.EventHandler
-import net.minecraft.client.MinecraftClient
-import net.minecraft.client.util.InputUtil
-import net.minecraft.client.util.math.MatrixStack
 import org.joml.Matrix3x2fStack
 import org.joml.Vector2i
 import org.joml.Vector2ic
@@ -32,7 +30,7 @@ object TooltipImpl {
 
     fun calculatePos(v: Vector2ic, tw: Int, th: Int, sw: Int, sh: Int): Vector2ic {
         // calculate the position of the tooltip based on the scroll amount
-        val partialTicks = MinecraftClient.getInstance().renderTickCounter.getTickProgress(true)
+        val partialTicks = mc.deltaTracker.getGameTimeDeltaPartialTick(true)
         var newVec = v
         frameX = newVec.x() + prevTickX + ((tickHorizontal - prevTickX) * partialTicks).toInt()
         frameY = newVec.y() + prevTickY + ((tickVertical - prevTickY) * partialTicks).toInt()
@@ -69,10 +67,10 @@ object TooltipImpl {
         if (!DulkirConfig.configOptions.toolTipFeatures) return
         // TODO: ignore input in config screen
         if (event.verticalScrollAmount == 0.0) return
-        val handle = MinecraftClient.getInstance().window.handle
-        if (InputUtil.isKeyPressed(handle, GLFW.GLFW_KEY_LEFT_SHIFT)) {
+        val window = mc.window
+        if (InputConstants.isKeyDown(window, GLFW.GLFW_KEY_LEFT_SHIFT)) {
             horizontalBuffer += (mc.window.width / 192) * event.verticalScrollAmount
-        } else if (InputUtil.isKeyPressed(handle, GLFW.GLFW_KEY_LEFT_CONTROL)) {
+        } else if (InputConstants.isKeyDown(window, GLFW.GLFW_KEY_LEFT_CONTROL)) {
             scaleBuffer = max(.01f, scaleBuffer + .1f * event.verticalScrollAmount.toFloat())
         } else {
             verticalBuffer += (mc.window.height / 108) * event.verticalScrollAmount

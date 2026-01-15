@@ -6,13 +6,13 @@ import com.mojang.brigadier.arguments.StringArgumentType
 import com.mojang.brigadier.builder.LiteralArgumentBuilder
 import com.mojang.brigadier.builder.RequiredArgumentBuilder
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
-import net.minecraft.command.CommandRegistryAccess
+import net.minecraft.commands.CommandBuildContext
 
 object DynamicKeyCommand {
 
     var command = ""
 
-    fun register(dispatcher: CommandDispatcher<FabricClientCommandSource>, registryAccess: CommandRegistryAccess) {
+    fun register(dispatcher: CommandDispatcher<FabricClientCommandSource>, buildContext: CommandBuildContext) {
         dispatcher.register(
             LiteralArgumentBuilder.literal<FabricClientCommandSource>("dk")
                 .executes { context ->

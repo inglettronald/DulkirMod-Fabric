@@ -5,16 +5,13 @@ import com.dulkirfabric.features.InventoryScale;
 import com.dulkirfabric.features.TooltipImpl;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.screen.ingame.HandledScreen;
-import net.minecraft.client.gui.tooltip.TooltipComponent;
-import net.minecraft.client.gui.tooltip.TooltipPositioner;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.Identifier;
-import org.joml.Matrix3x2f;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
+import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipPositioner;
+import net.minecraft.resources.ResourceLocation;
 import org.joml.Matrix3x2fStack;
 import org.joml.Vector2ic;
 import org.spongepowered.asm.mixin.Final;
@@ -26,25 +23,28 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.List;
 
-@Mixin(DrawContext.class)
-public class DrawContextMixin {
+@Mixin(GuiGraphics.class)
+public class GuiGraphicsMixin {
 
-    @Shadow @Final private Matrix3x2fStack matrices;
+    @Shadow
+    @Final
+    private Matrix3x2fStack pose;
 
     @WrapOperation(
-            method = "drawTooltipImmediately",
+            method = "renderTooltip",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/client/gui/tooltip/TooltipPositioner;getPosition(IIIIII)Lorg/joml/Vector2ic;"
+                    target = "Lnet/minecraft/client/gui/screens/inventory/tooltip/ClientTooltipPositioner;" +
+                            "positionTooltip(IIIIII)Lorg/joml/Vector2ic;"
             )
     )
-    public Vector2ic drawTooltip(TooltipPositioner positionerInstance, int sw, int sh, int mx, int my, int tw,
+    public Vector2ic drawTooltip(ClientTooltipPositioner positionerInstance, int sw, int sh, int mx, int my, int tw,
                                  int th, Operation<Vector2ic> operation) {
         if (!DulkirConfig.ConfigVars.getConfigOptions().getToolTipFeatures()) {
             return operation.call(positionerInstance, sw, sh, mx, my, tw, th);
         }
-        Screen screen = MinecraftClient.getInstance().currentScreen;
-        if (!(screen instanceof HandledScreen)) {
+        net.minecraft.client.gui.screens.Screen screen = Minecraft.getInstance().screen;
+        if (!(screen instanceof AbstractContainerScreen<?>)) {
             return operation.call(positionerInstance, sw, sh, mx, my, tw, th);
         }
         float scale = InventoryScale.INSTANCE.getScale();
@@ -68,20 +68,20 @@ public class DrawContextMixin {
     }
 
     @Inject(
-            method = "drawTooltipImmediately",
+            method = "renderTooltip",
             at = @At(
                     value = "INVOKE",
                     target = "Lorg/joml/Matrix3x2fStack;pushMatrix()Lorg/joml/Matrix3x2fStack;",
                     shift = At.Shift.AFTER
             )
     )
-    public void onPush(TextRenderer textRenderer, List<TooltipComponent> components, int x, int y,
-                       TooltipPositioner positioner, Identifier texture, CallbackInfo ci) {
+    public void onPush(Font font, List<ClientTooltipComponent> list, int i, int j,
+                       ClientTooltipPositioner clientTooltipPositioner, ResourceLocation resourceLocation, CallbackInfo ci) {
         if (!DulkirConfig.ConfigVars.getConfigOptions().getToolTipFeatures()) {
             return;
         }
-        if (MinecraftClient.getInstance().currentScreen instanceof HandledScreen) {
-            TooltipImpl.INSTANCE.applyScale(matrices);
+        if (Minecraft.getInstance().screen instanceof AbstractContainerScreen<?>) {
+            TooltipImpl.INSTANCE.applyScale(this.pose);
         }
     }
 }

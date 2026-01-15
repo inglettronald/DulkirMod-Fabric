@@ -5,53 +5,52 @@ import com.dulkirfabric.config.DulkirConfig
 import com.dulkirfabric.events.HudRenderEvent
 import com.dulkirfabric.util.TablistUtils.persistentInfo
 import meteordevelopment.orbit.EventHandler
-import net.minecraft.text.Style
-import net.minecraft.text.Text
-import net.minecraft.util.Formatting
+import net.minecraft.ChatFormatting
+import net.minecraft.network.chat.Component
 import org.joml.Vector2i
 
 object Garden {
-    private val visitorHud = DulkirConfig.registerHud("visitors", Text.literal("Visitors"), 100, 21,
+    private val visitorHud = DulkirConfig.registerHud("visitors", Component.literal("Visitors"), 100, 21,
         Vector2i(0, 0), 1.101687f)
-    private val composterHud = DulkirConfig.registerHud("composter", Text.literal("Composter"), 100, 21,
+    private val composterHud = DulkirConfig.registerHud("composter", Component.literal("Composter"), 100, 21,
         Vector2i(0, 0), 0.9619154f)
-    private val pitchYawHud = DulkirConfig.registerHud("pitch_yaw", Text.literal("Pitch/Yaw"), 100, 21,
+    private val pitchYawHud = DulkirConfig.registerHud("pitch_yaw", Component.literal("Pitch/Yaw"), 100, 21,
         Vector2i(0, 0), 0.9619154f)
 
     @EventHandler
     fun onHudRender(event: HudRenderEvent) {
         if (persistentInfo.area != "Garden") return
         val context = event.context
-        val matrices = context.matrices
+        val pose = context.pose()
         if (DulkirConfig.configOptions.visitorHud) {
-            matrices.pushMatrix()
-            visitorHud.applyTransformations(matrices)
+            pose.pushMatrix()
+            visitorHud.applyTransformations(pose)
 
-            val visitorText = Text.literal("Visitors: ")
-                .setStyle(Style.EMPTY.withBold(true).withColor(Formatting.GREEN))
-                .append(Text.literal(persistentInfo.numVisitors.toString())
-                    .setStyle(Style.EMPTY.withColor(Formatting.GRAY).withBold(false)))
-            context.drawText(mc.textRenderer, visitorText,0, 1, -1, true)
-            val nextVisitor = Text.literal("Next: ")
-                .setStyle(Style.EMPTY.withColor(Formatting.GOLD))
-                .append(Text.literal(persistentInfo.nextVisitorTime)
-                    .setStyle(Style.EMPTY.withColor(Formatting.GRAY)))
-            context.drawText(mc.textRenderer, nextVisitor,3, 11, -1, true)
-            matrices.popMatrix()
+            val visitorText = Component.literal("Visitors: ")
+                .withStyle(ChatFormatting.GREEN, ChatFormatting.BOLD)
+                .append(Component.literal(persistentInfo.numVisitors.toString())
+                    .withStyle(ChatFormatting.GRAY))
+            context.drawString(mc.font, visitorText,0, 1, -1, true)
+            val nextVisitor = Component.literal("Next: ")
+                .withStyle(ChatFormatting.GOLD)
+                .append(Component.literal(persistentInfo.nextVisitorTime)
+                    .withStyle(ChatFormatting.GRAY))
+            context.drawString(mc.font, nextVisitor,3, 11, -1, true)
+            pose.popMatrix()
         }
         if (DulkirConfig.configOptions.showComposterInfo) {
-            matrices.pushMatrix()
-            composterHud.applyTransformations(matrices)
+            pose.pushMatrix()
+            composterHud.applyTransformations(pose)
 
-            val composterText = Text.literal("Composter Time: ")
-                .setStyle(Style.EMPTY.withColor(Formatting.DARK_GREEN))
-                .append(Text.literal(persistentInfo.compostTime)
-                    .setStyle(Style.EMPTY.withColor(Formatting.GRAY)))
-            context.drawText(mc.textRenderer, composterText,0, 1, -1, true)
-            matrices.popMatrix()
+            val composterText = Component.literal("Composter Time: ")
+                .withStyle(ChatFormatting.DARK_GREEN)
+                .append(Component.literal(persistentInfo.compostTime)
+                    .withStyle(ChatFormatting.GRAY))
+            context.drawString(mc.font, composterText,0, 1, -1, true)
+            pose.popMatrix()
         }
-        var yaw = mc.player?.yaw ?: return
-        val pitch = mc.player?.pitch ?: return
+        var yaw = mc.player?.xRot ?: return
+        val pitch = mc.player?.yRot ?: return
         yaw %= 360f
         if (yaw < -180.0f) {
             yaw += 360.0f;
@@ -60,20 +59,20 @@ object Garden {
         }
 
         if (DulkirConfig.configOptions.pitchYawDisplay) {
-            matrices.pushMatrix()
-            pitchYawHud.applyTransformations(matrices)
+            pose.pushMatrix()
+            pitchYawHud.applyTransformations(pose)
 
-            val yawText = Text.literal("Yaw: ")
-                .setStyle(Style.EMPTY.withColor(Formatting.GOLD))
-                .append(Text.literal("%.2f".format(yaw))
-                    .setStyle(Style.EMPTY.withColor(Formatting.GRAY)))
-            context.drawText(mc.textRenderer, yawText,0, 1, -1, true)
-            val pitchText = Text.literal("Pitch: ")
-                .setStyle(Style.EMPTY.withColor(Formatting.GOLD))
-                .append(Text.literal("%.2f".format(pitch))
-                    .setStyle(Style.EMPTY.withColor(Formatting.GRAY)))
-            context.drawText(mc.textRenderer, pitchText,0, 13, -1, true)
-            matrices.popMatrix()
+            val yawText = Component.literal("Yaw: ")
+                .withStyle(ChatFormatting.GOLD)
+                .append(Component.literal("%.2f".format(yaw))
+                    .withStyle(ChatFormatting.GRAY))
+            context.drawString(mc.font, yawText,0, 1, -1, true)
+            val pitchText = Component.literal("Pitch: ")
+                .withStyle(ChatFormatting.GOLD)
+                .append(Component.literal("%.2f".format(pitch))
+                    .withStyle(ChatFormatting.GRAY))
+            context.drawString(mc.font, pitchText,0, 13, -1, true)
+            pose.popMatrix()
         }
     }
 }

@@ -8,19 +8,18 @@ import com.dulkirfabric.util.TablistUtils
 import com.dulkirfabric.util.Utils
 import com.dulkirfabric.util.render.WorldRenderUtils
 import meteordevelopment.orbit.EventHandler
-import net.minecraft.text.Style
-import net.minecraft.text.Text
-import net.minecraft.util.Formatting
-import net.minecraft.util.math.Vec3d
+import net.minecraft.ChatFormatting
+import net.minecraft.network.chat.Component
+import net.minecraft.world.phys.Vec3
 
 object EffigyDisplay {
     private var effigyWaypoints = arrayOf(
-        Effigy(Vec3d(150.5, 76.0, 95.5)),
-        Effigy(Vec3d(193.5, 90.0, 119.5)),
-        Effigy(Vec3d(235.5, 107.0, 147.5)),
-        Effigy(Vec3d(293.5, 93.0, 134.5)),
-        Effigy(Vec3d(262.5, 96.0, 94.5)),
-        Effigy(Vec3d(240.5, 126.0, 118.5))
+        Effigy(Vec3(150.5, 76.0, 95.5)),
+        Effigy(Vec3(193.5, 90.0, 119.5)),
+        Effigy(Vec3(235.5, 107.0, 147.5)),
+        Effigy(Vec3(293.5, 93.0, 134.5)),
+        Effigy(Vec3(262.5, 96.0, 94.5)),
+        Effigy(Vec3(240.5, 126.0, 118.5))
     )
 
     private val c7OnlyRegex = Regex("[^c7]")
@@ -31,7 +30,7 @@ object EffigyDisplay {
         for (effigy in effigyWaypoints) {
             if (effigy.render) {
                 WorldRenderUtils.renderWaypoint(
-                    Text.literal("Inactive").setStyle(Style.EMPTY.withColor(Formatting.GOLD)), event.context, effigy.coords
+                    Component.literal("Inactive").withStyle(ChatFormatting.GOLD), event.context, effigy.coords
                 )
             }
         }
@@ -58,5 +57,5 @@ object EffigyDisplay {
     /**
      * data class for storing the effigy coordinates and whether they need to be rendered
      */
-    data class Effigy(val coords: Vec3d, var render: Boolean = false)
+    data class Effigy(val coords: Vec3, var render: Boolean = false)
 }

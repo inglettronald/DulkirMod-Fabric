@@ -2,10 +2,13 @@ package com.dulkirfabric.mixin.render;
 
 
 import com.dulkirfabric.features.InventoryScale;
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.render.GameRenderer;
-import net.minecraft.client.render.RenderTickCounter;
+import net.minecraft.client.DeltaTracker;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.renderer.GameRenderer;
 import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -16,58 +19,26 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(value = GameRenderer.class, priority = 1001)
 public class GameRendererMixin {
 
-    @ModifyArg(
+    @WrapOperation(
             method = "render",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/client/gui/screen/Screen;renderWithTooltip(Lnet/minecraft/client/gui/DrawContext;IIF)V"
-            ),
-            index = 1
-    )
-    public int fixMouseX(int mouseX) {
-        return (int) (mouseX / InventoryScale.INSTANCE.getScale());
-    }
-
-    @ModifyArg(
-            method = "render",
-            at = @At(
-                    value = "INVOKE",
-                    target = "Lnet/minecraft/client/gui/screen/Screen;renderWithTooltip(Lnet/minecraft/client/gui/DrawContext;IIF)V"
-            ),
-            index = 2
-    )
-    public int fixMouseY(int mouseY) {
-        return (int) (mouseY / InventoryScale.INSTANCE.getScale());
-    }
-
-
-    @Inject(
-            method = "render",
-            at = @At(
-                    value = "FIELD",
-                    opcode = Opcodes.GETFIELD,
-                    target = "Lnet/minecraft/client/MinecraftClient;currentScreen:Lnet/minecraft/client/gui/screen/Screen;",
-                    shift = At.Shift.BEFORE,
-                    ordinal = 1
+                    target = "Lnet/minecraft/client/gui/screens/Screen;renderWithTooltipAndSubtitles" +
+                            "(Lnet/minecraft/client/gui/GuiGraphics;IIF)V"
             )
     )
-    public void onScreenRenderPre(RenderTickCounter tickCounter, boolean tick, CallbackInfo ci, @Local DrawContext drawContext) {
-        drawContext.getMatrices().pushMatrix();
-        drawContext.getMatrices().scale(InventoryScale.INSTANCE.getScale(), InventoryScale.INSTANCE.getScale());
+    private void dulkir$wrapScreenRender(Screen instance, GuiGraphics guiGraphics, int mouseX, int mouseY, float f,
+                                         Operation<Void> original) {
+        guiGraphics.pose().pushMatrix();
+        guiGraphics.pose().scale(InventoryScale.INSTANCE.getScale(), InventoryScale.INSTANCE.getScale());
+        original.call(
+                instance,
+                guiGraphics,
+                mouseX,
+                mouseY,
+                f
+        );
+        guiGraphics.pose().popMatrix();
     }
 
-
-    @Inject(
-            method = "render",
-            at = @At(
-                    value = "FIELD",
-                    opcode = Opcodes.GETFIELD,
-                    target = "Lnet/minecraft/client/MinecraftClient;currentScreen:Lnet/minecraft/client/gui/screen/Screen;",
-                    shift = At.Shift.AFTER,
-                    ordinal = 3
-            )
-    )
-    public void onScreenRenderPost(RenderTickCounter tickCounter, boolean tick, CallbackInfo ci, @Local DrawContext drawContext) {
-       drawContext.getMatrices().popMatrix();
-    }
 }

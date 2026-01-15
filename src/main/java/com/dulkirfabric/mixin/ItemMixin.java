@@ -2,8 +2,8 @@ package com.dulkirfabric.mixin;
 
 import com.dulkirfabric.config.DulkirConfig;
 import com.dulkirfabric.features.CooldownDisplays;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -13,18 +13,18 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public class ItemMixin {
 
     @Inject(
-            method = "isItemBarVisible(Lnet/minecraft/item/ItemStack;)Z",
+            method = "isBarVisible",
             at = @At("HEAD"),
             cancellable = true
     )
-    public void shouldDisplayDurabilityBar(ItemStack stack, CallbackInfoReturnable<Boolean> cir) {
+    public void shouldDisplayDurabilityBar(ItemStack itemStack, CallbackInfoReturnable<Boolean> cir) {
         if (DulkirConfig.ConfigVars.getConfigOptions().getDuraCooldown()) {
-            CooldownDisplays.INSTANCE.shouldDisplay(stack, cir);
+            CooldownDisplays.INSTANCE.shouldDisplay(itemStack, cir);
         }
     }
 
     @Inject(
-            method = "getItemBarStep(Lnet/minecraft/item/ItemStack;)I",
+            method = "getBarWidth",
             at = @At("HEAD"),
             cancellable = true
     )

@@ -5,11 +5,11 @@ import com.dulkirfabric.events.LongUpdateEvent
 import com.dulkirfabric.events.PlaySoundEvent
 import com.dulkirfabric.events.SlayerBossEvents
 import meteordevelopment.orbit.EventHandler
-import net.minecraft.scoreboard.Team
-import net.minecraft.text.StringVisitable
-import net.minecraft.text.Style
-import net.minecraft.text.Text
-import net.minecraft.util.Formatting
+import net.minecraft.ChatFormatting
+import net.minecraft.network.chat.Component
+import net.minecraft.network.chat.FormattedText
+import net.minecraft.network.chat.Style
+import net.minecraft.world.scores.PlayerTeam
 import java.util.*
 
 object ScoreBoardUtils {
@@ -21,14 +21,14 @@ object ScoreBoardUtils {
      * Gets Scoreboard lines, will return null if not in Skyblock.
      */
     fun getLines(): MutableList<String>? {
-        val scoreboard = DulkirModFabric.mc.player?.scoreboard ?: return null
+        val scoreboard = DulkirModFabric.mc.level?.scoreboard ?: return null
         // This returns null if we're not in skyblock curiously
-        val sidebarObjective = scoreboard.getNullableObjective("SBScoreboard") ?: return null
-        val scores = scoreboard.getScoreboardEntries(sidebarObjective)
+        val sidebarObjective = scoreboard.getObjective("SBScoreboard") ?: return null
+        val scores = scoreboard.listPlayerScores(sidebarObjective)
         val lines: MutableList<String> = ArrayList()
         for (score in scores.reversed()) {
-            val team = scoreboard.getTeam(score.owner)
-            var str = Team.decorateName(team, Text.literal(score.owner)).string
+            val team = scoreboard.getPlayerTeam(score.owner)
+            var str = PlayerTeam.formatNameForTeam(team, Component.literal(score.owner)).string
                 .replace("§[^a-f0-9]".toRegex(), "")
             lines.add(str)
         }
@@ -40,14 +40,14 @@ object ScoreBoardUtils {
      * namely effigy display for now - but might be useful later? Who knows.
      */
     fun getLinesWithColor(): MutableList<String>? {
-        val scoreboard = DulkirModFabric.mc.player?.scoreboard ?: return null
+        val scoreboard = DulkirModFabric.mc.level?.scoreboard ?: return null
         // This returns null if we're not in skyblock curiously
-        val sidebarObjective = scoreboard.getNullableObjective("SBScoreboard") ?: return null
-        val scores = scoreboard.getScoreboardEntries(sidebarObjective)
+        val sidebarObjective = scoreboard.getObjective("SBScoreboard") ?: return null
+        val scores = scoreboard.listPlayerScores(sidebarObjective)
         val lines: MutableList<String> = ArrayList()
         for (score in scores.reversed()) {
-            val team = scoreboard.getTeam(score.owner)
-            lines.add(Team.decorateName(team, Text.literal(score.owner)).formattedString())
+            val team = scoreboard.getPlayerTeam(score.owner)
+            lines.add(PlayerTeam.formatNameForTeam(team, Component.literal(score.owner)).formattedString())
         }
         return lines
     }
@@ -58,10 +58,10 @@ object ScoreBoardUtils {
      *
      * @author nea
      */
-    fun Text.formattedString(): String {
+    fun Component.formattedString(): String {
         val sb = StringBuilder()
-        visit(StringVisitable.StyledVisitor<Unit> { style, string ->
-            val c = Formatting.byName(style.color?.name)
+        visit(FormattedText.StyledContentConsumer<Unit> { style, string ->
+            val c = ChatFormatting.getByName(style.color?.name)
             if (c != null) {
                 sb.append("§${c.code}")
             }
@@ -94,7 +94,7 @@ object ScoreBoardUtils {
 
     @EventHandler
     fun onSound(event: PlaySoundEvent) {
-        if (event.sound.id.path != "entity.wither.shoot") return
+        if (event.sound.location.path != "entity.wither.shoot") return
         if (event.sound.pitch != 0.6984127f) return
         if (event.sound.volume != .5f) return
         SlayerBossEvents.Spawn(slayerType ?: return err()).post()
