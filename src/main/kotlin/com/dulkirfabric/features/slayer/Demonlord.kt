@@ -13,7 +13,7 @@ import com.dulkirfabric.util.render.WorldRenderUtils
 import meteordevelopment.orbit.EventHandler
 import net.minecraft.world.entity.Entity
 import net.minecraft.world.entity.decoration.ArmorStand
-import net.minecraft.world.entity.projectile.SmallFireball
+import net.minecraft.world.entity.projectile.hurtingprojectile.SmallFireball
 import net.minecraft.world.level.gameevent.GameEvent
 import net.minecraft.world.phys.AABB
 import java.awt.Color

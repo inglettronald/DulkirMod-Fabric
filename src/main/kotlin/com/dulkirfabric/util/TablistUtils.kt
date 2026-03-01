@@ -37,10 +37,12 @@ object TablistUtils {
         var speedFlag = false
         var numVisitorFlag = false
         var compostFlag = false
+        var areaFlag = false
 
         tablist!!.forEach {
-            val str = it.profile.name?.trim() ?: return@forEach
+            val str = (it.tabListDisplayName?.string ?: it.profile.name)?.trim() ?: return@forEach
             areaPattern.find(str)?.let { result ->
+                areaFlag = true
                 if (persistentInfo.area != result.groupValues[1]) {
                     AreaChangeEvent(result.groupValues[1], persistentInfo.area).post()
                     persistentInfo.area = result.groupValues[1]
@@ -72,6 +74,10 @@ object TablistUtils {
             }
         }
 
+        if (!areaFlag && persistentInfo.area != "") {
+            AreaChangeEvent("", persistentInfo.area).post()
+            persistentInfo.area = ""
+        }
         if (!speedFlag) {
             persistentInfo.speed = "Unknown"
         }

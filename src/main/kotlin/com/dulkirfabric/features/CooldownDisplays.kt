@@ -43,7 +43,7 @@ object CooldownDisplays {
             TrackedCooldown("ROGUE_SWORD".toRegex(), 30000, 0)
         ),
         Pair(
-            SoundInfo("block.anvil.land", 0.4920635f, 1f),
+            SoundInfo("block.anvil.land", 0.4920635f, 0.5f),
             TrackedCooldown("GIANTS_SWORD".toRegex(), 30000, 0)
         )
     )
@@ -52,7 +52,8 @@ object CooldownDisplays {
 
     fun shouldDisplay(stack: ItemStack, cir: CallbackInfoReturnable<Boolean>) {
         val cooldown = fetchCooldownItem(stack) ?: return
-        cir.returnValue = System.currentTimeMillis() - cooldown.lastUsage < cooldown.cooldownDuration
+        val active = System.currentTimeMillis() - cooldown.lastUsage < cooldown.cooldownDuration
+        cir.returnValue = active
     }
 
     fun calcDurability(stack: ItemStack, cir: CallbackInfoReturnable<Int>) {
@@ -63,7 +64,7 @@ object CooldownDisplays {
     @EventHandler
     fun onSound(event: PlaySoundEvent) {
         if (!DulkirConfig.configOptions.duraCooldown) return
-        val path = event.sound.location.path
+        val path = event.sound.identifier.path
         val pitch = event.sound.pitch
         val volume = event.sound.volume
 
@@ -91,8 +92,7 @@ object CooldownDisplays {
 
     private fun fetchCooldownItem(stack: ItemStack): TrackedCooldown? {
         val tag = Utils.getNbt(stack) ?: return null
-        val id = tag.getCompound("ExtraAttributes").getOrNull()?.get("id") ?: return null
-        val idStr = id.toString().trim('"')
+        val idStr = tag.getString("id").getOrNull() ?: return null
         trackedCooldowns.forEach {
             if (idStr matches it.value.itemID)
                 return it.value

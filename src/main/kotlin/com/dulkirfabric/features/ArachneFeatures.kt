@@ -11,24 +11,23 @@ import meteordevelopment.orbit.EventHandler
 import net.minecraft.ChatFormatting
 import net.minecraft.network.chat.Component
 import net.minecraft.world.phys.Vec3
-
 object ArachneFeatures {
 
     private val keeperWaypoints: Set<POI> = setOf(
-        POI(Vec3(-208.5, 44.5, -259.5), Component.literal("1").withStyle(ChatFormatting.GOLD)),
-        POI(Vec3(-311.5, 43.5, -232.5), Component.literal("2").withStyle(ChatFormatting.GOLD)),
-        POI(Vec3(-230.5, 57.5, -307.5), Component.literal("3").withStyle(ChatFormatting.GOLD)),
-        POI(Vec3(-269.5, 47.5, -166.5), Component.literal("4").withStyle(ChatFormatting.GOLD)),
-        POI(Vec3(-292.5, 47.5, -167.5), Component.literal("5").withStyle(ChatFormatting.GOLD)),
-        POI(Vec3(-291.5, 47.5, -183.5), Component.literal("6").withStyle(ChatFormatting.GOLD)),
-        POI(Vec3(-282.5, 47.5, -195.5), Component.literal("7").withStyle(ChatFormatting.GOLD)),
-        POI(Vec3(-262.5, 49.5, -191.5), Component.literal("8").withStyle(ChatFormatting.GOLD)),
-        POI(Vec3(-269.5, 61.5, -159.5), Component.literal("9").withStyle(ChatFormatting.GOLD))
+        POI(Vec3(-208.5, 44.5, -259.5), Component.literal("1")),
+        POI(Vec3(-311.5, 43.5, -232.5), Component.literal("2")),
+        POI(Vec3(-230.5, 57.5, -307.5), Component.literal("3")),
+        POI(Vec3(-269.5, 47.5, -166.5), Component.literal("4")),
+        POI(Vec3(-292.5, 47.5, -167.5), Component.literal("5")),
+        POI(Vec3(-291.5, 47.5, -183.5), Component.literal("6")),
+        POI(Vec3(-282.5, 47.5, -195.5), Component.literal("7")),
+        POI(Vec3(-262.5, 49.5, -191.5), Component.literal("8")),
+        POI(Vec3(-269.5, 61.5, -159.5), Component.literal("9"))
     )
 
     data class POI(val pos: Vec3, val name: Component)
 
-    private val spawnRegex = "\\[BOSS] Arachne: (With your sacrifice.)|(A befitting welcome!)".toRegex()
+    private val spawnRegex = "\\[BOSS] Arachne: (With your sacrifice\\.|A befitting welcome!)".toRegex()
 
     private var startmillis: Long = -1
     private var endmillis: Long = -1
@@ -40,7 +39,11 @@ object ArachneFeatures {
         if (TablistUtils.persistentInfo.area != "Spider's Den") return
         if (!DulkirConfig.configOptions.arachneKeeperWaypoints) return
         keeperWaypoints.forEach {
-            WorldRenderUtils.renderWaypoint(it.name, event.context, it.pos)
+            WorldRenderUtils.renderWaypoint(
+                it.name, event.context, it.pos,
+                DulkirConfig.configOptions.arachneWaypointTextColor,
+                DulkirConfig.configOptions.arachneWaypointBackgroundColor
+            )
         }
     }
 

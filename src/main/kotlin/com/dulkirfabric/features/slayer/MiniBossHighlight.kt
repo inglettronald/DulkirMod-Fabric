@@ -48,7 +48,6 @@ object MiniBossHighlight {
 
     @EventHandler
     fun drawMiniBossBoxes(event: WorldRenderLastEvent) {
-        if (!ScoreBoardUtils.hasActiveSlayerQuest) return
         if (!DulkirConfig.configOptions.boxMinis) return
 
         val ents = mc.level?.entitiesForRendering() ?: return
@@ -70,7 +69,7 @@ object MiniBossHighlight {
     @EventHandler
     fun onSound(event: PlaySoundEvent) {
         if (!DulkirConfig.configOptions.announceMinis) return
-        if (event.sound.location.path != "entity.generic.explode") return
+        if (event.sound.identifier.path != "entity.generic.explode") return
         if (event.sound.pitch != 1.2857143f) return
         if (event.sound.volume != .6f) return
         HudRenderUtil.drawTitle(Component.literal("MiniBoss Spawned").withStyle(ChatFormatting.RED),

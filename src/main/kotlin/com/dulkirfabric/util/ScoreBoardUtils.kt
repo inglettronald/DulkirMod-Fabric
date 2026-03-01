@@ -28,8 +28,9 @@ object ScoreBoardUtils {
         val lines: MutableList<String> = ArrayList()
         for (score in scores.reversed()) {
             val team = scoreboard.getPlayerTeam(score.owner)
-            var str = PlayerTeam.formatNameForTeam(team, Component.literal(score.owner)).string
-                .replace("§[^a-f0-9]".toRegex(), "")
+            val str = PlayerTeam.formatNameForTeam(team, Component.literal(score.owner))
+                .formattedString()
+                .replace("§.".toRegex(), "")
             lines.add(str)
         }
         return lines
@@ -94,7 +95,7 @@ object ScoreBoardUtils {
 
     @EventHandler
     fun onSound(event: PlaySoundEvent) {
-        if (event.sound.location.path != "entity.wither.shoot") return
+        if (event.sound.identifier.path != "entity.wither.shoot") return
         if (event.sound.pitch != 0.6984127f) return
         if (event.sound.volume != .5f) return
         SlayerBossEvents.Spawn(slayerType ?: return err()).post()

@@ -9,7 +9,7 @@ object AliasImpl {
     fun onCommand(event: ModifyCommandEvent) {
         DulkirConfig.configOptions.aliasList.forEach {
             if (it.alias == event.command) {
-                event.command = it.command
+                event.command = it.command.removePrefix("/")
             }
         }
     }

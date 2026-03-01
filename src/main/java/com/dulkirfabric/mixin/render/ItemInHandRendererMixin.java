@@ -63,7 +63,7 @@ public abstract class ItemInHandRendererMixin {
             method = "tick",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/client/player/LocalPlayer;getAttackStrengthScale(F)F"
+                    target = "Lnet/minecraft/client/player/LocalPlayer;getItemSwapScale(F)F"
             )
     )
     public float dulkir$attackCooldown(float original) {

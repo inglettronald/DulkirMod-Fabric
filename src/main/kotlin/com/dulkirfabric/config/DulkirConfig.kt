@@ -29,7 +29,7 @@ import net.minecraft.ChatFormatting
 import net.minecraft.client.gui.screens.Screen
 import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.TextColor
-import net.minecraft.resources.ResourceLocation
+import net.minecraft.resources.Identifier
 import org.joml.Vector2i
 import java.io.File
 
@@ -41,7 +41,7 @@ class DulkirConfig {
 
     fun buildScreen(parentScreen: Screen? = null): Screen {
         val builder = ConfigBuilder.create().setTitle(buttonText)
-        builder.setDefaultBackgroundTexture(ResourceLocation.parse("minecraft:textures/block/oak_planks.png"))
+        builder.setDefaultBackgroundTexture(Identifier.parse("minecraft:textures/block/oak_planks.png"))
         builder.setGlobalized(true)
         builder.setGlobalizedExpanded(false)
         builder.setParentScreen(mc.screen)
@@ -65,6 +65,7 @@ class DulkirConfig {
         general.addEntry(
             entryBuilder.startFloatField(Component.literal("Inventory Scale"), configOptions.inventoryScale)
                 .setTooltip(Component.literal("Size of GUI whenever you're in an inventory screen"))
+                .setDefaultValue(1f)
                 .setSaveConsumer { newValue ->
                     configOptions.inventoryScale = newValue
                 }
@@ -80,6 +81,7 @@ class DulkirConfig {
         general.addEntry(
             entryBuilder.startFloatField(Component.literal("Tooltip Scale"), configOptions.tooltipScale)
                 .setTooltip(Component.literal("Default Value for Scaling a particular tooltip without scroll input"))
+                .setDefaultValue(1f)
                 .setSaveConsumer { newValue -> configOptions.tooltipScale = newValue }
                 .build()
         )
@@ -151,6 +153,24 @@ class DulkirConfig {
         )
         general.addEntry(
             entryBuilder.mkToggle(Component.literal("Arachne Keeper Waypoints"), configOptions::arachneKeeperWaypoints)
+        )
+        general.addEntry(
+            entryBuilder.startColorField(
+                Component.literal("Arachne Waypoint Text Color"),
+                TextColor.fromRgb(configOptions.arachneWaypointTextColor)
+            )
+                .setDefaultValue(0xFFAA00)
+                .setSaveConsumer { newValue -> configOptions.arachneWaypointTextColor = newValue }
+                .build()
+        )
+        general.addEntry(
+            entryBuilder.startAlphaColorField(
+                Component.literal("Arachne Waypoint Background Color"),
+                configOptions.arachneWaypointBackgroundColor
+            )
+                .setDefaultValue(0xAA000000.toInt())
+                .setSaveConsumer { newValue -> configOptions.arachneWaypointBackgroundColor = newValue }
+                .build()
         )
         general.addEntry(
             entryBuilder.mkToggle(Component.literal("Arachne Boss Spawn Timer"), configOptions::arachneSpawnTimer)
@@ -235,7 +255,7 @@ class DulkirConfig {
         val aliases = builder.getOrCreateCategory(Component.literal("Shortcuts"))
         aliases.addEntry(
             ConfigHelper.mkConfigList(
-                Component.literal("Aliases (do not include '/')"),
+                Component.literal("Aliases"),
                 configOptions::aliasList,
                 { Alias("", "") },
                 Component.literal("Alias"),
@@ -417,6 +437,8 @@ class DulkirConfig {
         var duraCooldown: Boolean = false,
         var alarmTimeout: Int = 0,
         var arachneKeeperWaypoints: Boolean = false,
+        var arachneWaypointTextColor: Int = 0xFFAA00,
+        var arachneWaypointBackgroundColor: Int = (0xAA shl 24),
         var arachneSpawnTimer: Boolean = false,
         var bridgeFormatter: Boolean = false,
         var bridgeBotName: String = "Dilkur",
@@ -482,7 +504,7 @@ class DulkirConfig {
                 configOptions.positions.getOrPut(
                     id
                 ) { HudElement.HudMeta(defaultPosition.x, defaultPosition.y, scale) },
-                ResourceLocation.fromNamespaceAndPath(DulkirModFabric.MOD_ID, id),
+                Identifier.fromNamespaceAndPath(DulkirModFabric.MOD_ID, id),
                 label, width, height,
             )
             huds.add(Triple(element, defaultPosition, scale))

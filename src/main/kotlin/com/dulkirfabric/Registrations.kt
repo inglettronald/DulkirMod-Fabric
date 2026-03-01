@@ -1,6 +1,8 @@
 package com.dulkirfabric
 
 import com.dulkirfabric.DulkirModFabric.EVENT_BUS
+import com.dulkirfabric.DulkirModFabric.mc
+import com.dulkirfabric.config.DulkirConfig
 import com.dulkirfabric.commands.*
 import com.dulkirfabric.events.*
 import com.dulkirfabric.events.chat.ChatEvents
@@ -23,8 +25,8 @@ import com.dulkirfabric.util.ActionBarUtil
 import com.dulkirfabric.util.ScoreBoardUtils
 import com.dulkirfabric.util.TablistUtils
 import com.dulkirfabric.util.Utils
-import com.dulkirfabric.util.render.DulkirRenderTypes
 import com.dulkirfabric.util.render.HudRenderUtil
+import com.dulkirfabric.util.render.WorldRenderUtils
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityEvents
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
@@ -39,7 +41,7 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents
 import net.fabricmc.loader.api.FabricLoader
 import net.minecraft.client.DeltaTracker
 import net.minecraft.client.gui.GuiGraphics
-import net.minecraft.resources.ResourceLocation
+import net.minecraft.resources.Identifier
 
 
 /**
@@ -82,6 +84,7 @@ object Registrations {
         EVENT_BUS.subscribe(MiniBossHighlight)
         EVENT_BUS.subscribe(ScoreBoardUtils)
         EVENT_BUS.subscribe(HudRenderUtil)
+        EVENT_BUS.subscribe(WorldRenderUtils)
         EVENT_BUS.subscribe(Demonlord)
         EVENT_BUS.subscribe(Lightning)
         EVENT_BUS.subscribe(Utils)
@@ -119,10 +122,23 @@ object Registrations {
             ModifyCommandEvent(command).also { it.post() }.command
         }
 
+        // Chat alias: if replacement starts with '/', cancel chat and send as command; otherwise replace text
+        ClientSendMessageEvents.ALLOW_CHAT.register { message ->
+            val alias = DulkirConfig.configOptions.aliasList.find { it.alias == message }
+            if (alias != null && alias.command.startsWith("/")) {
+                mc.execute { mc.player?.connection?.sendCommand(alias.command.substring(1)) }
+                false
+            } else {
+                true
+            }
+        }
+        ClientSendMessageEvents.MODIFY_CHAT.register { message ->
+            val alias = DulkirConfig.configOptions.aliasList.find { it.alias == message }
+            if (alias != null && !alias.command.startsWith("/")) alias.command else message
+        }
+
         WorldRenderEvents.END_MAIN.register { context ->
-            DulkirRenderTypes.TYPES.forEach { it.setupRenderState() }
             WorldRenderLastEvent(context).post()
-            DulkirRenderTypes.TYPES.forEach { it.clearRenderState() }
         }
 
         ScreenEvents.BEFORE_INIT.register(
@@ -144,15 +160,12 @@ object Registrations {
             WorldLoadEvent(server, world).post()
         }
 
-        val id = ResourceLocation.parse("dulkir_hud");
+        val id = Identifier.parse("dulkir_hud");
         val element = object : HudElement {
             override fun render(
-                context: GuiGraphics?,
-                tickCounter: DeltaTracker?
+                context: GuiGraphics,
+                tickCounter: DeltaTracker
             ) {
-                if (context == null || tickCounter == null) {
-                    return;
-                }
                 HudRenderEvent(context, tickCounter.getGameTimeDeltaPartialTick(true)).post()
             }
         }
