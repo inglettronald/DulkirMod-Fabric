@@ -37,7 +37,7 @@ public abstract class ScreenMixin {
     @Shadow public int height;
 
     @Inject(
-            method = "init(Lnet/minecraft/client/Minecraft;II)V",
+            method = "init(II)V",
             at = @At(
                     value = "FIELD",
                     target = "Lnet/minecraft/client/gui/screens/Screen;height:I",
@@ -45,13 +45,13 @@ public abstract class ScreenMixin {
                     opcode = Opcodes.PUTFIELD
             )
     )
-    private void dulkir$onInitAfterViewportSizeSet(Minecraft client, int width, int height, CallbackInfo ci) {
+    private void dulkir$onInitAfterViewportSizeSet(int width, int height, CallbackInfo ci) {
         this.width = (int) ceil(width / InventoryScale.INSTANCE.getScale());
         this.height = (int) ceil(height /  InventoryScale.INSTANCE.getScale());
     }
 
     @Inject(
-            method = "resize",
+            method = "resize(II)V",
             at = @At(
                     value = "FIELD",
                     target = "Lnet/minecraft/client/gui/screens/Screen;height:I",
@@ -59,7 +59,7 @@ public abstract class ScreenMixin {
                     opcode = Opcodes.PUTFIELD
             )
     )
-    private void dulkir$onResizeAfterViewportSizeSet(Minecraft client, int width, int height, CallbackInfo ci) {
+    private void dulkir$onResizeAfterViewportSizeSet(int width, int height, CallbackInfo ci) {
         this.width = (int) ceil(width / InventoryScale.INSTANCE.getScale());
         this.height = (int) ceil(height / InventoryScale.INSTANCE.getScale());
     }

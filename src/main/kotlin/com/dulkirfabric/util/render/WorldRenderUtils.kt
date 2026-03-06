@@ -19,33 +19,6 @@ import kotlin.math.pow
 import kotlin.math.sqrt
 
 object WorldRenderUtils {
-    private fun line(
-        matrix: PoseStack.Pose, buffer: BufferBuilder,
-        x1: Number, y1: Number, z1: Number,
-        x2: Number, y2: Number, z2: Number,
-        lineWidth: Float
-    ) {
-        val camera = mc.cameraEntity ?: return
-        RenderSystem.lineWidth(lineWidth / camera.position().distanceToSqr(
-            Vec3(x1.toDouble(), y1.toDouble(), z1.toDouble())
-        ).pow(0.25).toFloat())
-        line(
-            matrix,
-            buffer,
-            Vector3f(x1.toFloat(), y1.toFloat(), z1.toFloat()),
-            Vector3f(x2.toFloat(), y2.toFloat(), z2.toFloat())
-        )
-    }
-
-    private fun line(matrix: PoseStack.Pose, buffer: BufferBuilder, from: Vector3f, to: Vector3f) {
-        val normal = to.sub(from, Vector3f()).mul(-1F)
-        buffer.addVertex(matrix.pose(), from.x, from.y, from.z)
-            .setNormal(matrix, normal.x, normal.y, normal.z)
-                .setColor(0xFFFFFFFF.toInt())
-        buffer.addVertex(matrix.pose(), to.x, to.y, to.z)
-            .setNormal(matrix, normal.x, normal.y, normal.z)
-                .setColor(0xFFFFFFFF.toInt())
-    }
 
     fun drawWireFrame(
         context: WorldRenderContext,
@@ -55,89 +28,43 @@ object WorldRenderUtils {
         depthTest: Boolean = true
     ) {
         val matrices = context.matrices() ?: return
-        matrices.pushPose()
-        val layer = if (depthTest) {
-            DulkirRenderTypes.DULKIR_LINES
-        } else {
-            DulkirRenderTypes.DULKIR_LINES_ESP
-        }
-        val camera = context.gameRenderer().mainCamera;
-        matrices.translate(-camera.position.x, -camera.position.y, -camera.position.z)
-        val buf = RenderUtil.getBufferFor(layer);
+        val layer = if (depthTest) DulkirRenderTypes.DULKIR_QUADS else DulkirRenderTypes.DULKIR_QUADS_ESP
+        val camera = context.gameRenderer().mainCamera
+        val camPos = camera.position()
+        matrices.translate(-camPos.x, -camPos.y, -camPos.z)
+        val buf = RenderUtil.getBufferFor(layer)
         val me = matrices.last()
 
-        buf.setColor(color.red, color.green, color.blue, color.alpha)
+        fun line(
+            x1: Number, y1: Number, z1: Number,
+            x2: Number, y2: Number, z2: Number
+        ) {
+            line(me, buf, x1, y1, z1, x2, y2, z2, color, thickness)
+        }
+
+        matrices.pushPose()
 
         // bottom
-        line(me, buf, box.minX, box.minY, box.minZ, box.maxX, box.minY, box.minZ, thickness)
-        line(me, buf, box.maxX, box.minY, box.minZ, box.maxX, box.minY, box.maxZ, thickness)
-        line(me, buf, box.maxX, box.minY, box.maxZ, box.minX, box.minY, box.maxZ, thickness)
-        line(me, buf, box.minX, box.minY, box.maxZ, box.minX, box.minY, box.minZ, thickness)
+        line(box.minX, box.minY, box.minZ, box.maxX, box.minY, box.minZ)
+        line(box.maxX, box.minY, box.minZ, box.maxX, box.minY, box.maxZ)
+        line(box.maxX, box.minY, box.maxZ, box.minX, box.minY, box.maxZ)
+        line(box.minX, box.minY, box.maxZ, box.minX, box.minY, box.minZ)
 
-        line(me, buf, box.minX, box.minY, box.minZ, box.minX, box.maxY, box.minZ, thickness)
+        line(box.minX, box.minY, box.minZ, box.minX, box.maxY, box.minZ)
 
         // top
-        line(me, buf, box.minX, box.maxY, box.minZ, box.maxX, box.maxY, box.minZ, thickness)
-        line(me, buf, box.maxX, box.maxY, box.minZ, box.maxX, box.maxY, box.maxZ, thickness)
-        line(me, buf, box.maxX, box.maxY, box.maxZ, box.minX, box.maxY, box.maxZ, thickness)
-        line(me, buf, box.minX, box.maxY, box.maxZ, box.minX, box.maxY, box.minZ, thickness)
+        line(box.minX, box.maxY, box.minZ, box.maxX, box.maxY, box.minZ)
+        line(box.maxX, box.maxY, box.minZ, box.maxX, box.maxY, box.maxZ)
+        line(box.maxX, box.maxY, box.maxZ, box.minX, box.maxY, box.maxZ)
+        line(box.minX, box.maxY, box.maxZ, box.minX, box.maxY, box.minZ)
 
         // some redraws (blame strips) and getting the rest of the vertical columns
-        line(me, buf, box.minX, box.maxY, box.minZ, box.maxX, box.maxY, box.minZ, thickness)
-        line(me, buf, box.maxX, box.maxY, box.minZ, box.maxX, box.minY, box.minZ, thickness)
-        line(me, buf, box.maxX, box.minY, box.minZ, box.maxX, box.minY, box.maxZ, thickness)
-        line(me, buf, box.maxX, box.minY, box.maxZ, box.maxX, box.maxY, box.maxZ, thickness)
-        line(me, buf, box.maxX, box.maxY, box.maxZ, box.minX, box.maxY, box.maxZ, thickness)
-        line(me, buf, box.minX, box.maxY, box.maxZ, box.minX, box.minY, box.maxZ, thickness)
-
-        layer.draw(buf.buildOrThrow())
-
-        matrices.popPose()
-    }
-
-    fun drawLine(context: WorldRenderContext, startPos: Vec3, endPos: Vec3, color: Color, thickness: Float, depthTest: Boolean = true) {
-        val matrices = context.matrices() ?: return
-        matrices.pushPose()
-        val layer = if (depthTest) {
-            DulkirRenderTypes.DULKIR_LINES
-        } else {
-            DulkirRenderTypes.DULKIR_LINES_ESP
-        }
-        val camera = context.gameRenderer().mainCamera;
-        matrices.translate(-camera.position.x, -camera.position.y, -camera.position.z)
-        val buf = RenderUtil.getBufferFor(layer)
-        val me = matrices.last()
-
-        buf.setColor(color.red, color.green, color.blue, color.alpha)
-
-        line(me, buf, startPos.x.toFloat(), startPos.y.toFloat(), startPos.z.toFloat(), endPos.x.toFloat(), endPos.y.toFloat(), endPos.z.toFloat(), thickness)
-
-        layer.draw(buf.buildOrThrow())
-
-        matrices.popPose()
-    }
-
-    fun drawLineArray(context: WorldRenderContext, posArr: List<Vec3>, color: Color, thickness: Float,
-                      depthTest: Boolean = true) {
-        val matrices = context.matrices() ?: return
-        matrices.pushPose()
-        val layer = if (depthTest) {
-            DulkirRenderTypes.DULKIR_LINES
-        } else {
-            DulkirRenderTypes.DULKIR_LINES_ESP
-        }
-        val camera = context.gameRenderer().mainCamera;
-        matrices.translate(-camera.position.x, -camera.position.y, -camera.position.z)
-        val buf = RenderUtil.getBufferFor(layer)
-        val me = matrices.last()
-
-        buf.setColor(color.red, color.green, color.blue, color.alpha)
-
-        for (i in 0 until posArr.size - 1) {
-            val startPos = posArr[i]
-            val endPos = posArr[i + 1]
-            line(me, buf, startPos.x.toFloat(), startPos.y.toFloat(), startPos.z.toFloat(), endPos.x.toFloat(), endPos.y.toFloat(), endPos.z.toFloat(), thickness)
-        }
+        line(box.minX, box.maxY, box.minZ, box.maxX, box.maxY, box.minZ)
+        line(box.maxX, box.maxY, box.minZ, box.maxX, box.minY, box.minZ)
+        line(box.maxX, box.minY, box.minZ, box.maxX, box.minY, box.maxZ)
+        line(box.maxX, box.minY, box.maxZ, box.maxX, box.maxY, box.maxZ)
+        line(box.maxX, box.maxY, box.maxZ, box.minX, box.maxY, box.maxZ)
+        line(box.minX, box.maxY, box.maxZ, box.minX, box.minY, box.maxZ)
 
         layer.draw(buf.buildOrThrow())
 
@@ -165,9 +92,9 @@ object WorldRenderUtils {
         matrices.pushPose()
         val camera = context.gameRenderer().mainCamera;
         matrices.translate(
-            pos.x - camera.position.x,
-            pos.y - camera.position.y,
-            pos.z - camera.position.z
+            pos.x - camera.position().x,
+            pos.y - camera.position().y,
+            pos.z - camera.position().z
         )
         matrices.mulPose(camera.rotation())
         matrices.scale(.025f * scale, -.025f * scale, 1F)
@@ -214,20 +141,20 @@ object WorldRenderUtils {
         val bufferSource = context.worldRenderer().renderBuffers.bufferSource()
         matrices.pushPose()
         val camera = context.gameRenderer().mainCamera
-        val magnitude = sqrt((pos.x - camera.position.x).pow(2) +
-            (pos.y - camera.position.y).pow(2) +
-                (pos.z - camera.position.z).pow(2))
+        val magnitude = sqrt((pos.x - camera.position().x).pow(2) +
+            (pos.y - camera.position().y).pow(2) +
+                (pos.z - camera.position().z).pow(2))
         if (magnitude < 20) {
             matrices.translate(
-                pos.x - camera.position.x,
-                pos.y - camera.position.y,
-                pos.z - camera.position.z
+                pos.x - camera.position().x,
+                pos.y - camera.position().y,
+                pos.z - camera.position().z
             )
         } else {
             matrices.translate(
-                (pos.x - camera.position.x) / magnitude * 20,
-                (pos.y - camera.position.y) / magnitude * 20,
-                (pos.z - camera.position.z) / magnitude * 20
+                (pos.x - camera.position().x) / magnitude * 20,
+                (pos.y - camera.position().y) / magnitude * 20,
+                (pos.z - camera.position().z) / magnitude * 20
             )
         }
         matrices.mulPose(camera.rotation())
@@ -297,10 +224,87 @@ object WorldRenderUtils {
         val buf = RenderUtil.getBufferFor(layer)
         matrices.pushPose()
         val camera = context.gameRenderer().mainCamera;
-        matrices.translate(x - camera.position.x, y - camera.position.y, z - camera.position.z)
-        ShapeRenderer.addChainedFilledBoxVertices(matrices, buf, 0.0, 0.0, 0.0, width, height, depth,
-            color.red / 255f, color.green / 255f, color.blue / 255f, color.alpha / 255f)
+        matrices.translate(x - camera.position().x, y - camera.position().y, z - camera.position().z)
+        // Note: color.rgb is a terrible name, this value is actually the argb int that we're looking for.
+        addBoxVertices(matrices.last(), buf, 0.0, 0.0, 0.0, width, height, depth, color.rgb)
         layer.draw(buf.buildOrThrow())
         matrices.popPose()
     }
+
+    private fun addBoxVertices(
+        matrix: PoseStack.Pose, buf: BufferBuilder,
+        x1: Double, y1: Double, z1: Double,
+        x2: Double, y2: Double, z2: Double,
+        color: Int
+    ) {
+        val mat = matrix.pose()
+        fun v(x: Double, y: Double, z: Double) {
+            buf.addVertex(mat, x.toFloat(), y.toFloat(), z.toFloat()).setColor(color)
+        }
+        v(x1, y1, z1); v(x1, y1, z1)
+        v(x1, y1, z2)
+        v(x1, y2, z1)
+        v(x1, y2, z2)
+        v(x2, y2, z1)
+        v(x2, y2, z2)
+        v(x2, y1, z1)
+        v(x2, y1, z2)
+        v(x1, y1, z1)
+        v(x1, y1, z2)
+        v(x2, y1, z2)
+        v(x1, y2, z2)
+        v(x2, y2, z2)
+    }
+
+    private fun line(
+        matrix: PoseStack.Pose, buffer: BufferBuilder,
+        x1: Number, y1: Number, z1: Number,
+        x2: Number, y2: Number, z2: Number,
+        color: Color, lineWidth: Float
+    ) {
+        val camera = mc.cameraEntity ?: return
+        val finalWidth = lineWidth / camera.position().distanceToSqr(
+            Vec3(x1.toDouble(), y1.toDouble(), z1.toDouble())
+        ).pow(0.25).toFloat() / 2f
+        thickLine(
+            matrix, buffer,
+            x1, y1, z1,
+            x2, y2, z2,
+            color.rgb, finalWidth,
+            0.0, 0.0, 0.0
+        )
+    }
+
+    // Renders a line as a camera-facing quad so thickness is actually respected.
+    private fun thickLine(
+        matrix: PoseStack.Pose, buffer: BufferBuilder,
+        x1: Number, y1: Number, z1: Number,
+        x2: Number, y2: Number, z2: Number,
+        color: Int, halfWidth: Float,
+        camX: Double, camY: Double, camZ: Double
+    ) {
+        val fx = x1.toFloat(); val fy = y1.toFloat(); val fz = z1.toFloat()
+        val tx = x2.toFloat(); val ty = y2.toFloat(); val tz = z2.toFloat()
+
+        val dir = Vector3f(tx - fx, ty - fy, tz - fz)
+        if (dir.lengthSquared() < 1e-6f) return
+        dir.normalize()
+
+        val midX = (fx + tx) * 0.5f
+        val midY = (fy + ty) * 0.5f
+        val midZ = (fz + tz) * 0.5f
+        val toCamera = Vector3f(camX.toFloat() - midX, camY.toFloat() - midY, camZ.toFloat() - midZ)
+        if (toCamera.lengthSquared() < 1e-6f) return
+
+        val perp = dir.cross(toCamera, Vector3f())
+        if (perp.lengthSquared() < 1e-6f) return
+        perp.normalize().mul(halfWidth)
+
+        val mat = matrix.pose()
+        buffer.addVertex(mat, fx - perp.x, fy - perp.y, fz - perp.z).setColor(color)
+        buffer.addVertex(mat, fx + perp.x, fy + perp.y, fz + perp.z).setColor(color)
+        buffer.addVertex(mat, tx + perp.x, ty + perp.y, tz + perp.z).setColor(color)
+        buffer.addVertex(mat, tx - perp.x, ty - perp.y, tz - perp.z).setColor(color)
+    }
+
 }

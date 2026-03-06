@@ -1,68 +1,73 @@
 package com.dulkirfabric.util.render
 
-import net.minecraft.client.renderer.RenderType
+import net.minecraft.client.renderer.rendertype.LayeringTransform
+import net.minecraft.client.renderer.rendertype.RenderSetup
+import net.minecraft.client.renderer.rendertype.RenderType
 
 object DulkirRenderTypes {
 
-    val DULKIR_LINES: RenderType.CompositeRenderType = RenderType.create(
-        "dulkir-lines",
-        RenderType.TRANSIENT_BUFFER_SIZE,
-        DulkirRenderPipelines.DULKIR_LINES,
-        RenderType.CompositeState.builder()
-            .setLayeringState(RenderType.VIEW_OFFSET_Z_LAYERING)
-            .createCompositeState(false)
+    val DULKIR_LINES: RenderType = RenderType.create(
+        "dulkir_lines",
+        RenderSetup.builder(DulkirRenderPipelines.DULKIR_LINES)
+            .bufferSize(RenderType.TRANSIENT_BUFFER_SIZE)
+            .setLayeringTransform(LayeringTransform.VIEW_OFFSET_Z_LAYERING)
+            .createRenderSetup()
     )
 
-    val DULKIR_LINES_ESP: RenderType.CompositeRenderType  = RenderType.create(
-        "dulkir-lines-esp",
-        RenderType.TRANSIENT_BUFFER_SIZE,
-        DulkirRenderPipelines.DULKIR_LINES_ESP,
-        RenderType.CompositeState.builder().createCompositeState(false)
+    val DULKIR_LINES_ESP: RenderType  = RenderType.create(
+        "dulkir_lines_esp",
+        RenderSetup.builder(DulkirRenderPipelines.DULKIR_LINES_ESP)
+            .bufferSize(RenderType.TRANSIENT_BUFFER_SIZE)
+            .createRenderSetup()
     )
 
-    val DULKIR_TEXT: RenderType.CompositeRenderType  = RenderType.create(
-        "dulkir-text",
-        RenderType.TRANSIENT_BUFFER_SIZE,
-        DulkirRenderPipelines.DULKIR_TEXT,
-        RenderType.CompositeState.builder()
-            .setLayeringState(RenderType.VIEW_OFFSET_Z_LAYERING)
-            .createCompositeState(false)
+    val DULKIR_TEXT: RenderType  = RenderType.create(
+        "dulkir_text",
+        RenderSetup.builder(DulkirRenderPipelines.DULKIR_TEXT)
+            .bufferSize(RenderType.TRANSIENT_BUFFER_SIZE)
+            .setLayeringTransform(LayeringTransform.VIEW_OFFSET_Z_LAYERING)
+            .createRenderSetup()
     )
 
-    val DULKIR_TEXT_ESP: RenderType.CompositeRenderType  = RenderType.create(
+    val DULKIR_TEXT_ESP: RenderType  = RenderType.create(
         "dulkir_text_esp",
-        RenderType.TRANSIENT_BUFFER_SIZE,
-        DulkirRenderPipelines.DULKIR_TEXT_ESP,
-        RenderType.CompositeState.builder().createCompositeState(false)
+        RenderSetup.builder(DulkirRenderPipelines.DULKIR_TEXT_ESP)
+            .bufferSize(RenderType.TRANSIENT_BUFFER_SIZE)
+            .createRenderSetup()
     )
 
-    val DULKIR_TRIANGLE_STRIP: RenderType.CompositeRenderType  = RenderType.create(
+    val DULKIR_TRIANGLE_STRIP: RenderType  = RenderType.create(
         "dulkir_triangle_strip",
-        RenderType.TRANSIENT_BUFFER_SIZE,
-        false,
-        true,
-        DulkirRenderPipelines.DULKIR_TRIANGLE_STRIP,
-        RenderType.CompositeState.builder()
-            .setLayeringState(RenderType.VIEW_OFFSET_Z_LAYERING)
-            .createCompositeState(false)
+        RenderSetup.builder(DulkirRenderPipelines.DULKIR_TRIANGLE_STRIP)
+            .bufferSize(RenderType.TRANSIENT_BUFFER_SIZE)
+            .setLayeringTransform(LayeringTransform.VIEW_OFFSET_Z_LAYERING)
+            .sortOnUpload()
+            .createRenderSetup()
     )
 
-    val DULKIR_TRIANGLE_STRIP_ESP: RenderType.CompositeRenderType  = RenderType.create(
-        "dulkir_triangle_strip",
-        RenderType.TRANSIENT_BUFFER_SIZE,
-        false,
-        true,
-        DulkirRenderPipelines.DULKIR_TRIANGLE_STRIP_ESP,
-        RenderType.CompositeState.builder().createCompositeState(false)
+    val DULKIR_TRIANGLE_STRIP_ESP: RenderType = RenderType.create(
+        "dulkir_triangle_strip_esp",
+        RenderSetup.builder(DulkirRenderPipelines.DULKIR_TRIANGLE_STRIP_ESP)
+            .bufferSize(RenderType.TRANSIENT_BUFFER_SIZE)
+            .sortOnUpload()
+            .createRenderSetup()
     )
 
-    val DULKIR_QUADS_ESP: RenderType.CompositeRenderType  = RenderType.create(
+    val DULKIR_QUADS: RenderType = RenderType.create(
         "dulkir_quads",
-        RenderType.TRANSIENT_BUFFER_SIZE,
-        false,
-        true,
-        DulkirRenderPipelines.DULKIR_QUADS_ESP,
-        RenderType.CompositeState.builder().createCompositeState(false)
+        RenderSetup.builder(DulkirRenderPipelines.DULKIR_QUADS_ESP)
+            .bufferSize(RenderType.TRANSIENT_BUFFER_SIZE)
+            .setLayeringTransform(LayeringTransform.VIEW_OFFSET_Z_LAYERING)
+            .sortOnUpload()
+            .createRenderSetup()
+    )
+
+    val DULKIR_QUADS_ESP: RenderType = RenderType.create(
+        "dulkir_quads_esp",
+        RenderSetup.builder(DulkirRenderPipelines.DULKIR_QUADS_ESP)
+            .bufferSize(RenderType.TRANSIENT_BUFFER_SIZE)
+            .sortOnUpload()
+            .createRenderSetup()
     )
 
     val TYPES: Set<RenderType> = setOf(
@@ -71,7 +76,9 @@ object DulkirRenderTypes {
         DULKIR_TEXT,
         DULKIR_TEXT_ESP,
         DULKIR_TRIANGLE_STRIP,
-        DULKIR_TRIANGLE_STRIP_ESP
+        DULKIR_TRIANGLE_STRIP_ESP,
+        DULKIR_QUADS,
+        DULKIR_QUADS_ESP
     )
 
 }

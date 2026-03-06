@@ -2,15 +2,15 @@ package com.dulkirfabric.util.render
 
 import com.mojang.blaze3d.vertex.BufferBuilder
 import com.mojang.blaze3d.vertex.ByteBufferBuilder
-import net.minecraft.client.renderer.RenderType
+import net.minecraft.client.renderer.rendertype.RenderType
 
 object RenderUtil {
 
-    fun getBufferFor(multiphase: RenderType.CompositeRenderType): BufferBuilder {
+    fun getBufferFor(renderType: RenderType): BufferBuilder {
         return BufferBuilder(
-            ByteBufferBuilder(multiphase.bufferSize()),
-            multiphase.mode(),
-            multiphase.format()
+            ByteBufferBuilder(renderType.bufferSize()),
+            renderType.mode(),
+            renderType.format()
         )
     }
 

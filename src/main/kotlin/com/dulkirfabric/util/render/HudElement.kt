@@ -4,19 +4,19 @@ import com.dulkirfabric.util.JarvisIntegrationPlugin
 import kotlinx.serialization.Serializable
 import moe.nea.jarvis.api.JarvisHud
 import net.minecraft.network.chat.Component
-import net.minecraft.resources.ResourceLocation
+import net.minecraft.resources.Identifier
 import org.joml.Matrix3x2f
 import org.joml.Vector2i
 import org.joml.Vector2ic
 
 class HudElement (var meta: HudMeta,
-                  val identifier: ResourceLocation,
+                  val identifier: Identifier,
                   private val label: Component,
                   private val width: Int,
                   private val height: Int
     ): JarvisHud, JarvisHud.Scalable {
 
-    override fun getHudId(): ResourceLocation {
+    override fun getHudId(): Identifier {
         return this.identifier;
     }
 
