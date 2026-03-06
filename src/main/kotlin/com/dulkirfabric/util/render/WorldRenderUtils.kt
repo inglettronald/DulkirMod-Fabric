@@ -1,14 +1,12 @@
 package com.dulkirfabric.util.render
 
 import com.dulkirfabric.DulkirModFabric.mc
-import com.mojang.blaze3d.systems.RenderSystem
 import com.mojang.blaze3d.vertex.BufferBuilder
 import com.mojang.blaze3d.vertex.PoseStack
 import net.fabricmc.fabric.api.client.rendering.v1.world.WorldRenderContext
 import net.minecraft.ChatFormatting
 import net.minecraft.client.gui.Font
 import net.minecraft.client.renderer.LightTexture
-import net.minecraft.client.renderer.ShapeRenderer
 import net.minecraft.network.chat.Component
 import net.minecraft.world.phys.AABB
 import net.minecraft.world.phys.Vec3
@@ -241,19 +239,37 @@ object WorldRenderUtils {
         fun v(x: Double, y: Double, z: Double) {
             buf.addVertex(mat, x.toFloat(), y.toFloat(), z.toFloat()).setColor(color)
         }
-        v(x1, y1, z1); v(x1, y1, z1)
-        v(x1, y1, z2)
+
+        v(x2, y2, z2)
+        v(x2, y2, z2)
+        v(x2, y2, z2)
+        v(x2, y2, z1)
+        v(x2, y1, z2)
+        v(x2, y1, z1)
+        v(x2, y1, z1)
+        v(x2, y2, z1)
+        v(x1, y1, z1)
+        v(x1, y2, z1)
         v(x1, y2, z1)
         v(x1, y2, z2)
-        v(x2, y2, z1)
-        v(x2, y2, z2)
-        v(x2, y1, z1)
-        v(x2, y1, z2)
         v(x1, y1, z1)
         v(x1, y1, z2)
-        v(x2, y1, z2)
+        v(x1, y1, z2)
         v(x1, y2, z2)
+        v(x2, y1, z2)
         v(x2, y2, z2)
+        v(x2, y2, z2)
+        v(x1, y2, z2)
+        v(x2, y2, z1)
+        v(x1, y2, z1)
+        v(x1, y2, z1)
+        v(x2, y1, z2)
+        v(x2, y1, z2)
+        v(x2, y1, z1)
+        v(x1, y1, z2)
+        v(x1, y1, z1)
+        v(x1, y1, z1)
+        v(x1, y1, z1)
     }
 
     private fun line(
