@@ -128,8 +128,7 @@ object WorldRenderUtils {
         text: Component,
         context: WorldRenderContext,
         pos: Vec3,
-    )
-    {
+    ) {
         val layer = DulkirRenderTypes.DULKIR_QUADS_ESP
         val player = mc.player ?: return;
         val d: Double = pos.distanceTo(player.position())
@@ -278,16 +277,14 @@ object WorldRenderUtils {
         x2: Number, y2: Number, z2: Number,
         color: Color, lineWidth: Float
     ) {
-        val camera = mc.cameraEntity ?: return
-        val finalWidth = lineWidth / camera.position().distanceToSqr(
-            Vec3(x1.toDouble(), y1.toDouble(), z1.toDouble())
-        ).pow(0.25).toFloat() / 2f
+        val fov = mc.options.fov().get()
+        val fovMultiplier = (fov / 70.0).toFloat() // Normalize to default FOV
+        val finalWidth = lineWidth * fovMultiplier * 0.0025f
         thickLine(
             matrix, buffer,
             x1, y1, z1,
             x2, y2, z2,
-            color.rgb, finalWidth,
-            0.0, 0.0, 0.0
+            color.rgb, finalWidth
         )
     }
 
@@ -296,8 +293,7 @@ object WorldRenderUtils {
         matrix: PoseStack.Pose, buffer: BufferBuilder,
         x1: Number, y1: Number, z1: Number,
         x2: Number, y2: Number, z2: Number,
-        color: Int, halfWidth: Float,
-        camX: Double, camY: Double, camZ: Double
+        color: Int, halfWidth: Float
     ) {
         val fx = x1.toFloat(); val fy = y1.toFloat(); val fz = z1.toFloat()
         val tx = x2.toFloat(); val ty = y2.toFloat(); val tz = z2.toFloat()
@@ -306,14 +302,16 @@ object WorldRenderUtils {
         if (dir.lengthSquared() < 1e-6f) return
         dir.normalize()
 
-        val midX = (fx + tx) * 0.5f
-        val midY = (fy + ty) * 0.5f
-        val midZ = (fz + tz) * 0.5f
-        val toCamera = Vector3f(camX.toFloat() - midX, camY.toFloat() - midY, camZ.toFloat() - midZ)
-        if (toCamera.lengthSquared() < 1e-6f) return
+        val camera = mc.gameRenderer.mainCamera
+        val cameraForward = Vector3f(camera.forwardVector())
+        val perp = dir.cross(cameraForward, Vector3f())
 
-        val perp = dir.cross(toCamera, Vector3f())
-        if (perp.lengthSquared() < 1e-6f) return
+        if (perp.lengthSquared() < 1e-6f) {
+            // Camera is looking along the line, use camera's up vector instead
+            val cameraUp = Vector3f(camera.upVector())
+            dir.cross(cameraUp, perp)
+        }
+
         perp.normalize().mul(halfWidth)
 
         val mat = matrix.pose()
