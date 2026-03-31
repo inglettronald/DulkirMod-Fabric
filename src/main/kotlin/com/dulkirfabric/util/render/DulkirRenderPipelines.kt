@@ -32,34 +32,6 @@ object DulkirRenderPipelines {
             .build()
     )
 
-    val DULKIR_TEXT: RenderPipeline = RenderPipelines.register(
-        RenderPipeline.builder(RenderPipelines.TEXT_SNIPPET, RenderPipelines.FOG_SNIPPET)
-            .withLocation("pipeline/text")
-            .withVertexShader("core/rendertype_text")
-            .withFragmentShader("core/rendertype_text")
-            .withSampler("Sampler0")
-            .withSampler("Sampler2")
-            .withoutBlend()
-            .withCull(false)
-            .withDepthWrite(true)
-            .withDepthTestFunction(DepthTestFunction.LEQUAL_DEPTH_TEST)
-            .build()
-    )
-
-    val DULKIR_TEXT_ESP: RenderPipeline = RenderPipelines.register(
-        RenderPipeline.builder(RenderPipelines.TEXT_SNIPPET, RenderPipelines.FOG_SNIPPET)
-            .withLocation("pipeline/text")
-            .withVertexShader("core/rendertype_text")
-            .withFragmentShader("core/rendertype_text")
-            .withSampler("Sampler0")
-            .withSampler("Sampler2")
-            .withoutBlend()
-            .withCull(false)
-            .withDepthWrite(false)
-            .withDepthTestFunction(DepthTestFunction.NO_DEPTH_TEST)
-            .build()
-    )
-
     val DULKIR_TRIANGLE_STRIP: RenderPipeline = RenderPipelines.register(
         RenderPipeline.builder(RenderPipelines.DEBUG_FILLED_SNIPPET)
             .withLocation("pipeline/debug_filled_box")

@@ -29,7 +29,10 @@ object WorldRenderUtils {
         val layer = if (depthTest) DulkirRenderTypes.DULKIR_QUADS else DulkirRenderTypes.DULKIR_QUADS_ESP
         val camera = context.gameRenderer().mainCamera
         val camPos = camera.position()
+
+        matrices.pushPose()
         matrices.translate(-camPos.x, -camPos.y, -camPos.z)
+
         val buf = RenderUtil.getBufferFor(layer)
         val me = matrices.last()
 
@@ -39,8 +42,6 @@ object WorldRenderUtils {
         ) {
             line(me, buf, x1, y1, z1, x2, y2, z2, color, thickness)
         }
-
-        matrices.pushPose()
 
         // bottom
         line(box.minX, box.minY, box.minZ, box.maxX, box.minY, box.minZ)
@@ -65,62 +66,6 @@ object WorldRenderUtils {
         line(box.minX, box.maxY, box.maxZ, box.minX, box.minY, box.maxZ)
 
         layer.draw(buf.buildOrThrow())
-
-        matrices.popPose()
-    }
-
-    /**
-     * If you intend to show with distance, use a waypoint I think. If you're looking at this
-     * statement and screaming at me for forgetting some use case, either let me know or compile
-     * a method that accomplishes your goals based off of this example code. Neither of these
-     * things should be incredibly difficult.
-     */
-    fun drawText(
-        text: Component,
-        context: WorldRenderContext,
-        pos: Vec3,
-        depthTest: Boolean = true, // TODO
-        scale: Float = 1f
-    ) {
-        val layer = DulkirRenderTypes.DULKIR_QUADS_ESP
-
-        // Minecraft vertex consumer because we still hook into their renderer and do immediate text rendering
-        val vertexConsumer = context.worldRenderer().renderBuffers.bufferSource()
-        val matrices = context.matrices() ?: return
-        matrices.pushPose()
-        val camera = context.gameRenderer().mainCamera;
-        matrices.translate(
-            pos.x - camera.position().x,
-            pos.y - camera.position().y,
-            pos.z - camera.position().z
-        )
-        matrices.mulPose(camera.rotation())
-        matrices.scale(.025f * scale, -.025f * scale, 1F)
-        val matrix4f = matrices.last().pose()
-        val font = mc.font
-        val j: Int = (.25 * 255.0f).toInt() shl 24
-        val buf = RenderUtil.getBufferFor(layer)
-        buf.addVertex(matrix4f, -1.0f - font.width(text) / 2, -1.0f, 0.0f)
-            .setColor(j)
-            .setLight(LightTexture.FULL_BRIGHT)
-        buf.addVertex(matrix4f, -1.0f - font.width(text) / 2, font.lineHeight.toFloat(), 0.0f)
-            .setColor(j)
-            .setLight(LightTexture.FULL_BRIGHT)
-        buf.addVertex(matrix4f, font.width(text).toFloat() / 2, font.lineHeight.toFloat(), 0.0f)
-            .setColor(j)
-            .setLight(LightTexture.FULL_BRIGHT)
-        buf.addVertex(matrix4f, font.width(text).toFloat() / 2, -1.0f, 0.0f)
-            .setColor(j)
-            .setLight(LightTexture.FULL_BRIGHT)
-
-        matrices.translate(0F, 0F, 0.01F)
-        layer.draw(buf.buildOrThrow())
-        font.drawInBatch(
-            text, -font.width(text).toFloat() / 2, 0f, 0xFFFFFF, false, matrix4f, vertexConsumer,
-            Font.DisplayMode.SEE_THROUGH,
-            0, LightTexture.FULL_BRIGHT
-        )
-        vertexConsumer.endBatch()
         matrices.popPose()
     }
 
@@ -135,7 +80,6 @@ object WorldRenderUtils {
         val distText = Component.literal(d.toInt().toString() + "m")
             .withStyle(ChatFormatting.YELLOW)
         val matrices = context.matrices() ?: return
-        val bufferSource = context.worldRenderer().renderBuffers.bufferSource()
         matrices.pushPose()
         val camera = context.gameRenderer().mainCamera
         val magnitude = sqrt((pos.x - camera.position().x).pow(2) +
@@ -161,10 +105,11 @@ object WorldRenderUtils {
         } else {
             matrices.scale(.025f * 20 / 7f, -.025f * 20 / 7f, .1F)
         }
-        val matrix4f = matrices.last().pose()
         val font = mc.font
         val j: Int = (.25 * 255.0f).toInt() shl 24
+
         val buf = RenderUtil.getBufferFor(layer)
+        val matrix4f = matrices.last().pose()
         buf.addVertex(matrix4f, -1.0f - font.width(text) / 2, -1.0f, 0.0f)
             .setColor(j)
             .setLight(LightTexture.FULL_BRIGHT)
@@ -177,22 +122,24 @@ object WorldRenderUtils {
         buf.addVertex(matrix4f, font.width(text).toFloat() / 2, -1.0f, 0.0f)
             .setColor(j)
             .setLight(LightTexture.FULL_BRIGHT)
-
-        matrices.translate(0F, 0F, 0.01F)
         layer.draw(buf.buildOrThrow())
 
+        // Translate forward for text rendering
+        matrices.translate(0F, 0F, 0.01F)
+        val textMatrix = matrices.last().pose()
+        val bufferSource = context.consumers() ?: return
+
         font.drawInBatch(
-            text, -font.width(text).toFloat() / 2, 0f, 0xFFFFFF, false, matrix4f, bufferSource,
+            text, -font.width(text).toFloat() / 2, 0f, 0xFFFFFFFF.toInt(), false, textMatrix, bufferSource,
             Font.DisplayMode.SEE_THROUGH,
             0, LightTexture.FULL_BRIGHT
         )
 
         font.drawInBatch(
-            distText, -font.width(distText).toFloat() / 2, 10f, 0xFFFFFF, false, matrix4f, bufferSource,
+            distText, -font.width(distText).toFloat() / 2, 10f, 0xFFFFFFFF.toInt(), false, textMatrix, bufferSource,
             Font.DisplayMode.SEE_THROUGH,
             0, LightTexture.FULL_BRIGHT
         )
-        bufferSource.endBatch()
 
         matrices.popPose()
     }

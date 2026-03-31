@@ -21,21 +21,6 @@ object DulkirRenderTypes {
             .createRenderSetup()
     )
 
-    val DULKIR_TEXT: RenderType  = RenderType.create(
-        "dulkir_text",
-        RenderSetup.builder(DulkirRenderPipelines.DULKIR_TEXT)
-            .bufferSize(RenderType.TRANSIENT_BUFFER_SIZE)
-            .setLayeringTransform(LayeringTransform.VIEW_OFFSET_Z_LAYERING)
-            .createRenderSetup()
-    )
-
-    val DULKIR_TEXT_ESP: RenderType  = RenderType.create(
-        "dulkir_text_esp",
-        RenderSetup.builder(DulkirRenderPipelines.DULKIR_TEXT_ESP)
-            .bufferSize(RenderType.TRANSIENT_BUFFER_SIZE)
-            .createRenderSetup()
-    )
-
     val DULKIR_TRIANGLE_STRIP: RenderType  = RenderType.create(
         "dulkir_triangle_strip",
         RenderSetup.builder(DulkirRenderPipelines.DULKIR_TRIANGLE_STRIP)
@@ -73,8 +58,6 @@ object DulkirRenderTypes {
     val TYPES: Set<RenderType> = setOf(
         DULKIR_LINES,
         DULKIR_LINES_ESP,
-        DULKIR_TEXT,
-        DULKIR_TEXT_ESP,
         DULKIR_TRIANGLE_STRIP,
         DULKIR_TRIANGLE_STRIP_ESP,
         DULKIR_QUADS,
