@@ -80,7 +80,6 @@ object WorldRenderUtils {
         axisAlignedLine(box.maxX, box.maxY, box.maxZ, box.minX, box.maxY, box.maxZ)
         axisAlignedLine(box.minX, box.maxY, box.maxZ, box.minX, box.maxY, box.minZ)
 
-        layer.draw(buf.buildOrThrow())
         matrices.popPose()
     }
 
@@ -136,7 +135,6 @@ object WorldRenderUtils {
         buf.addVertex(matrix4f, font.width(text).toFloat() / 2, -1.0f, 0.0f)
             .setColor(j)
             .setLight(LightTexture.FULL_BRIGHT)
-        layer.draw(buf.buildOrThrow())
 
         // Translate forward for text rendering
         matrices.translate(0F, 0F, 0.01F)
@@ -189,7 +187,6 @@ object WorldRenderUtils {
         matrices.translate(x - camera.position().x, y - camera.position().y, z - camera.position().z)
         // Note: color.rgb is a terrible name, this value is actually the argb int that we're looking for.
         addBoxVertices(matrices.last(), buf, 0.0, 0.0, 0.0, width, height, depth, color.rgb)
-        layer.draw(buf.buildOrThrow())
         matrices.popPose()
     }
 

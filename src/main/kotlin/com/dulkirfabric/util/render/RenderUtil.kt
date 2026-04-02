@@ -6,12 +6,21 @@ import net.minecraft.client.renderer.rendertype.RenderType
 
 object RenderUtil {
 
+    private val buffers = mutableMapOf<RenderType, BufferBuilder>()
+
     fun getBufferFor(renderType: RenderType): BufferBuilder {
-        return BufferBuilder(
-            ByteBufferBuilder(renderType.bufferSize()),
-            renderType.mode(),
-            renderType.format()
-        )
+        val buffer = buffers.getOrPut(renderType) {
+            BufferBuilder(
+                ByteBufferBuilder(renderType.bufferSize()),
+                renderType.mode(),
+                renderType.format()
+            )
+        }
+        return buffer
+    }
+
+    fun endFrame() {
+        buffers.clear()
     }
 
 }

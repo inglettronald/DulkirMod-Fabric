@@ -25,6 +25,8 @@ import com.dulkirfabric.util.TablistUtils
 import com.dulkirfabric.util.Utils
 import com.dulkirfabric.util.render.DulkirRenderTypes
 import com.dulkirfabric.util.render.HudRenderUtil
+import com.dulkirfabric.util.render.RenderUtil
+import com.mojang.blaze3d.vertex.BufferBuilder
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityEvents
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
@@ -119,13 +121,13 @@ object Registrations {
         }
 
         WorldRenderEvents.END_MAIN.register { context ->
-            DulkirRenderTypes.TYPES.forEach {
-                // it.setupRenderState()
-            }
             WorldRenderLastEvent(context).post()
             DulkirRenderTypes.TYPES.forEach {
-                // it.clearRenderState()
+                val buffer = RenderUtil.getBufferFor(it)
+                val meshData = buffer.build() ?: return@forEach
+                it.draw(meshData)
             }
+            RenderUtil.endFrame()
         }
 
         ScreenEvents.BEFORE_INIT.register(
