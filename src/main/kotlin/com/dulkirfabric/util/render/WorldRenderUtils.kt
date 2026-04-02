@@ -73,12 +73,11 @@ object WorldRenderUtils {
         text: Component,
         context: WorldRenderContext,
         pos: Vec3,
+        dist: Boolean = true
     ) {
         val layer = DulkirRenderTypes.DULKIR_QUADS_ESP
         val player = mc.player ?: return;
         val d: Double = pos.distanceTo(player.position())
-        val distText = Component.literal(d.toInt().toString() + "m")
-            .withStyle(ChatFormatting.YELLOW)
         val matrices = context.matrices() ?: return
         matrices.pushPose()
         val camera = context.gameRenderer().mainCamera
@@ -135,11 +134,15 @@ object WorldRenderUtils {
             0, LightTexture.FULL_BRIGHT
         )
 
-        font.drawInBatch(
-            distText, -font.width(distText).toFloat() / 2, 10f, 0xFFFFFFFF.toInt(), false, textMatrix, bufferSource,
-            Font.DisplayMode.SEE_THROUGH,
-            0, LightTexture.FULL_BRIGHT
-        )
+        if (dist) {
+            val distText = Component.literal(d.toInt().toString() + "m")
+                .withStyle(ChatFormatting.YELLOW)
+            font.drawInBatch(
+                distText, -font.width(distText).toFloat() / 2, 10f, 0xFFFFFFFF.toInt(), false, textMatrix, bufferSource,
+                Font.DisplayMode.SEE_THROUGH,
+                0, LightTexture.FULL_BRIGHT
+            )
+        }
 
         matrices.popPose()
     }

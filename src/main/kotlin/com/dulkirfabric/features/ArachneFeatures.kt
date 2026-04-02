@@ -76,8 +76,10 @@ object ArachneFeatures {
             (18 - (System.currentTimeMillis() - spawnmillis) / 1000).toInt()
         }
         if (time < 0) time = 0
-        WorldRenderUtils.drawText(Component.literal(time.toString()).withStyle(ChatFormatting.LIGHT_PURPLE),
-            event.context, Vec3(-282.5, 50.8, -178.5))
+        WorldRenderUtils.renderWaypoint(
+            Component.literal(time.toString()).withStyle(ChatFormatting.LIGHT_PURPLE),
+            event.context, Vec3(-282.5, 50.8, -178.5), false
+        )
     }
 
 }
