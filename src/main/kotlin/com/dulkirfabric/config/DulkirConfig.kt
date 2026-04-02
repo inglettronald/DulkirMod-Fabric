@@ -93,7 +93,7 @@ class DulkirConfig {
             entryBuilder.mkToggle(Component.literal("Custom Block outlines"), configOptions::customBlockOutlines)
         )
         general.addEntry(
-            entryBuilder.startIntSlider(Component.literal("Line Thickness"), configOptions.blockOutlineThickness, 1, 5)
+            entryBuilder.startIntSlider(Component.literal("Line Thickness"), configOptions.blockOutlineThickness, 1, 8)
                 .setSaveConsumer { newValue -> configOptions.blockOutlineThickness = newValue }
                 .build()
         )

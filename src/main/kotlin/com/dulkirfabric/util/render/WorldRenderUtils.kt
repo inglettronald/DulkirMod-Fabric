@@ -10,8 +10,8 @@ import net.minecraft.client.renderer.LightTexture
 import net.minecraft.network.chat.Component
 import net.minecraft.world.phys.AABB
 import net.minecraft.world.phys.Vec3
-import org.joml.Vector3f
 import java.awt.Color
+import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.pow
 import kotlin.math.sqrt
@@ -26,7 +26,7 @@ object WorldRenderUtils {
         depthTest: Boolean = true
     ) {
         val matrices = context.matrices() ?: return
-        val layer = if (depthTest) DulkirRenderTypes.DULKIR_QUADS else DulkirRenderTypes.DULKIR_QUADS_ESP
+        val layer = if (depthTest) DulkirRenderTypes.DULKIR_TRIANGLE_STRIP else DulkirRenderTypes.DULKIR_TRIANGLE_STRIP_ESP
         val camera = context.gameRenderer().mainCamera
         val camPos = camera.position()
 
@@ -36,34 +36,49 @@ object WorldRenderUtils {
         val buf = RenderUtil.getBufferFor(layer)
         val me = matrices.last()
 
-        fun line(
-            x1: Number, y1: Number, z1: Number,
-            x2: Number, y2: Number, z2: Number
+        fun axisAlignedLine(
+            x1: Double, y1: Double, z1: Double,
+            x2: Double, y2: Double, z2: Double
         ) {
-            line(me, buf, x1, y1, z1, x2, y2, z2, color, thickness)
+            val midX = (x1 + x2) / 2.0
+            val midY = (y1 + y2) / 2.0
+            val midZ = (z1 + z2) / 2.0
+
+            // Calculate distance-based thickness normalization
+            val dist = sqrt((midX - camPos.x).pow(2) + (midY - camPos.y).pow(2) + (midZ - camPos.z).pow(2))
+            val finalHalfWidth = thickness * 0.001 * (dist / 2.0)
+
+            var lineAABB = AABB(x1, y1, z1, x2, y2, z2)
+            lineAABB = when {
+                (abs(x2 - y1) > 0) -> lineAABB.inflate(finalHalfWidth / 2.0, finalHalfWidth, finalHalfWidth)
+                (abs(y2 - y1) > 0) -> lineAABB.inflate(finalHalfWidth, finalHalfWidth / 2.0, finalHalfWidth)
+                else -> lineAABB.inflate(finalHalfWidth, finalHalfWidth, finalHalfWidth / 2.0)
+            }
+
+            addBoxVertices(
+                me, buf,
+                lineAABB.minX, lineAABB.minY, lineAABB.minZ,
+                lineAABB.maxX, lineAABB.maxY, lineAABB.maxZ,
+                color.rgb
+            )
         }
 
         // bottom
-        line(box.minX, box.minY, box.minZ, box.maxX, box.minY, box.minZ)
-        line(box.maxX, box.minY, box.minZ, box.maxX, box.minY, box.maxZ)
-        line(box.maxX, box.minY, box.maxZ, box.minX, box.minY, box.maxZ)
-        line(box.minX, box.minY, box.maxZ, box.minX, box.minY, box.minZ)
+        axisAlignedLine(box.minX, box.minY, box.minZ, box.maxX, box.minY, box.minZ)
+        axisAlignedLine(box.maxX, box.minY, box.minZ, box.maxX, box.minY, box.maxZ)
+        axisAlignedLine(box.maxX, box.minY, box.maxZ, box.minX, box.minY, box.maxZ)
+        axisAlignedLine(box.minX, box.minY, box.maxZ, box.minX, box.minY, box.minZ)
 
-        line(box.minX, box.minY, box.minZ, box.minX, box.maxY, box.minZ)
+        axisAlignedLine(box.minX, box.minY, box.minZ, box.minX, box.maxY, box.minZ)
+        axisAlignedLine(box.maxX, box.minY, box.minZ, box.maxX, box.maxY, box.minZ)
+        axisAlignedLine(box.maxX, box.minY, box.maxZ, box.maxX, box.maxY, box.maxZ)
+        axisAlignedLine(box.minX, box.minY, box.maxZ, box.minX, box.maxY, box.maxZ)
 
         // top
-        line(box.minX, box.maxY, box.minZ, box.maxX, box.maxY, box.minZ)
-        line(box.maxX, box.maxY, box.minZ, box.maxX, box.maxY, box.maxZ)
-        line(box.maxX, box.maxY, box.maxZ, box.minX, box.maxY, box.maxZ)
-        line(box.minX, box.maxY, box.maxZ, box.minX, box.maxY, box.minZ)
-
-        // some redraws (blame strips) and getting the rest of the vertical columns
-        line(box.minX, box.maxY, box.minZ, box.maxX, box.maxY, box.minZ)
-        line(box.maxX, box.maxY, box.minZ, box.maxX, box.minY, box.minZ)
-        line(box.maxX, box.minY, box.minZ, box.maxX, box.minY, box.maxZ)
-        line(box.maxX, box.minY, box.maxZ, box.maxX, box.maxY, box.maxZ)
-        line(box.maxX, box.maxY, box.maxZ, box.minX, box.maxY, box.maxZ)
-        line(box.minX, box.maxY, box.maxZ, box.minX, box.minY, box.maxZ)
+        axisAlignedLine(box.minX, box.maxY, box.minZ, box.maxX, box.maxY, box.minZ)
+        axisAlignedLine(box.maxX, box.maxY, box.minZ, box.maxX, box.maxY, box.maxZ)
+        axisAlignedLine(box.maxX, box.maxY, box.maxZ, box.minX, box.maxY, box.maxZ)
+        axisAlignedLine(box.minX, box.maxY, box.maxZ, box.minX, box.maxY, box.minZ)
 
         layer.draw(buf.buildOrThrow())
         matrices.popPose()
@@ -219,56 +234,6 @@ object WorldRenderUtils {
         v(x1, y1, z1)
         v(x1, y1, z1)
         v(x1, y1, z1)
-    }
-
-    private fun line(
-        matrix: PoseStack.Pose, buffer: BufferBuilder,
-        x1: Number, y1: Number, z1: Number,
-        x2: Number, y2: Number, z2: Number,
-        color: Color, lineWidth: Float
-    ) {
-        val fov = mc.options.fov().get()
-        val fovMultiplier = (fov / 70.0).toFloat() // Normalize to default FOV
-        val finalWidth = lineWidth * fovMultiplier * 0.0025f
-        thickLine(
-            matrix, buffer,
-            x1, y1, z1,
-            x2, y2, z2,
-            color.rgb, finalWidth
-        )
-    }
-
-    // Renders a line as a camera-facing quad so thickness is actually respected.
-    private fun thickLine(
-        matrix: PoseStack.Pose, buffer: BufferBuilder,
-        x1: Number, y1: Number, z1: Number,
-        x2: Number, y2: Number, z2: Number,
-        color: Int, halfWidth: Float
-    ) {
-        val fx = x1.toFloat(); val fy = y1.toFloat(); val fz = z1.toFloat()
-        val tx = x2.toFloat(); val ty = y2.toFloat(); val tz = z2.toFloat()
-
-        val dir = Vector3f(tx - fx, ty - fy, tz - fz)
-        if (dir.lengthSquared() < 1e-6f) return
-        dir.normalize()
-
-        val camera = mc.gameRenderer.mainCamera
-        val cameraForward = Vector3f(camera.forwardVector())
-        val perp = dir.cross(cameraForward, Vector3f())
-
-        if (perp.lengthSquared() < 1e-6f) {
-            // Camera is looking along the line, use camera's up vector instead
-            val cameraUp = Vector3f(camera.upVector())
-            dir.cross(cameraUp, perp)
-        }
-
-        perp.normalize().mul(halfWidth)
-
-        val mat = matrix.pose()
-        buffer.addVertex(mat, fx - perp.x, fy - perp.y, fz - perp.z).setColor(color)
-        buffer.addVertex(mat, fx + perp.x, fy + perp.y, fz + perp.z).setColor(color)
-        buffer.addVertex(mat, tx + perp.x, ty + perp.y, tz + perp.z).setColor(color)
-        buffer.addVertex(mat, tx - perp.x, ty - perp.y, tz - perp.z).setColor(color)
     }
 
 }
