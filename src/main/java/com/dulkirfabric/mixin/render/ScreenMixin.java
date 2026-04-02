@@ -64,16 +64,4 @@ public abstract class ScreenMixin {
         this.height = (int) ceil(height / InventoryScale.INSTANCE.getScale());
     }
 
-    @WrapMethod(
-            method = "render"
-    )
-    private void dulkir$modifyMouse(GuiGraphics context, int mouseX, int mouseY, float deltaTicks, Operation<Void> original) {
-        original.call(
-                context,
-                (int) floor(mouseX * InventoryScale.INSTANCE.getScale()),
-                (int) floor(mouseY * InventoryScale.INSTANCE.getScale()),
-                deltaTicks
-        );
-    }
-
 }

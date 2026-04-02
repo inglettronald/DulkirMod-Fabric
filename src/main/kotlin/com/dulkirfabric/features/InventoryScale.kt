@@ -10,10 +10,13 @@ object InventoryScale {
      * Called every render frame, so don't put anything expensive in here.
      */
     fun getScale(): Float {
-        if (DulkirConfig.configOptions.invScaleBool && mc.screen is AbstractContainerScreen<*>) {
-            return DulkirConfig.configOptions.inventoryScale
+        if (!DulkirConfig.configOptions.invScaleBool) {
+            return 1f
         }
-        return 1f
+        if (mc.screen !is AbstractContainerScreen<*>) {
+            return 1f
+        }
+        return DulkirConfig.configOptions.inventoryScale
     }
 
 }
