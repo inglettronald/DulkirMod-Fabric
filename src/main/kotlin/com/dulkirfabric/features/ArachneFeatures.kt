@@ -36,11 +36,11 @@ object ArachneFeatures {
         }
     }
 
-    private val spawnRegex = "\\[BOSS] Arachne: (With your sacrifice.)|(A befitting welcome!)".toRegex()
+    private val spawnRegex = "^\\[BOSS] Arachne: (?<tier>(With your sacrifice.)|(A befitting welcome!))$".toRegex()
 
-    private var startmillis: Long = -1
-    private var endmillis: Long = -1
-    private var spawnmillis: Long = -1
+    private var start: Long = -1
+    private var end: Long = -1
+    private var spawn: Long = -1
     private var bigboy: Boolean = false
 
     @EventHandler
@@ -58,14 +58,14 @@ object ArachneFeatures {
         val str = event.message.unformattedString.trim()
         if (str matches spawnRegex) {
             bigboy = false
-            startmillis = System.currentTimeMillis()
+            start = System.currentTimeMillis()
         } else if (str.startsWith('☄') && str.contains("Something is awakening!")) {
             if (str.contains("Arachne Crystal!")) bigboy = true
-            spawnmillis = System.currentTimeMillis()
-        } else if (str.startsWith("Runecrafting:")) {
-            endmillis = System.currentTimeMillis()
-            if (startmillis > -1) {
-                val killtime = (endmillis - startmillis).toFloat() / 1000
+            spawn = System.currentTimeMillis()
+        } else if (str.startsWith("ARACHNE DOWN!")) {
+            end = System.currentTimeMillis()
+            if (start > -1) {
+                val killtime = (end - start).toFloat() / 1000
                 TextUtils.info("§6Arachne took §7$killtime §6seconds to kill.")
             }
         }
@@ -76,9 +76,9 @@ object ArachneFeatures {
         if (!shouldDisplayTimer()) return
 
         var time: Int = if (bigboy) {
-            (40 - (System.currentTimeMillis() - spawnmillis) / 1000).toInt()
+            (40 - (System.currentTimeMillis() - spawn) / 1000).toInt()
         } else {
-            (18 - (System.currentTimeMillis() - spawnmillis) / 1000).toInt()
+            (18 - (System.currentTimeMillis() - spawn) / 1000).toInt()
         }
         if (time < 0) time = 0
         WorldRenderUtils.renderWaypoint(
@@ -89,8 +89,8 @@ object ArachneFeatures {
 
     private fun shouldDisplayTimer(): Boolean {
         return arachneTimerEnabled()
-                && spawnmillis > startmillis
-                && startmillis > endmillis
+                && spawn > start
+                && spawn > end
     }
 
     private fun arachneTimerEnabled(): Boolean {
