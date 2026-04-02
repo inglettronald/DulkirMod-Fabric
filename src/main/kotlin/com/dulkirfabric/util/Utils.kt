@@ -25,8 +25,8 @@ object Utils {
      * Prints relevant information about a sound that is being displayed
      */
     fun debugSound(event: PlaySoundEvent) {
-        if (event.sound.location.path == "entity.player.hurt") return
-        println("Path: ${event.sound.location.path}")
+        if (event.sound.identifier.path == "entity.player.hurt") return
+        println("Path: ${event.sound.identifier.path}")
         println("Pitch: ${event.sound.pitch}")
         println("Volume: ${event.sound.volume}")
     }

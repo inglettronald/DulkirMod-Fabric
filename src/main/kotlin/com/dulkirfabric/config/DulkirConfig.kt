@@ -29,7 +29,7 @@ import net.minecraft.ChatFormatting
 import net.minecraft.client.gui.screens.Screen
 import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.TextColor
-import net.minecraft.resources.ResourceLocation
+import net.minecraft.resources.Identifier
 import org.joml.Vector2i
 import java.io.File
 
@@ -41,7 +41,7 @@ class DulkirConfig {
 
     fun buildScreen(parentScreen: Screen? = null): Screen {
         val builder = ConfigBuilder.create().setTitle(buttonText)
-        builder.setDefaultBackgroundTexture(ResourceLocation.parse("minecraft:textures/block/oak_planks.png"))
+        builder.setDefaultBackgroundTexture(Identifier.parse("minecraft:textures/block/oak_planks.png"))
         builder.setGlobalized(true)
         builder.setGlobalizedExpanded(false)
         builder.setParentScreen(mc.screen)
@@ -93,7 +93,7 @@ class DulkirConfig {
             entryBuilder.mkToggle(Component.literal("Custom Block outlines"), configOptions::customBlockOutlines)
         )
         general.addEntry(
-            entryBuilder.startIntSlider(Component.literal("Line Thickness"), configOptions.blockOutlineThickness, 1, 5)
+            entryBuilder.startIntSlider(Component.literal("Line Thickness"), configOptions.blockOutlineThickness, 1, 8)
                 .setSaveConsumer { newValue -> configOptions.blockOutlineThickness = newValue }
                 .build()
         )
@@ -162,7 +162,10 @@ class DulkirConfig {
             )
         )
         general.addEntry(
-            entryBuilder.mkToggle(Component.literal("Show Speed in HUD"), configOptions::speedHud)
+            entryBuilder.mkToggle(
+                Component.literal("Show Speed in HUD"), configOptions::speedHud,
+                tooltip = Component.literal("Does require the Tab list widget to work for now, might improve this later.")
+            )
         )
         general.addEntry(
             entryBuilder.mkToggle(
@@ -482,7 +485,7 @@ class DulkirConfig {
                 configOptions.positions.getOrPut(
                     id
                 ) { HudElement.HudMeta(defaultPosition.x, defaultPosition.y, scale) },
-                ResourceLocation.fromNamespaceAndPath(DulkirModFabric.MOD_ID, id),
+                Identifier.fromNamespaceAndPath(DulkirModFabric.MOD_ID, id),
                 label, width, height,
             )
             huds.add(Triple(element, defaultPosition, scale))

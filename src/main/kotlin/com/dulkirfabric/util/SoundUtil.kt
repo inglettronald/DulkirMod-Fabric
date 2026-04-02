@@ -4,13 +4,13 @@ import net.minecraft.client.Minecraft
 import net.minecraft.client.resources.sounds.SimpleSoundInstance
 import net.minecraft.client.resources.sounds.SoundInstance
 import net.minecraft.core.BlockPos
-import net.minecraft.resources.ResourceLocation
+import net.minecraft.resources.Identifier
 import net.minecraft.sounds.SoundEvent
 import net.minecraft.sounds.SoundSource
 import net.minecraft.world.level.levelgen.SingleThreadedRandomSource
 
 object SoundUtil {
-    val iphone = SoundEvent.createVariableRangeEvent(ResourceLocation.parse("dulkirmod:iphone"))
+    val iphone = SoundEvent.createVariableRangeEvent(Identifier.parse("dulkirmod:iphone"))
 
     fun stop(sounds: List<SoundInstance>) {
         val m = Minecraft.getInstance().soundManager

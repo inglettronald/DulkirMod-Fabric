@@ -25,6 +25,8 @@ import com.dulkirfabric.util.TablistUtils
 import com.dulkirfabric.util.Utils
 import com.dulkirfabric.util.render.DulkirRenderTypes
 import com.dulkirfabric.util.render.HudRenderUtil
+import com.dulkirfabric.util.render.RenderUtil
+import com.mojang.blaze3d.vertex.BufferBuilder
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityEvents
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
@@ -39,8 +41,7 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents
 import net.fabricmc.loader.api.FabricLoader
 import net.minecraft.client.DeltaTracker
 import net.minecraft.client.gui.GuiGraphics
-import net.minecraft.resources.ResourceLocation
-
+import net.minecraft.resources.Identifier
 
 /**
  * Collection of different mod registration stuff ran on initializing the mod. It is separated for readability
@@ -120,9 +121,13 @@ object Registrations {
         }
 
         WorldRenderEvents.END_MAIN.register { context ->
-            DulkirRenderTypes.TYPES.forEach { it.setupRenderState() }
             WorldRenderLastEvent(context).post()
-            DulkirRenderTypes.TYPES.forEach { it.clearRenderState() }
+            DulkirRenderTypes.TYPES.forEach {
+                val buffer = RenderUtil.getBufferFor(it)
+                val meshData = buffer.build() ?: return@forEach
+                it.draw(meshData)
+            }
+            RenderUtil.endFrame()
         }
 
         ScreenEvents.BEFORE_INIT.register(
@@ -144,16 +149,10 @@ object Registrations {
             WorldLoadEvent(server, world).post()
         }
 
-        val id = ResourceLocation.parse("dulkir_hud");
+        val id = Identifier.parse("dulkir_hud");
         val element = object : HudElement {
-            override fun render(
-                context: GuiGraphics?,
-                tickCounter: DeltaTracker?
-            ) {
-                if (context == null || tickCounter == null) {
-                    return;
-                }
-                HudRenderEvent(context, tickCounter.getGameTimeDeltaPartialTick(true)).post()
+            override fun render(guiGraphics: GuiGraphics, deltaTracker: DeltaTracker) {
+                HudRenderEvent(guiGraphics, deltaTracker.getGameTimeDeltaPartialTick(true)).post()
             }
         }
         HudElementRegistry.addLast(id, element)

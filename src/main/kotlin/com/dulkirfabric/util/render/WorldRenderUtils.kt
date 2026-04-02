@@ -1,51 +1,22 @@
 package com.dulkirfabric.util.render
 
 import com.dulkirfabric.DulkirModFabric.mc
-import com.mojang.blaze3d.systems.RenderSystem
 import com.mojang.blaze3d.vertex.BufferBuilder
 import com.mojang.blaze3d.vertex.PoseStack
 import net.fabricmc.fabric.api.client.rendering.v1.world.WorldRenderContext
 import net.minecraft.ChatFormatting
 import net.minecraft.client.gui.Font
 import net.minecraft.client.renderer.LightTexture
-import net.minecraft.client.renderer.ShapeRenderer
 import net.minecraft.network.chat.Component
 import net.minecraft.world.phys.AABB
 import net.minecraft.world.phys.Vec3
-import org.joml.Vector3f
 import java.awt.Color
+import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.pow
 import kotlin.math.sqrt
 
 object WorldRenderUtils {
-    private fun line(
-        matrix: PoseStack.Pose, buffer: BufferBuilder,
-        x1: Number, y1: Number, z1: Number,
-        x2: Number, y2: Number, z2: Number,
-        lineWidth: Float
-    ) {
-        val camera = mc.cameraEntity ?: return
-        RenderSystem.lineWidth(lineWidth / camera.position().distanceToSqr(
-            Vec3(x1.toDouble(), y1.toDouble(), z1.toDouble())
-        ).pow(0.25).toFloat())
-        line(
-            matrix,
-            buffer,
-            Vector3f(x1.toFloat(), y1.toFloat(), z1.toFloat()),
-            Vector3f(x2.toFloat(), y2.toFloat(), z2.toFloat())
-        )
-    }
-
-    private fun line(matrix: PoseStack.Pose, buffer: BufferBuilder, from: Vector3f, to: Vector3f) {
-        val normal = to.sub(from, Vector3f()).mul(-1F)
-        buffer.addVertex(matrix.pose(), from.x, from.y, from.z)
-            .setNormal(matrix, normal.x, normal.y, normal.z)
-                .setColor(0xFFFFFFFF.toInt())
-        buffer.addVertex(matrix.pose(), to.x, to.y, to.z)
-            .setNormal(matrix, normal.x, normal.y, normal.z)
-                .setColor(0xFFFFFFFF.toInt())
-    }
 
     fun drawWireFrame(
         context: WorldRenderContext,
@@ -55,147 +26,60 @@ object WorldRenderUtils {
         depthTest: Boolean = true
     ) {
         val matrices = context.matrices() ?: return
+        val layer = if (depthTest) DulkirRenderTypes.DULKIR_TRIANGLE_STRIP else DulkirRenderTypes.DULKIR_TRIANGLE_STRIP_ESP
+        val camera = context.gameRenderer().mainCamera
+        val camPos = camera.position()
+
         matrices.pushPose()
-        val layer = if (depthTest) {
-            DulkirRenderTypes.DULKIR_LINES
-        } else {
-            DulkirRenderTypes.DULKIR_LINES_ESP
-        }
-        val camera = context.gameRenderer().mainCamera;
-        matrices.translate(-camera.position.x, -camera.position.y, -camera.position.z)
-        val buf = RenderUtil.getBufferFor(layer);
+        matrices.translate(-camPos.x, -camPos.y, -camPos.z)
+
+        val buf = RenderUtil.getBufferFor(layer)
         val me = matrices.last()
 
-        buf.setColor(color.red, color.green, color.blue, color.alpha)
+        fun axisAlignedLine(
+            x1: Double, y1: Double, z1: Double,
+            x2: Double, y2: Double, z2: Double
+        ) {
+            val midX = (x1 + x2) / 2.0
+            val midY = (y1 + y2) / 2.0
+            val midZ = (z1 + z2) / 2.0
+
+            // Calculate distance-based thickness normalization
+            val dist = sqrt((midX - camPos.x).pow(2) + (midY - camPos.y).pow(2) + (midZ - camPos.z).pow(2))
+            val finalHalfWidth = thickness * 0.001 * (dist / 2.0)
+
+            var lineAABB = AABB(x1, y1, z1, x2, y2, z2)
+            lineAABB = when {
+                (abs(x2 - x1) > 0) -> lineAABB.inflate(finalHalfWidth / 2.0, finalHalfWidth, finalHalfWidth)
+                (abs(y2 - y1) > 0) -> lineAABB.inflate(finalHalfWidth, finalHalfWidth / 2.0, finalHalfWidth)
+                else -> lineAABB.inflate(finalHalfWidth, finalHalfWidth, finalHalfWidth / 2.0)
+            }
+
+            addBoxVertices(
+                me, buf,
+                lineAABB.minX, lineAABB.minY, lineAABB.minZ,
+                lineAABB.maxX, lineAABB.maxY, lineAABB.maxZ,
+                color.rgb
+            )
+        }
 
         // bottom
-        line(me, buf, box.minX, box.minY, box.minZ, box.maxX, box.minY, box.minZ, thickness)
-        line(me, buf, box.maxX, box.minY, box.minZ, box.maxX, box.minY, box.maxZ, thickness)
-        line(me, buf, box.maxX, box.minY, box.maxZ, box.minX, box.minY, box.maxZ, thickness)
-        line(me, buf, box.minX, box.minY, box.maxZ, box.minX, box.minY, box.minZ, thickness)
+        axisAlignedLine(box.minX, box.minY, box.minZ, box.maxX, box.minY, box.minZ)
+        axisAlignedLine(box.maxX, box.minY, box.minZ, box.maxX, box.minY, box.maxZ)
+        axisAlignedLine(box.maxX, box.minY, box.maxZ, box.minX, box.minY, box.maxZ)
+        axisAlignedLine(box.minX, box.minY, box.maxZ, box.minX, box.minY, box.minZ)
 
-        line(me, buf, box.minX, box.minY, box.minZ, box.minX, box.maxY, box.minZ, thickness)
+        axisAlignedLine(box.minX, box.minY, box.minZ, box.minX, box.maxY, box.minZ)
+        axisAlignedLine(box.maxX, box.minY, box.minZ, box.maxX, box.maxY, box.minZ)
+        axisAlignedLine(box.maxX, box.minY, box.maxZ, box.maxX, box.maxY, box.maxZ)
+        axisAlignedLine(box.minX, box.minY, box.maxZ, box.minX, box.maxY, box.maxZ)
 
         // top
-        line(me, buf, box.minX, box.maxY, box.minZ, box.maxX, box.maxY, box.minZ, thickness)
-        line(me, buf, box.maxX, box.maxY, box.minZ, box.maxX, box.maxY, box.maxZ, thickness)
-        line(me, buf, box.maxX, box.maxY, box.maxZ, box.minX, box.maxY, box.maxZ, thickness)
-        line(me, buf, box.minX, box.maxY, box.maxZ, box.minX, box.maxY, box.minZ, thickness)
+        axisAlignedLine(box.minX, box.maxY, box.minZ, box.maxX, box.maxY, box.minZ)
+        axisAlignedLine(box.maxX, box.maxY, box.minZ, box.maxX, box.maxY, box.maxZ)
+        axisAlignedLine(box.maxX, box.maxY, box.maxZ, box.minX, box.maxY, box.maxZ)
+        axisAlignedLine(box.minX, box.maxY, box.maxZ, box.minX, box.maxY, box.minZ)
 
-        // some redraws (blame strips) and getting the rest of the vertical columns
-        line(me, buf, box.minX, box.maxY, box.minZ, box.maxX, box.maxY, box.minZ, thickness)
-        line(me, buf, box.maxX, box.maxY, box.minZ, box.maxX, box.minY, box.minZ, thickness)
-        line(me, buf, box.maxX, box.minY, box.minZ, box.maxX, box.minY, box.maxZ, thickness)
-        line(me, buf, box.maxX, box.minY, box.maxZ, box.maxX, box.maxY, box.maxZ, thickness)
-        line(me, buf, box.maxX, box.maxY, box.maxZ, box.minX, box.maxY, box.maxZ, thickness)
-        line(me, buf, box.minX, box.maxY, box.maxZ, box.minX, box.minY, box.maxZ, thickness)
-
-        layer.draw(buf.buildOrThrow())
-
-        matrices.popPose()
-    }
-
-    fun drawLine(context: WorldRenderContext, startPos: Vec3, endPos: Vec3, color: Color, thickness: Float, depthTest: Boolean = true) {
-        val matrices = context.matrices() ?: return
-        matrices.pushPose()
-        val layer = if (depthTest) {
-            DulkirRenderTypes.DULKIR_LINES
-        } else {
-            DulkirRenderTypes.DULKIR_LINES_ESP
-        }
-        val camera = context.gameRenderer().mainCamera;
-        matrices.translate(-camera.position.x, -camera.position.y, -camera.position.z)
-        val buf = RenderUtil.getBufferFor(layer)
-        val me = matrices.last()
-
-        buf.setColor(color.red, color.green, color.blue, color.alpha)
-
-        line(me, buf, startPos.x.toFloat(), startPos.y.toFloat(), startPos.z.toFloat(), endPos.x.toFloat(), endPos.y.toFloat(), endPos.z.toFloat(), thickness)
-
-        layer.draw(buf.buildOrThrow())
-
-        matrices.popPose()
-    }
-
-    fun drawLineArray(context: WorldRenderContext, posArr: List<Vec3>, color: Color, thickness: Float,
-                      depthTest: Boolean = true) {
-        val matrices = context.matrices() ?: return
-        matrices.pushPose()
-        val layer = if (depthTest) {
-            DulkirRenderTypes.DULKIR_LINES
-        } else {
-            DulkirRenderTypes.DULKIR_LINES_ESP
-        }
-        val camera = context.gameRenderer().mainCamera;
-        matrices.translate(-camera.position.x, -camera.position.y, -camera.position.z)
-        val buf = RenderUtil.getBufferFor(layer)
-        val me = matrices.last()
-
-        buf.setColor(color.red, color.green, color.blue, color.alpha)
-
-        for (i in 0 until posArr.size - 1) {
-            val startPos = posArr[i]
-            val endPos = posArr[i + 1]
-            line(me, buf, startPos.x.toFloat(), startPos.y.toFloat(), startPos.z.toFloat(), endPos.x.toFloat(), endPos.y.toFloat(), endPos.z.toFloat(), thickness)
-        }
-
-        layer.draw(buf.buildOrThrow())
-
-        matrices.popPose()
-    }
-
-    /**
-     * If you intend to show with distance, use a waypoint I think. If you're looking at this
-     * statement and screaming at me for forgetting some use case, either let me know or compile
-     * a method that accomplishes your goals based off of this example code. Neither of these
-     * things should be incredibly difficult.
-     */
-    fun drawText(
-        text: Component,
-        context: WorldRenderContext,
-        pos: Vec3,
-        depthTest: Boolean = true, // TODO
-        scale: Float = 1f
-    ) {
-        val layer = DulkirRenderTypes.DULKIR_QUADS_ESP
-
-        // Minecraft vertex consumer because we still hook into their renderer and do immediate text rendering
-        val vertexConsumer = context.worldRenderer().renderBuffers.bufferSource()
-        val matrices = context.matrices() ?: return
-        matrices.pushPose()
-        val camera = context.gameRenderer().mainCamera;
-        matrices.translate(
-            pos.x - camera.position.x,
-            pos.y - camera.position.y,
-            pos.z - camera.position.z
-        )
-        matrices.mulPose(camera.rotation())
-        matrices.scale(.025f * scale, -.025f * scale, 1F)
-        val matrix4f = matrices.last().pose()
-        val font = mc.font
-        val j: Int = (.25 * 255.0f).toInt() shl 24
-        val buf = RenderUtil.getBufferFor(layer)
-        buf.addVertex(matrix4f, -1.0f - font.width(text) / 2, -1.0f, 0.0f)
-            .setColor(j)
-            .setLight(LightTexture.FULL_BRIGHT)
-        buf.addVertex(matrix4f, -1.0f - font.width(text) / 2, font.lineHeight.toFloat(), 0.0f)
-            .setColor(j)
-            .setLight(LightTexture.FULL_BRIGHT)
-        buf.addVertex(matrix4f, font.width(text).toFloat() / 2, font.lineHeight.toFloat(), 0.0f)
-            .setColor(j)
-            .setLight(LightTexture.FULL_BRIGHT)
-        buf.addVertex(matrix4f, font.width(text).toFloat() / 2, -1.0f, 0.0f)
-            .setColor(j)
-            .setLight(LightTexture.FULL_BRIGHT)
-
-        matrices.translate(0F, 0F, 0.01F)
-        layer.draw(buf.buildOrThrow())
-        font.drawInBatch(
-            text, -font.width(text).toFloat() / 2, 0f, 0xFFFFFF, false, matrix4f, vertexConsumer,
-            Font.DisplayMode.SEE_THROUGH,
-            0, LightTexture.FULL_BRIGHT
-        )
-        vertexConsumer.endBatch()
         matrices.popPose()
     }
 
@@ -203,31 +87,28 @@ object WorldRenderUtils {
         text: Component,
         context: WorldRenderContext,
         pos: Vec3,
-    )
-    {
+        dist: Boolean = true
+    ) {
         val layer = DulkirRenderTypes.DULKIR_QUADS_ESP
         val player = mc.player ?: return;
         val d: Double = pos.distanceTo(player.position())
-        val distText = Component.literal(d.toInt().toString() + "m")
-            .withStyle(ChatFormatting.YELLOW)
         val matrices = context.matrices() ?: return
-        val bufferSource = context.worldRenderer().renderBuffers.bufferSource()
         matrices.pushPose()
         val camera = context.gameRenderer().mainCamera
-        val magnitude = sqrt((pos.x - camera.position.x).pow(2) +
-            (pos.y - camera.position.y).pow(2) +
-                (pos.z - camera.position.z).pow(2))
+        val magnitude = sqrt((pos.x - camera.position().x).pow(2) +
+            (pos.y - camera.position().y).pow(2) +
+                (pos.z - camera.position().z).pow(2))
         if (magnitude < 20) {
             matrices.translate(
-                pos.x - camera.position.x,
-                pos.y - camera.position.y,
-                pos.z - camera.position.z
+                pos.x - camera.position().x,
+                pos.y - camera.position().y,
+                pos.z - camera.position().z
             )
         } else {
             matrices.translate(
-                (pos.x - camera.position.x) / magnitude * 20,
-                (pos.y - camera.position.y) / magnitude * 20,
-                (pos.z - camera.position.z) / magnitude * 20
+                (pos.x - camera.position().x) / magnitude * 20,
+                (pos.y - camera.position().y) / magnitude * 20,
+                (pos.z - camera.position().z) / magnitude * 20
             )
         }
         matrices.mulPose(camera.rotation())
@@ -237,10 +118,11 @@ object WorldRenderUtils {
         } else {
             matrices.scale(.025f * 20 / 7f, -.025f * 20 / 7f, .1F)
         }
-        val matrix4f = matrices.last().pose()
         val font = mc.font
         val j: Int = (.25 * 255.0f).toInt() shl 24
+
         val buf = RenderUtil.getBufferFor(layer)
+        val matrix4f = matrices.last().pose()
         buf.addVertex(matrix4f, -1.0f - font.width(text) / 2, -1.0f, 0.0f)
             .setColor(j)
             .setLight(LightTexture.FULL_BRIGHT)
@@ -254,21 +136,26 @@ object WorldRenderUtils {
             .setColor(j)
             .setLight(LightTexture.FULL_BRIGHT)
 
+        // Translate forward for text rendering
         matrices.translate(0F, 0F, 0.01F)
-        layer.draw(buf.buildOrThrow())
+        val textMatrix = matrices.last().pose()
+        val bufferSource = context.consumers() ?: return
 
         font.drawInBatch(
-            text, -font.width(text).toFloat() / 2, 0f, 0xFFFFFF, false, matrix4f, bufferSource,
+            text, -font.width(text).toFloat() / 2, 0f, 0xFFFFFFFF.toInt(), false, textMatrix, bufferSource,
             Font.DisplayMode.SEE_THROUGH,
             0, LightTexture.FULL_BRIGHT
         )
 
-        font.drawInBatch(
-            distText, -font.width(distText).toFloat() / 2, 10f, 0xFFFFFF, false, matrix4f, bufferSource,
-            Font.DisplayMode.SEE_THROUGH,
-            0, LightTexture.FULL_BRIGHT
-        )
-        bufferSource.endBatch()
+        if (dist) {
+            val distText = Component.literal(d.toInt().toString() + "m")
+                .withStyle(ChatFormatting.YELLOW)
+            font.drawInBatch(
+                distText, -font.width(distText).toFloat() / 2, 10f, 0xFFFFFFFF.toInt(), false, textMatrix, bufferSource,
+                Font.DisplayMode.SEE_THROUGH,
+                0, LightTexture.FULL_BRIGHT
+            )
+        }
 
         matrices.popPose()
     }
@@ -297,10 +184,53 @@ object WorldRenderUtils {
         val buf = RenderUtil.getBufferFor(layer)
         matrices.pushPose()
         val camera = context.gameRenderer().mainCamera;
-        matrices.translate(x - camera.position.x, y - camera.position.y, z - camera.position.z)
-        ShapeRenderer.addChainedFilledBoxVertices(matrices, buf, 0.0, 0.0, 0.0, width, height, depth,
-            color.red / 255f, color.green / 255f, color.blue / 255f, color.alpha / 255f)
-        layer.draw(buf.buildOrThrow())
+        matrices.translate(x - camera.position().x, y - camera.position().y, z - camera.position().z)
+        // Note: color.rgb is a terrible name, this value is actually the argb int that we're looking for.
+        addBoxVertices(matrices.last(), buf, 0.0, 0.0, 0.0, width, height, depth, color.rgb)
         matrices.popPose()
     }
+
+    private fun addBoxVertices(
+        matrix: PoseStack.Pose, buf: BufferBuilder,
+        x1: Double, y1: Double, z1: Double,
+        x2: Double, y2: Double, z2: Double,
+        color: Int
+    ) {
+        val mat = matrix.pose()
+        fun v(x: Double, y: Double, z: Double) {
+            buf.addVertex(mat, x.toFloat(), y.toFloat(), z.toFloat()).setColor(color)
+        }
+
+        v(x2, y2, z2)
+        v(x2, y2, z2)
+        v(x2, y2, z2)
+        v(x2, y2, z1)
+        v(x2, y1, z2)
+        v(x2, y1, z1)
+        v(x2, y1, z1)
+        v(x2, y2, z1)
+        v(x1, y1, z1)
+        v(x1, y2, z1)
+        v(x1, y2, z1)
+        v(x1, y2, z2)
+        v(x1, y1, z1)
+        v(x1, y1, z2)
+        v(x1, y1, z2)
+        v(x1, y2, z2)
+        v(x2, y1, z2)
+        v(x2, y2, z2)
+        v(x2, y2, z2)
+        v(x1, y2, z2)
+        v(x2, y2, z1)
+        v(x1, y2, z1)
+        v(x1, y2, z1)
+        v(x2, y1, z2)
+        v(x2, y1, z2)
+        v(x2, y1, z1)
+        v(x1, y1, z2)
+        v(x1, y1, z1)
+        v(x1, y1, z1)
+        v(x1, y1, z1)
+    }
+
 }

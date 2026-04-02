@@ -63,7 +63,7 @@ object CooldownDisplays {
     @EventHandler
     fun onSound(event: PlaySoundEvent) {
         if (!DulkirConfig.configOptions.duraCooldown) return
-        val path = event.sound.location.path
+        val path = event.sound.identifier.path
         val pitch = event.sound.pitch
         val volume = event.sound.volume
 

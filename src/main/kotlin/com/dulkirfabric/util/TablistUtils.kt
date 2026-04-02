@@ -5,6 +5,7 @@ import com.dulkirfabric.events.AreaChangeEvent
 import com.dulkirfabric.events.LongUpdateEvent
 import meteordevelopment.orbit.EventHandler
 import net.minecraft.client.multiplayer.PlayerInfo
+import net.minecraft.network.chat.contents.PlainTextContents
 
 object TablistUtils {
     var tablist: List<PlayerInfo>? = null
@@ -39,7 +40,12 @@ object TablistUtils {
         var compostFlag = false
 
         tablist!!.forEach {
-            val str = it.profile.name?.trim() ?: return@forEach
+            val str = it.tabListDisplayName?.siblings
+                ?.mapNotNull { sibling -> 
+                    (sibling.contents as? PlainTextContents.LiteralContents)?.text()
+                }
+                ?.joinToString("")
+                ?: return@forEach
             areaPattern.find(str)?.let { result ->
                 if (persistentInfo.area != result.groupValues[1]) {
                     AreaChangeEvent(result.groupValues[1], persistentInfo.area).post()

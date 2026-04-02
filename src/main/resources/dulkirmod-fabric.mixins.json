@@ -9,7 +9,6 @@
     "io.KeyboardHandlerMixin",
     "io.MouseHandlerMixin",
     "io.SoundEngineMixin",
-    "render.AbstractContainerScreenMixin",
     "render.CameraTypeMixin",
     "render.EffectsInInventoryMixin",
     "render.EntityRendererMixin",

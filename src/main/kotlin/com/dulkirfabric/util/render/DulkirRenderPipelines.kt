@@ -10,9 +10,9 @@ import net.minecraft.client.renderer.RenderPipelines
 object DulkirRenderPipelines {
 
     val DULKIR_LINES: RenderPipeline = RenderPipelines.register(
-        RenderPipeline.builder(*arrayOf<RenderPipeline.Snippet?>(RenderPipelines.LINES_SNIPPET))
+        RenderPipeline.builder(RenderPipelines.LINES_SNIPPET)
             .withLocation("pipeline/line_strip")
-            .withVertexFormat(DefaultVertexFormat.POSITION_COLOR_NORMAL, VertexFormat.Mode.LINE_STRIP)
+            .withVertexFormat(DefaultVertexFormat.POSITION_COLOR_NORMAL, VertexFormat.Mode.DEBUG_LINE_STRIP)
             .withCull(false)
             .withBlend(BlendFunction.TRANSLUCENT)
             .withDepthWrite(true)
@@ -21,10 +21,10 @@ object DulkirRenderPipelines {
     )
 
     val DULKIR_LINES_ESP: RenderPipeline = RenderPipelines.register(
-        RenderPipeline.builder(*arrayOf<RenderPipeline.Snippet?>(RenderPipelines.LINES_SNIPPET))
+        RenderPipeline.builder(RenderPipelines.LINES_SNIPPET)
             .withLocation("pipeline/line_strip")
             .withShaderDefine("shad")
-            .withVertexFormat(DefaultVertexFormat.POSITION_COLOR_NORMAL, VertexFormat.Mode.LINE_STRIP)
+            .withVertexFormat(DefaultVertexFormat.POSITION_COLOR_NORMAL, VertexFormat.Mode.DEBUG_LINE_STRIP)
             .withCull(false)
             .withBlend(BlendFunction.TRANSLUCENT)
             .withDepthWrite(false)
@@ -32,46 +32,8 @@ object DulkirRenderPipelines {
             .build()
     )
 
-    val DULKIR_TEXT: RenderPipeline = RenderPipelines.register(
-        RenderPipeline.builder(
-            *arrayOf<RenderPipeline.Snippet?>(
-                RenderPipelines.TEXT_SNIPPET,
-                RenderPipelines.FOG_SNIPPET
-            )
-        )
-            .withLocation("pipeline/text")
-            .withVertexShader("core/rendertype_text")
-            .withFragmentShader("core/rendertype_text")
-            .withSampler("Sampler0")
-            .withSampler("Sampler2")
-            .withoutBlend()
-            .withCull(false)
-            .withDepthWrite(true)
-            .withDepthTestFunction(DepthTestFunction.LEQUAL_DEPTH_TEST)
-            .build()
-    )
-
-    val DULKIR_TEXT_ESP: RenderPipeline = RenderPipelines.register(
-        RenderPipeline.builder(
-            *arrayOf<RenderPipeline.Snippet?>(
-                RenderPipelines.TEXT_SNIPPET,
-                RenderPipelines.FOG_SNIPPET
-            )
-        )
-            .withLocation("pipeline/text")
-            .withVertexShader("core/rendertype_text")
-            .withFragmentShader("core/rendertype_text")
-            .withSampler("Sampler0")
-            .withSampler("Sampler2")
-            .withoutBlend()
-            .withCull(false)
-            .withDepthWrite(false)
-            .withDepthTestFunction(DepthTestFunction.NO_DEPTH_TEST)
-            .build()
-    )
-
     val DULKIR_TRIANGLE_STRIP: RenderPipeline = RenderPipelines.register(
-        RenderPipeline.builder(*arrayOf<RenderPipeline.Snippet?>(RenderPipelines.DEBUG_FILLED_SNIPPET))
+        RenderPipeline.builder(RenderPipelines.DEBUG_FILLED_SNIPPET)
             .withLocation("pipeline/debug_filled_box")
             .withCull(false)
             .withVertexFormat(DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.TRIANGLE_STRIP)
@@ -82,7 +44,7 @@ object DulkirRenderPipelines {
     );
 
     val DULKIR_TRIANGLE_STRIP_ESP: RenderPipeline = RenderPipelines.register(
-        RenderPipeline.builder(*arrayOf<RenderPipeline.Snippet?>(RenderPipelines.DEBUG_FILLED_SNIPPET))
+        RenderPipeline.builder(RenderPipelines.DEBUG_FILLED_SNIPPET)
             .withLocation("pipeline/debug_filled_box")
             .withCull(false)
             .withVertexFormat(DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.TRIANGLE_STRIP)
@@ -92,8 +54,19 @@ object DulkirRenderPipelines {
             .build()
     );
 
+    val DULKIR_QUADS: RenderPipeline = RenderPipelines.register(
+        RenderPipeline.builder(RenderPipelines.DEBUG_FILLED_SNIPPET)
+            .withLocation("pipeline/debug_quads")
+            .withCull(false)
+            .withVertexFormat(DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.QUADS)
+            .withDepthWrite(true)
+            .withDepthTestFunction(DepthTestFunction.LEQUAL_DEPTH_TEST)
+            .withBlend(BlendFunction.TRANSLUCENT)
+            .build()
+    );
+
     val DULKIR_QUADS_ESP: RenderPipeline = RenderPipelines.register(
-        RenderPipeline.builder(*arrayOf<RenderPipeline.Snippet?>(RenderPipelines.DEBUG_FILLED_SNIPPET))
+        RenderPipeline.builder(RenderPipelines.DEBUG_FILLED_SNIPPET)
             .withLocation("pipeline/debug_quads")
             .withCull(false)
             .withVertexFormat(DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.QUADS)

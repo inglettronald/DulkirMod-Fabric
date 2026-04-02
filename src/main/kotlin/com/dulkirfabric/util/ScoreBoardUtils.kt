@@ -94,7 +94,7 @@ object ScoreBoardUtils {
 
     @EventHandler
     fun onSound(event: PlaySoundEvent) {
-        if (event.sound.location.path != "entity.wither.shoot") return
+        if (event.sound.identifier.path != "entity.wither.shoot") return
         if (event.sound.pitch != 0.6984127f) return
         if (event.sound.volume != .5f) return
         SlayerBossEvents.Spawn(slayerType ?: return err()).post()
