@@ -50,7 +50,7 @@ object WorldRenderUtils {
 
             var lineAABB = AABB(x1, y1, z1, x2, y2, z2)
             lineAABB = when {
-                (abs(x2 - y1) > 0) -> lineAABB.inflate(finalHalfWidth / 2.0, finalHalfWidth, finalHalfWidth)
+                (abs(x2 - x1) > 0) -> lineAABB.inflate(finalHalfWidth / 2.0, finalHalfWidth, finalHalfWidth)
                 (abs(y2 - y1) > 0) -> lineAABB.inflate(finalHalfWidth, finalHalfWidth / 2.0, finalHalfWidth)
                 else -> lineAABB.inflate(finalHalfWidth, finalHalfWidth, finalHalfWidth / 2.0)
             }
