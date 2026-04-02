@@ -162,7 +162,10 @@ class DulkirConfig {
             )
         )
         general.addEntry(
-            entryBuilder.mkToggle(Component.literal("Show Speed in HUD"), configOptions::speedHud)
+            entryBuilder.mkToggle(
+                Component.literal("Show Speed in HUD"), configOptions::speedHud,
+                tooltip = Component.literal("Does require the Tab list widget to work for now, might improve this later.")
+            )
         )
         general.addEntry(
             entryBuilder.mkToggle(
