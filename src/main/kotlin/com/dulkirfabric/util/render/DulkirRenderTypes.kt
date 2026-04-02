@@ -40,7 +40,7 @@ object DulkirRenderTypes {
 
     val DULKIR_QUADS: RenderType = RenderType.create(
         "dulkir_quads",
-        RenderSetup.builder(DulkirRenderPipelines.DULKIR_QUADS_ESP)
+        RenderSetup.builder(DulkirRenderPipelines.DULKIR_QUADS)
             .bufferSize(RenderType.TRANSIENT_BUFFER_SIZE)
             .setLayeringTransform(LayeringTransform.VIEW_OFFSET_Z_LAYERING)
             .sortOnUpload()

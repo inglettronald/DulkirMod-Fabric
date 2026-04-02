@@ -10,23 +10,20 @@ import net.minecraft.world.phys.AABB
 object CustomBlockOutline {
 
     /**
-     * This is kind of a lazy implementation, but it works.
-     * Notes: This always draws a 1x1x1 box around the block you're looking at. This is not accurate for all blocks,
-     * because not all blocks have a 1x1x1 bounding box. It will still tell you the correct block you're looking at correctly.
+     * Renders AABB of a block, not quite accurate to vanilla for shapes that are not rectangular,
+     * but I can't be bothered to fix it.
      */
     @EventHandler
     fun onBlockOutline(event: BlockOutlineEvent) {
         if (!DulkirConfig.configOptions.customBlockOutlines) return
-        val blockPos = event.blockOutlineContext.pos()
-        val x = blockPos.x.toDouble()
-        val y = blockPos.y.toDouble()
-        val z = blockPos.z.toDouble()
         val color = ColorUtil.toRGB(DulkirConfig.configOptions.blockOutlineColor)
 
+        val context = event.blockOutlineContext;
         WorldRenderUtils.drawWireFrame(
-            event.worldRenderContext, AABB(x, y, z, x + 1, y + 1, z + 1),
+            event.worldRenderContext, context.shape().bounds().move(context.pos()),
             color, 3f * DulkirConfig.configOptions.blockOutlineThickness, true
         )
+
         event.isCancelled = true
     }
 
